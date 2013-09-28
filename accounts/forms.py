@@ -16,8 +16,8 @@ class LoginForm(forms.Form):
     # Form Layout
     helper = FormHelper()
     helper.form_class = 'form-horizontal'
-    helper.label_class = 'col-lg-4'
-    helper.field_class = 'col-lg-8'
+    helper.label_class = 'col-md-4'
+    helper.field_class = 'col-md-8'
     helper.layout = Layout(
         Fieldset(
             'Please Login',
