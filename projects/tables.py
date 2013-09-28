@@ -3,9 +3,13 @@ import models
 
 
 class ProjectTable(tables.Table):
-    name = tables.LinkColumn('projects_project_update', kwargs={'pk': tables.A('pk')})
+    name = tables.LinkColumn('projects_project_view', kwargs={'pk': tables.A('pk')})
 
     class Meta:
         model = models.Project
         attrs = {"class": "table table-striped"}
-        exclude = ('id',)
+        sequence = fields = (
+            'name',
+            'type',
+            'number_of_deployments',
+        )
