@@ -6,4 +6,4 @@ install:
     - pip install -r requirements/local.txt --use-mirrors
 
 script:
-    - manage.py test projects hosts accounts
+    - python manage.py test projects hosts accounts
