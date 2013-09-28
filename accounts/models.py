@@ -22,7 +22,7 @@ class DeployUser(AbstractEmailUser):
 
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    template = models.CharField(max_length=255)
+    template = models.CharField(max_length=255, blank=True)
 
     objects = UserManager()
 
