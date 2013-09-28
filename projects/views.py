@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.core.urlresolvers import reverse_lazy
 
-
+from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
 
 import models
@@ -22,23 +22,14 @@ class ProjectCreate(CreateView):
     template_name_suffix = '_create'
 
     def form_valid(self, form):
+        """After the form is valid lets let people know"""
+
+        ret = super(ProjectCreate, self).form_valid(form)
+
         # Good to make note of that
         messages.add_message(self.request, messages.SUCCESS, 'Project %s created' % self.object.name)
 
-        return super(ProjectCreate, self).form_valid(form)
-
-    def get_success_url(self):
-        if self.success_url:
-            url = self.success_url % self.object.__dict__
-        else:
-            try:
-                url = self.object.get_absolute_url()
-            except AttributeError:
-                raise ImproperlyConfigured(
-                    "No URL to redirect to.  Either provide a url or define"
-                    " a get_absolute_url method on the Model.")
-
-        return url
+        return ret
 
 
 class ProjectUpdate(UpdateView):
@@ -50,6 +41,15 @@ class ProjectUpdate(UpdateView):
 
 class ProjectView(DetailView):
     model = models.Project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectView, self).get_context_data(**kwargs)
+
+        configuration_table = tables.ConfigurationTable(self.object.configuration_set.all())
+        RequestConfig(self.request).configure(configuration_table)
+        context['configurations'] = configuration_table
+
+        return context
 
 
 class ProjectConfigurationCreate(CreateView):
@@ -77,20 +77,8 @@ class ProjectConfigurationCreate(CreateView):
 
         return super(ProjectConfigurationCreate, self).form_valid(form)
 
-    def get_success_url(self):
-        """Go back to the success_url if that's defined
 
-        Otherwise we want the project edit page."""
-        if self.success_url:
-            url = self.success_url % self.object.__dict__
-        else:
-            try:
-                url = self.project.get_absolute_url()
-            except AttributeError:
-                raise ImproperlyConfigured(
-                    "No URL to redirect to.  Either provide a url or define"
-                    " a get_absolute_url method on the Model.")
-
-        return url
-
-
+class ProjectConfigurationUpdate(UpdateView):
+    model = models.Configuration
+    template_name_suffix = '_update'
+    form_class = forms.ConfigurationUpdateForm
