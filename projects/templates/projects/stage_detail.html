@@ -15,19 +15,25 @@
 
         <div class="col-md-5">
             <div class="well well-sm">
-                Tasks
 
-                {% for task in tasks %}
-
-                {% empty %}
-                    <div>No tasks yet</div>
-                {% endfor %}
+                <div class="list-group">
+                    {% for task in tasks %}
+                        <a href="" class="list-group-item">
+                            <span class="badge">{{ task.times_used }}</span>
+                            {{ task.name }}
+                        </a>
+                    {% empty %}
+                        <div class="list-group-item">
+                            <span class="badge">0</span>
+                            No frequent tasks yet
+                        </div>
+                    {% endfor %}
+                </div>
 
                 <div>
-                    <a class="btn btn-default btn-sm" href="#">
-                        <i class="glyphicon glyphicon-plus-sign"></i>
-                        Add Task
-                    </a>
+                    <select class="form-control">
+                        <option value="">Choose</option>
+                    </select>
                 </div>
 
             </div>
