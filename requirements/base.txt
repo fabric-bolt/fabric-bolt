@@ -4,3 +4,4 @@ django-grappelli
 south
 psycopg2
 PIL
+django-crispy-forms

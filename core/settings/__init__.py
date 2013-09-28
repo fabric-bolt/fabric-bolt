@@ -9,6 +9,8 @@ TEMPLATE_DEBUG = True
 
 GRAPPELLI_ADMIN_TITLE = 'Admin'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -126,6 +128,7 @@ INSTALLED_APPS = (
     'grappelli',
     'django.contrib.admin',
     'south',
+    'crispy_forms',
     'hosts',
     'projects',
 )
