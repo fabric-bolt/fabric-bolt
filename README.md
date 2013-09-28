@@ -1,4 +1,4 @@
-django_dash_2013
+Django Dash 2013 (Web For Good)
 ================
 
 ## Authors

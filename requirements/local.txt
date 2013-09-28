@@ -3,3 +3,4 @@ django_debug_toolbar
 django-debug-toolbar-template-timings
 fabric
 jinja2
+mock
