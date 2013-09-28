@@ -29,11 +29,17 @@ class DeployUser(AbstractEmailUser):
     AMELIA = 'amelia.min.css'
     CERULEAN = 'cerulean.min.css'
     SIMPLEX = 'simplex.min.css'
+    FLATLY = 'flatly.min.css'
+    READABLE = 'readable.min.css'
+    JOURNAL = 'journal.min.css'
     TEMPLATES = (
         (DEFAULT, 'Slate'),
         (AMELIA, 'Amelia'),
         (CERULEAN, 'Cerulean'),
-        (SIMPLEX, 'simplex'),
+        (SIMPLEX, 'Simplex'),
+        (FLATLY, 'Flatly'),
+        (READABLE, 'Readable'),
+        (JOURNAL, 'Journal'),
     )
 
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
