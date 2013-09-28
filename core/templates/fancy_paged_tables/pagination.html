@@ -3,7 +3,7 @@
 
 {% spaceless %}
 
-    <div class="pagination">
+    <div class="pagination-container">
 
         {% block pagination.cardinality %}
             {% with start=table.page.start_index end=table.page.end_index total=table.page.paginator.count %}
@@ -44,7 +44,7 @@
 
             {# Navigate Pages #}
             <span class="pagination_nav">
-                <ul class="pagination">
+                <ul class="pagination pagination-sm pull-right">
 
                     {# Previous Link #}
                     {% block pagination.navigation.previouslink %}
@@ -104,5 +104,9 @@
         {% endblock pagination.navigation %}
 
     </div>
-
+    <style>
+    .pagination-sm{
+        margin: 0;
+    }
+    </style>
 {% endspaceless %}
