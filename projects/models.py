@@ -81,6 +81,7 @@ class Configuration(TrackingFields):
 
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500, null=True, blank=True)
+    prompt_me_for_input = models.BooleanField(default=False)
 
     # Managers
     objects = models.Manager()

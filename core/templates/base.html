@@ -35,7 +35,7 @@
                         <div class="panel-heading"><a href="{% url 'accounts_user_list' %}">Users</a></div>
                         <div class="panel-body">
                             {% for user in sidebar_users %}
-                                <a href="{% url 'accounts_user_change' user.pk %}">{{ user }}</a><br/>
+                                <a href="{% url 'accounts_user_view' user.pk %}">{{ user }}</a><br/>
                             {% empty %}
                                 No Users<br/>
                             {% endfor %}

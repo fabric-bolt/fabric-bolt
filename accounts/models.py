@@ -2,7 +2,13 @@
 Custom user model for deployments.
 """
 
+import os
+import urllib
+import hashlib
+
 from django.db import models
+from django.conf import settings
+from django.templatetags.static import static
 from django.utils.translation import ugettext_lazy as _
 
 from custom_user.models import AbstractEmailUser
@@ -52,3 +58,14 @@ class DeployUser(AbstractEmailUser):
         Converts this user's group(s) to a string and returns it.
         """
         return "".join([group.name for group in self.groups.all()])
+
+    def gravatar(self, size=20):
+        """
+        Construct a gravatar image address for the user
+        """
+        default = "mm"
+
+        gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(self.email.lower()).hexdigest() + "?"
+        gravatar_url += urllib.urlencode({'d': default, 's': str(size)})
+
+        return gravatar_url
