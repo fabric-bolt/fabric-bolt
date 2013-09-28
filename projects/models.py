@@ -51,6 +51,11 @@ class Configuration(TrackingFields):
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500)
 
+    # Managers
+    objects = models.Manager()
+
+    # End Managers
+
     def __unicode__(self):
         return '%s: %s' % (self.key, self.value)
 
