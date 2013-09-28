@@ -6,7 +6,11 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}Django Dash 2013{% endblock title %}</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+        {% if user.is_authenticated %}
+            <link rel="stylesheet" type="text/css" href="{% static 'css/'|add:user.template|default:"bootstrap.min.css" %}"/>
+        {% else %}
+            <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+        {% endif %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
     </head>
     <body>
