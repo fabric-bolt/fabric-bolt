@@ -15,18 +15,20 @@ class UserListTable(PaginateTable):
     """
 
     actions = ActionsColumn([
-        #Edit action opens modal
-        {'title': 'Edit', 'url': 'accounts_user_change', 'args': [A('pk')]},
-        {'title': 'Delete', 'attrs': {'class': 'js-delete'}, 'url': 'accounts_user_delete', 'args': [A('pk')]}
-    ])
+        {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'accounts_user_change', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'Edit User', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'accounts_user_delete', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'Delete User', 'data-delay': '{ "show": 300, "hide": 0 }', 'class': 'js-delete'}},
+    ], delimiter='&#160;&#160;&#160;')
+
     email = tables.Column(verbose_name='Email')
     first_name = tables.Column(verbose_name='First Name')
     last_name = tables.Column(verbose_name='Last Name')
-    #user_level = tables.Column(verbose_name='User Level', accessor='group_strigify', order_by='groups')  # Bummer, I need a group_strigify method on the user model...
+    user_level = tables.Column(verbose_name='User Level', accessor='group_strigify', order_by='groups')
 
     class Meta:
         model = get_user_model()
-        sequence = fields = ('first_name', 'last_name', 'is_active', 'email', )
+        sequence = fields = ('first_name', 'last_name', 'is_active', 'email', 'user_level', )
         attrs = {'class': 'table table-striped table-bordered table-hover'}
 
     def __init__(self, *args, **kwargs):

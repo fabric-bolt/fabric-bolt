@@ -9,7 +9,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
-from django.views.generic import RedirectView, UpdateView, CreateView, ListView
+from django.views.generic import UpdateView, CreateView, ListView, DeleteView, DetailView
 
 from django_tables2 import RequestConfig
 from braces.views import GroupRequiredMixin
@@ -119,17 +119,16 @@ class UserAdd(CreateView):  # GroupRequiredMixin
         return response
 
 
+# Admin User Detail
+class UserDetail(DetailView):
+    model = auth.get_user_model()
+
+
 # Admin Delete User
-class UserDelete(RedirectView):  # GroupRequiredMixin
-    """
-    Deletes a user from the system.
-    """
-    group_required = 'Admin'
+class UserDelete(DeleteView):
+    model = auth.get_user_model()
+    success_url = reverse_lazy('accounts_user_list')
 
-    def get(self, request, *args, **kwargs):
-        pk = kwargs.get('pk')
-        user = auth.get_user_model().objects.get(pk=pk)
-        user.delete()
-
-        messages.info(request, 'User %s was deleted successfully.' % user.email)
-        return HttpResponseRedirect(reverse('accounts_user_list'))
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'User {} Successfully Deleted'.format(self.get_object()))
+        return super(UserDelete, self).delete(self, request, *args, **kwargs)

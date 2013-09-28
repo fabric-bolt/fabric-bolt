@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% load staticfiles sekizai_tags %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        {% block breadcrumb.items %}{% endblock breadcrumb.items %}
+    </ol>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+    <h1>{% block title %}{% endblock title %}</h1>
+    {% render_table table %}
+
+{% endblock content %}
