@@ -59,3 +59,22 @@ class ConfigurationCreateForm(forms.ModelForm):
             Submit('submit', 'Create Configuration', css_class='button')
         )
     )
+
+
+class ConfigurationUpdateForm(ConfigurationCreateForm):
+
+    class Meta:
+        model = models.Configuration
+        fields = [
+            'key',
+            'value',
+        ]
+
+    helper = FormHelper()
+    helper.layout = Layout(
+        'key',
+        'value',
+        ButtonHolder(
+            Submit('submit', 'Update Configuration', css_class='button')
+        )
+    )

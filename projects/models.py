@@ -40,4 +40,8 @@ class Configuration(TrackingFields):
 
     def __unicode__(self):
         return '%s: %s' % (self.key, self.value)
+    
+    def get_absolute_url(self):
+        """Go back to the project page"""
+        return self.project.get_absolute_url()
 
