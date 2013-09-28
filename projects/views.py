@@ -1,5 +1,5 @@
 from django.core.exceptions import ImproperlyConfigured
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DetailView
 
 from django_tables2.views import SingleTableView
 
@@ -35,3 +35,7 @@ class ProjectUpdate(UpdateView):
     model = models.Project
     form_class = forms.ProjectUpdateForm
     template_name_suffix = '_update'
+
+
+class ProjectView(DetailView):
+    model = models.Project
