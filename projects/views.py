@@ -4,7 +4,7 @@ from django.views.generic import CreateView, UpdateView
 import models
 
 
-class CreateProject(CreateView):
+class ProjectCreate(CreateView):
     model = models.Project
 
     def get_success_url(self):
@@ -20,5 +20,5 @@ class CreateProject(CreateView):
         return url
 
 
-class EditProject(UpdateView):
+class ProjectUpdate(UpdateView):
     model = models.Project
