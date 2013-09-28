@@ -78,3 +78,18 @@ class ConfigurationUpdateForm(ConfigurationCreateForm):
             Submit('submit', 'Update Configuration', css_class='button')
         )
     )
+
+
+class DeploymentForm(forms.ModelForm):
+    class Meta:
+        fields = ['comments']
+        model = models.Deployment
+
+    helper = FormHelper()
+
+    helper.layout = Layout(
+        'comments',
+        ButtonHolder(
+            Submit('submit', 'Go!', css_class='btn btn-success')
+        )
+    )
