@@ -7,4 +7,5 @@ import views
 urlpatterns = patterns('',
     url(r'^$', views.HostList.as_view(), name='hosts_host_list'),
     url(r'^create$', views.HostCreate.as_view(), name='hosts_host_create'),
+    url(r'^update/(?P<pk>\d+)/', views.HostUpdate.as_view(), name='hosts_host_update'),
 )

@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from core.mixins.models import TrackingFields
@@ -26,3 +27,6 @@ class Project(TrackingFields):
 
     def __unicode__(self):
         return '%s' % self.name
+
+    def get_absolute_url(self):
+        return reverse('projects_project_edit', args=(self.pk,))

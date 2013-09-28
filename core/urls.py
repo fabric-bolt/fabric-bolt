@@ -10,8 +10,9 @@ urlpatterns = patterns('',
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('accounts.urls')),
+    url(r'^$', views.Dashboard.as_view()),
     url(r'^hosts/', include('hosts.urls')),
-    url(r'^projects/', include('projects.urls')),
+    url(r'^', include('projects.urls')),
 )
 
 #Serve the static files from django

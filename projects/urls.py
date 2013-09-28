@@ -5,5 +5,7 @@ from django.views.generic import TemplateView
 import views
 
 urlpatterns = patterns('',
-    url(r'^$', views.CreateProject.as_view(), name='projects_project_create'),
+    url(r'^projects/$', views.CreateProject.as_view(), name='projects_project_create'),
+    url(r'^project/create/$', views.CreateProject.as_view(), name='projects_project_create'),
+    url(r'^edit/project/(?P<pk>\w+)/$', views.EditProject.as_view(), name='projects_project_edit'),
 )

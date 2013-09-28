@@ -5,7 +5,8 @@ from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 
 import models
 
-class HostForm(forms.ModelForm):
+
+class HostCreateForm(forms.ModelForm):
     class Meta:
         model = models.Host
 
@@ -14,5 +15,16 @@ class HostForm(forms.ModelForm):
         'name',
         ButtonHolder(
             Submit('submit', 'Create Host', css_class='button')
+        )
+    )
+
+
+class HostUpdateForm(HostCreateForm):
+
+    helper = FormHelper()
+    helper.layout = Layout(
+        'name',
+        ButtonHolder(
+            Submit('submit', 'Update Host', css_class='button')
         )
     )
