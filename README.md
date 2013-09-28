@@ -5,4 +5,4 @@ django_dash_2013
 
 Dan Dietz
 Jared Proffitt
-Nathaniel Pardington
+Nathaniel Pardington  
