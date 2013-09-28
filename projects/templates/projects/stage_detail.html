@@ -11,8 +11,14 @@
 {% endblock breadcrumb %}
 
 {% block content %}
+
     <div class="row">
-        <h1 class="col-lg-12">Stage - {{ object.name }} </h1>
+        <h1 style="margin-bottom:30px;" class="col-lg-12">Stage {{ object.name }}
+            <span class="pull-right">
+                <a class="btn btn-primary" href="{% url 'projects_stage_update' object.project.pk object.pk %}">Edit Stage</a>
+                <a class="btn btn-danger" href="">Delete Stage</a>
+            </span>
+        </h1>
     </div>
 
     <div class="row">

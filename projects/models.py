@@ -48,6 +48,13 @@ class Stage(TrackingFields):
         """Go back to the project page"""
         return self.project.get_absolute_url()
 
+    def get_configurations(self):
+        """Generates a dictionary that's made up of the configurations on the project
+
+        Any configurations on a project that are duplicated on a stage, the stage configuration will take precedence.
+        """
+        pass
+
 
 class Configuration(TrackingFields):
     project = models.ForeignKey(Project)
