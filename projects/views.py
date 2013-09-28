@@ -1,7 +1,15 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.views.generic import CreateView, UpdateView
 
+from django_tables2.views import SingleTableView
+
 import models
+import tables
+
+
+class ProjectList(SingleTableView):
+    table_class = tables.ProjectTable
+    model = models.Project
 
 
 class ProjectCreate(CreateView):

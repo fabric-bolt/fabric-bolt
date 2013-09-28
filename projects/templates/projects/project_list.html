@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+
+    <h1>All Projects <a href="{% url 'projects_project_create' %}" class="btn btn-default btn-sm pull-right"><i class="glyphicon glyphicon-plus-sign"></i> Add Project</a></h1>
+    {% render_table table %}
+
+{% endblock content %}
