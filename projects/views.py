@@ -57,8 +57,8 @@ class ProjectView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectView, self).get_context_data(**kwargs)
 
-        configuration_table = tables.ConfigurationTable(self.object.configuration_set.all())
-        RequestConfig(self.request).configure(configuration_table)
+        configuration_table = tables.ConfigurationTable(self.object.project_configurations())
+        #RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
         stages = models.Stage.objects.all()
@@ -160,3 +160,13 @@ class ProjectStageUpdate(UpdateView):
 
 class ProjectStageView(DetailView):
     model = models.Stage
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ProjectStageView, self).get_context_data(**kwargs)
+
+        configuration_table = tables.ConfigurationTable(self.object.stage_configurations())
+        RequestConfig(self.request).configure(configuration_table)
+        context['configurations'] = configuration_table
+
+        return context
