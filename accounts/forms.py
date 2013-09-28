@@ -57,6 +57,7 @@ class UserChangeForm(forms.ModelForm):
         Field('last_name'),
         Field('user_level'),
         Field('is_active'),
+        Field('template'),
         FormActions(
             Submit('btnSubmit', 'Submit', css_class="button btn-primary"),
         ),
@@ -86,6 +87,7 @@ class UserChangeForm(forms.ModelForm):
         self.fields['password'].required = False
         self.fields['last_login'].required = False
         self.fields['date_joined'].required = False
+        self.fields['template'].required = False
 
         f = self.fields.get('user_permissions', None)
         if f is not None:
@@ -95,9 +97,6 @@ class UserChangeForm(forms.ModelForm):
 
     def clean_password(self):
         return self.initial["password"]
-
-    def clean_date_joined(self):
-        return self.initial["date_joined"]
 
     def save(self, commit=True):
         """

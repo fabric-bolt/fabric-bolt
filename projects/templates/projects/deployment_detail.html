@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load sekizai_tags %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -32,12 +33,39 @@
             <div class="well">
                 <fieldset>
                     <legend>Status</legend>
-                    <i class="glyphicon glyphicon-time"></i> Working
+                    {% if object.status == object.PENDING %}
+                        <i class="glyphicon glyphicon-time"></i> Working
+                    {% elif object.status == object.SUCCESS %}
+                        <i class="glyphicon glyphicon-ok"></i> Success!
+                    {% else %}
+                        <i class="glyphicon glyphicon-warning-sign"></i> Failed!
+                    {% endif %}
                 </fieldset>
             </div>
         </div>
     </div>
     <div class="well">
-        <div id="deployment_output"></div>
+        {% if object.status == object.PENDING %}
+            <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
+        {% else %}
+            <div id="deployment_output"><pre>{{ object.output }}</pre></div>
+        {% endif %}
     </div>
+
+    {% if object.status == object.PENDING %}
+        {% addtoblock "js" %}
+            <script>
+                $(function(){
+                    var scroll_iframe_ticker = setInterval(function(){
+                        var $contents = $('#deployment_output').contents();
+                        $contents.scrollTop($contents.height());
+                        if($contents.find('#finished').length > 0){
+                            clearInterval(scroll_iframe_ticker);
+                        }
+                    }, 100);
+
+                });
+            </script>
+        {% endaddtoblock %}
+    {% endif %}
 {% endblock content %}

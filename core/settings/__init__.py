@@ -132,6 +132,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.request',
     'core.context_processors.sidebar_lists',
+    'sekizai.context_processors.sekizai',
 )
 ########## END TEMPLATE CONFIGURATION
 
@@ -161,6 +162,7 @@ INSTALLED_APPS = (
     'grappelli',
     'django.contrib.admin',
     'south',
+    'sekizai',
     'crispy_forms',
     #'stronghold',
     'django_tables2',

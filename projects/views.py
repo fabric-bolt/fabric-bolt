@@ -1,4 +1,7 @@
 import time
+import subprocess
+import sys
+
 
 from django.http import StreamingHttpResponse
 from django.contrib import messages
@@ -170,12 +173,25 @@ class DeploymentDetail(DetailView):
 class DeploymentOutputStream(View):
 
     def output_stream_generator(self):
-        for x in range(1,11):
-            yield '{} <br /> {}'.format(x, ' '*1024)
-            time.sleep(1)
+        process = subprocess.Popen('ls -l /*', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+        all_output = ''
+        while True:
+            nextline = process.stdout.readline()
+            if nextline == '' and process.poll() != None:
+                yield '<span id="finished"></span> {}'.format(' '*1024)
+                break
+
+            all_output += nextline
+            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">$ {} </span><br /> {}'.format(nextline, ' '*1024)
+            sys.stdout.flush()
+
+        self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
+        self.object.output = all_output
+        self.object.save()
 
     def get(self, request, *args, **kwargs):
-        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']))
+        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']), status=models.Deployment.PENDING)
         resp = StreamingHttpResponse(self.output_stream_generator())
         return resp
 
