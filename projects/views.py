@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
+from django.forms import CharField
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
@@ -166,6 +167,19 @@ class DeploymentCreate(CreateView):
         self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
 
         return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class):
+
+        stage_configurations = self.stage.stage_configurations().filter(prompt_me_for_input=True)
+
+        for config in stage_configurations:
+            form_class._meta.fields.append('extra_field_{}'.format(config.key))
+            #form_class.declared_fields['extra_field_{}'.format(config.key)] = CharField()
+            form_class.base_fields['extra_field_{}'.format(config.key)] = CharField()
+
+        form = form_class(**self.get_form_kwargs())
+
+        return form
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
