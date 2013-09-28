@@ -132,7 +132,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.core.context_processors.request',
-    'core.context_processors.main_lists',
+    'core.context_processors.sidebar_lists',
 )
 ########## END TEMPLATE CONFIGURATION
 

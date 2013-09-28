@@ -19,7 +19,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"><a href="{% url 'hosts_host_list' %}">Hosts</a></div>
                     <div class="panel-body">
-                        {% for host in hosts %}
+                        {% for host in sidebar_hosts %}
                             <a href="{% url 'hosts_host_update' host.pk %}">{{ host }}</a><br/>
                         {% empty %}
                             No Hosts
