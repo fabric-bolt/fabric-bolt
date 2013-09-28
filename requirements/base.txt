@@ -10,3 +10,4 @@ django-custom-user
 django-tables2
 django-braces
 django-sekizai
+fabric
