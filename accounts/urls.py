@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     url(r'^users/$', views.UserList.as_view(), name='accounts_user_list'),
     url(r'^user/add/$', views.UserAdd.as_view(), name='accounts_user_add'),
     url(r'^user/change/(?P<pk>.+)/$', views.UserChange.as_view(), name='accounts_user_change'),
-    url(r'^user/delete/(?P<pk>.+)/$', views.UserChange.as_view(), name='accounts_user_delete'),
+    url(r'^user/delete/(?P<pk>.+)/$', views.UserDelete.as_view(), name='accounts_user_delete'),
     url(r'^password_change/$', 'django.contrib.auth.views.password_change'),
     url(r'^password_change/done/$', 'django.contrib.auth.views.password_change_done'),
     url(r'^password_reset/$', 'django.contrib.auth.views.password_reset'),
@@ -16,4 +16,3 @@ urlpatterns = patterns('',
     url(r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm'),
     url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete'),
 )
-

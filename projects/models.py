@@ -4,6 +4,8 @@ from django.db import models
 
 from core.mixins.models import TrackingFields
 
+from model_managers import ActiveManager
+
 class ProjectType(TrackingFields):
     name = models.CharField(max_length=255)
 
@@ -25,6 +27,11 @@ class Project(TrackingFields):
     # Misc information for a project
     number_of_deployments = models.IntegerField(default=0)
 
+    # Managers
+    objects = models.Manager()
+    active_records = ActiveManager()
+    # End Managers
+
     def project_configurations(self):
         return Configuration.objects.filter(project_id=self.pk, stage__isnull=True)
 
@@ -43,6 +50,11 @@ class Stage(TrackingFields):
     project = models.ForeignKey(Project)
     name = models.CharField(max_length=255)
 
+    # Managers
+    objects = models.Manager()
+    active_records = ActiveManager()
+    # End Managers
+
     def __unicode__(self):
         return self.name
 
@@ -53,6 +65,13 @@ class Stage(TrackingFields):
         """Go back to the project page"""
         return self.project.get_absolute_url()
 
+    def get_configurations(self):
+        """Generates a dictionary that's made up of the configurations on the project
+
+        Any configurations on a project that are duplicated on a stage, the stage configuration will take precedence.
+        """
+        pass
+
 
 class Configuration(TrackingFields):
     project = models.ForeignKey(Project)
@@ -60,6 +79,11 @@ class Configuration(TrackingFields):
 
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500, null=True, blank=True)
+
+    # Managers
+    objects = models.Manager()
+    active_records = ActiveManager()
+    # End Managers
 
     def __unicode__(self):
         return '{}: {}'.format(self.key, self.value)
@@ -87,6 +111,11 @@ class Deployment(TrackingFields):
     status = models.CharField(choices=STATUS, max_length=10, default=PENDING)
     output = models.TextField(null=True, blank=True)
     task = models.ForeignKey('projects.Task')
+
+    # Managers
+    objects = models.Manager()
+    active_records = ActiveManager()
+    # End Managers
 
     def __unicode__(self):
         return "Deployment at {} for stage {} on project {}".format(self.date_created, self.stage.name, self.stage.project.name)

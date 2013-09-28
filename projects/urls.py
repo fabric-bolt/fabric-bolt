@@ -24,5 +24,4 @@ urlpatterns = patterns('',
     url(r'^(?P<project_id>\w+)/stage/update/(?P<pk>\w+)/$', views.ProjectStageUpdate.as_view(), name='projects_stage_update'),
     url(r'^(?P<project_id>\w+)/stage/view/(?P<pk>\w+)/$', views.ProjectStageView.as_view(), name='projects_stage_view'),
 
-
 )
