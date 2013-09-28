@@ -126,7 +126,7 @@ INSTALLED_APPS = (
     'grappelli',
     'django.contrib.admin',
     'south',
-
+    'hosts',
     'projects',
 )
 
