@@ -39,7 +39,7 @@
                             {% empty %}
                                 No Users<br/>
                             {% endfor %}
-                            <br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
+                            <br/><a href="{% url 'accounts_user_add' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
                         </div>
                     </div>
                 </div>
