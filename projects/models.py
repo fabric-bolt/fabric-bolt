@@ -65,9 +65,16 @@ class Configuration(TrackingFields):
 
 
 class Deployment(TrackingFields):
+    PENDING = 'pending'
+    FAILED = 'failed'
+    SUCCESS = 'success'
+
+    STATUS = [(PENDING, 'Pending'), (FAILED, 'Failed'), (SUCCESS, 'Success')]
+
     stage = models.ForeignKey(Stage)
     comments = models.TextField()
-    started = models.BooleanField(default=False)
+    status = models.CharField(choices=STATUS, max_length=10)
+    output = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return "Deployment at {} for stage {} on project {}".format(self.date_created, self.stage.name, self.stage.project.name)

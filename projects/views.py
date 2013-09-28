@@ -145,20 +145,23 @@ class DeploymentOutputStream(View):
     def output_stream_generator(self):
         process = subprocess.Popen('ls -l /*', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        # Poll process for new output until finished
+        all_output = ''
         while True:
             nextline = process.stdout.readline()
             if nextline == '' and process.poll() != None:
                 yield '<span id="finished"></span> {}'.format(' '*1024)
                 break
 
+            all_output += nextline
             yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">$ {} </span><br /> {}'.format(nextline, ' '*1024)
             sys.stdout.flush()
 
-        exitCode = process.returncode
+        self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
+        self.object.output = all_output
+        self.object.save()
 
     def get(self, request, *args, **kwargs):
-        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']))
+        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']), status=models.Deployment.PENDING)
         resp = StreamingHttpResponse(self.output_stream_generator())
         return resp
 
