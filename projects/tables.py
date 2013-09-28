@@ -1,10 +1,10 @@
 import django_tables2 as tables
 
 import models
-from core.mixins.tables import ActionsColumn
+from core.mixins.tables import ActionsColumn, PaginateTable
 
 
-class ProjectTable(tables.Table):
+class ProjectTable(PaginateTable):
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_project_view', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Project', 'data-delay': '{ "show": 300, "hide": 0 }'}},
@@ -26,7 +26,7 @@ class ProjectTable(tables.Table):
         )
 
 
-class ConfigurationTable(tables.Table):
+class ConfigurationTable(PaginateTable):
 
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_configuration_update', 'args': [tables.A('pk')],
@@ -47,7 +47,7 @@ class ConfigurationTable(tables.Table):
         )
 
 
-class StageTable(tables.Table):
+class StageTable(PaginateTable):
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_stage_detail', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Stage Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},

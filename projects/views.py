@@ -21,6 +21,7 @@ import tables
 
 
 class BaseGetProjectCreateView(CreateView):
+    """Reusable class for create views that need the project pulled in"""
 
     def dispatch(self, request, *args, **kwargs):
 
@@ -53,30 +54,11 @@ class ProjectCreate(CreateView):
         return ret
 
 
-class ProjectDelete(DeleteView):
-    model = models.Project
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.date_deleted = datetime.datetime.now()
-        self.object.save()
-
-        messages.add_message(request, messages.WARNING, 'Project {} Successfully Deleted'.format(self.object))
-        return HttpResponseRedirect(reverse('projects_project_list'))
-
-
-class ProjectUpdate(UpdateView):
-    model = models.Project
-    form_class = forms.ProjectUpdateForm
-    template_name_suffix = '_update'
-    success_url = reverse_lazy('projects_project_list')
-
-
-class ProjectView(DetailView):
+class ProjectDetail(DetailView):
     model = models.Project
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectView, self).get_context_data(**kwargs)
+        context = super(ProjectDetail, self).get_context_data(**kwargs)
 
         configuration_table = tables.ConfigurationTable(self.object.project_configurations())
         RequestConfig(self.request).configure(configuration_table)
@@ -94,6 +76,25 @@ class ProjectView(DetailView):
         context['deployment_table'] = deployment_table
 
         return context
+
+
+class ProjectUpdate(UpdateView):
+    model = models.Project
+    form_class = forms.ProjectUpdateForm
+    template_name_suffix = '_update'
+    success_url = reverse_lazy('projects_project_list')
+
+
+class ProjectDelete(DeleteView):
+    model = models.Project
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.date_deleted = datetime.datetime.now()
+        self.object.save()
+
+        messages.add_message(request, messages.WARNING, 'Project {} Successfully Deleted'.format(self.object))
+        return HttpResponseRedirect(reverse('projects_project_list'))
 
 
 class ProjectConfigurationCreate(BaseGetProjectCreateView):

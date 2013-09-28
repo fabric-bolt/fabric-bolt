@@ -6,9 +6,10 @@ import views
 
 urlpatterns = patterns('',
     url(r'^$', views.ProjectList.as_view(), name='projects_project_list'),
+
     url(r'^create/$', views.ProjectCreate.as_view(), name='projects_project_create'),
+    url(r'^view/(?P<pk>\w+)/$', views.ProjectDetail.as_view(), name='projects_project_view'),
     url(r'^update/(?P<pk>\w+)/$', views.ProjectUpdate.as_view(), name='projects_project_update'),
-    url(r'^view/(?P<pk>\w+)/$', views.ProjectView.as_view(), name='projects_project_view'),
     url(r'^delete/(?P<pk>\w+)/$', views.ProjectDelete.as_view(), name='projects_project_delete'),
 
     url(r'^(?P<project_id>\w+)/configuration/create/$', views.ProjectConfigurationCreate.as_view(), name='projects_configuration_create'),
