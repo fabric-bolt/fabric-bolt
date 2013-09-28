@@ -9,13 +9,27 @@
     <div class="row">
         <div class="col-md-7">
             <div class="well well-sm">
-                Well
+                Details
             </div>
         </div>
 
         <div class="col-md-5">
             <div class="well well-sm">
-                Well
+                Tasks
+
+                {% for task in tasks %}
+
+                {% empty %}
+                    <div>No tasks yet</div>
+                {% endfor %}
+
+                <div>
+                    <a class="btn btn-default btn-sm" href="#">
+                        <i class="glyphicon glyphicon-plus-sign"></i>
+                        Add Task
+                    </a>
+                </div>
+
             </div>
         </div>
     </div>
