@@ -78,3 +78,20 @@ class ConfigurationUpdateForm(ConfigurationCreateForm):
             Submit('submit', 'Update Configuration', css_class='button')
         )
     )
+
+
+class StageCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Stage
+        fields = [
+            'name',
+        ]
+
+    helper = FormHelper()
+    helper.layout = Layout(
+        'name',
+        ButtonHolder(
+            Submit('submit', 'Create Stage', css_class='button')
+        )
+    )
