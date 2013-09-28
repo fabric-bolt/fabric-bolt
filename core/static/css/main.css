@@ -1,0 +1,10 @@
+#deployment_output {
+  width: 100%;
+  background: black;
+  height: 400px;
+  outline: none;
+  color: #c8c8c8;
+  padding: 20px;
+  overflow-y: scroll;
+  cursor: text;
+}

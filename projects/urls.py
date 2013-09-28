@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^configuration/update/(?P<pk>\w+)/$', views.ProjectConfigurationUpdate.as_view(), name='projects_configuration_update'),
 
     url(r'^stage/(?P<pk>\d+)/deployment/create/$', views.DeploymentCreate.as_view(), name='projects_deployment_create'),
+    url(r'^deployment/view/(?P<pk>\d+)', views.DeploymentDetail.as_view(), name='projects_deployment_detail'),
 
     url(r'^configuration/update/(?P<pk>\w+)/$', views.ProjectConfigurationUpdate.as_view(), name='projects_configuration_update'),
 

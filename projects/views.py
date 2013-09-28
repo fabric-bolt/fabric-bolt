@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
 from django_tables2 import RequestConfig
@@ -120,6 +120,13 @@ class DeploymentCreate(CreateView):
         context = super(DeploymentCreate, self).get_context_data(**kwargs)
         context['stage'] = self.stage
         return context
+
+    def get_success_url(self):
+        return reverse('projects_deployment_detail', kwargs={'pk': self.object.pk})
+
+
+class DeploymentDetail(DetailView):
+    model = models.Deployment
 
 
 class ProjectStageCreate(BaseGetProjectCreateView):
