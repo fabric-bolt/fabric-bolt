@@ -5,6 +5,7 @@ from core.mixins.models import TrackingFields
 
 from model_managers import ActiveManager
 
+
 class ProjectType(TrackingFields):
     name = models.CharField(max_length=255)
 
