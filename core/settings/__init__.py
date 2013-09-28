@@ -31,7 +31,8 @@ ROOT_URLCONF = 'core.urls'
 
 
 ########## GENERAL CONFIGURATION
-GRAPPELLI_ADMIN_TITLE = 'Admin'
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '3(-(r&8u8t)6-xqk9922i7d9ezaj6u7@5sd&+%4$q=48-5p&(f'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -107,6 +108,8 @@ STATICFILES_FINDERS = (
 
 
 ########## TEMPLATE CONFIGURATION
+GRAPPELLI_ADMIN_TITLE = 'Admin'
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -161,11 +164,16 @@ INSTALLED_APPS = (
     'hosts',
     'projects',
 )
+########## END APP CONFIGURATION
 
 
-########## EMAIL CONFIGURATION
-AUTH_USER_MODEL = 'custom_user.EmailUser'
-########## END EMAIL CONFIGURATION
+########## STRONGHOLD CONFIGURATION
+LOGIN_URL = '/login/'
+STRONGHOLD_PUBLIC_URLS = (
+    '^/login/',
+    '^/logout/',
+)
+########## END STRONGHOLD CONFIGURATION
 
 
 ########## EMAIL CONFIGURATION
@@ -180,6 +188,8 @@ EMAIL_PORT = 25
 EMAIL_USE_TLS = False
 ########## END EMAIL CONFIGURATION 
 
+
+########## LOGGING CONFIGURATION
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -208,8 +218,6 @@ LOGGING = {
         },
     }
 }
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '3(-(r&8u8t)6-xqk9922i7d9ezaj6u7@5sd&+%4$q=48-5p&(f'
+########## END LOGGING CONFIGURATION
 
 
