@@ -3,6 +3,7 @@ Custom user model for deployments.
 """
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from custom_user.models import AbstractEmailUser
 from custom_user.models import EmailUserManager
@@ -19,6 +20,8 @@ class DeployUser(AbstractEmailUser):
     Custom user class for deployments. Email as username using django-custom-user.
     """
 
+    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=True)
     template = models.CharField(max_length=255)
 
     objects = UserManager()
