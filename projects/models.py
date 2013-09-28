@@ -53,6 +53,10 @@ class Stage(TrackingFields):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+        """Go back to the project page"""
+        return self.project.get_absolute_url()
+
 
 class Deployment(TrackingFields):
     stage = models.ForeignKey(Stage)
