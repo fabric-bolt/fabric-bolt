@@ -4,10 +4,14 @@ Deployment User Views
 
 from django.contrib import auth
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordResetForm
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
+from django.views.generic import RedirectView, UpdateView, CreateView
+
+from braces.views import GroupRequiredMixin
 
 from . import forms
 
@@ -58,3 +62,50 @@ class Logout(TemplateView):
         auth.logout(request)
 
         return HttpResponseRedirect(reverse('accounts_user_login'))
+
+
+# Admin Change/Edit User (modal)
+class UserChange(GroupRequiredMixin, UpdateView):
+    """
+    Change/Edit User view. Used in a modal window.
+    """
+    group_required = 'Admin'
+    model = auth.get_user_model()
+    success_url = reverse_lazy('accounts_user_list', args=())
+    form_class = forms.UserChangeForm
+
+
+# Admin Add Users (modal)
+class UserAdd(GroupRequiredMixin, CreateView):
+    """
+    Create User view. Used in a modal window.
+    """
+    group_required = 'Admin'
+    model = auth.get_user_model()
+    success_url = reverse_lazy('accounts_user_list', args=())
+    form_class = forms.AtheneUserCreationForm
+
+    def form_valid(self, form):
+        response = super(UserAdd, self).form_valid(form)
+
+        # Send a password recover email
+        form = PasswordResetForm({'email': form.cleaned_data['email']})
+        form.save(email_template_name='accounts/welcome_email.html')
+
+        return response
+
+
+# Admin Delete User
+class UserDelete(GroupRequiredMixin, RedirectView):
+    """
+    Deletes a user from the system.
+    """
+    group_required = 'Admin'
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        user = auth.get_user_model().objects.get(pk=pk)
+        user.delete()
+
+        messages.info(request, 'User %s was deleted successfully.' % user.email)
+        return HttpResponseRedirect(reverse('athene_user_list'))
