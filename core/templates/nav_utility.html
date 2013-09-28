@@ -1,0 +1,19 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <a class="navbar-brand" href="/">Kitsune - Foxy Fabric Deployments</a>
+
+        {% if request.user.is_authenticated %}
+            <ul class="nav navbar-nav pull-right">
+                <li><a href="{% url 'index' %}">Dashboard</a></li>
+
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ request.user.email }} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'accounts_user_logout' %}">Logout</a></li>
+                        <li><a href="{% url 'django.contrib.auth.views.password_change' %}">Reset Password</a></li>
+                    </ul>
+                </li>
+            </ul>
+        {% endif %}
+    </div>
+</nav>
