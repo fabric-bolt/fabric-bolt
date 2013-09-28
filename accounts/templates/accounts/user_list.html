@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+    {% block page_title %}
+        Users
+    {% endblock %}
+
+    {% render_table table %}
+
+{% endblock content %}

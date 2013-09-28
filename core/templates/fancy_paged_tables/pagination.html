@@ -1,0 +1,108 @@
+{% load django_tables2 %}
+{% load i18n %}
+
+{% spaceless %}
+
+    <div class="pagination">
+
+        {% block pagination.cardinality %}
+            {% with start=table.page.start_index end=table.page.end_index total=table.page.paginator.count %}
+
+            {# Show current location in pages #}
+            <span class="cardinality">
+                Showing
+                {% if total != end %}
+                    {% blocktrans %}{{ start }} - {{ end }}{% endblocktrans %}
+                {% else %}
+                    {{ total }}
+                {% endif %}
+
+                of {{ total }}
+
+                {% if total == 1 %}
+                    {{ table.data.verbose_name }}
+                {% else %}
+                    {{ table.data.verbose_name_plural }}
+                {% endif %}
+            </span> |
+
+            <span class="per_page">
+                Items per page
+                <select id="per_page" name="per_page" class="input-mini" onchange="window.location=this.options[this.selectedIndex].value">
+                    {% for i in table.per_page_options %}
+                        <option value="{% querystring "per_page"=i %}" {% if i == table.per_page %}selected="selected"{% endif %}>
+                            {{ i }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </span>
+
+            {% endwith %}
+        {% endblock pagination.cardinality %}
+
+        {% block pagination.navigation %}
+
+            {# Navigate Pages #}
+            <span class="pagination_nav">
+                <ul class="pagination">
+
+                    {# Previous Link #}
+                    {% block pagination.navigation.previouslink %}
+                        {% with disabled=table.page.has_previous|yesno:", unavailable disabled,"%}
+                            <li class="prev arrow{{ disabled }}">
+                                <a href="{% if table.page.has_previous %}{% querystring 'page'=table.page.previous_page_number %}{{ getvars }}{% endif %}">
+                                    {{ previous_link_decorator|safe }}&laquo;
+                                </a>
+                            </li>
+                        {% endwith %}
+                    {% endblock pagination.navigation.previouslink %}
+
+                    {# First Page Link #}
+                    {% block pagination.navigation.firstlink %}
+                        {% if table.show_first %}
+                            <li><a href="?page=1">1</a></li>
+                            <li><span class="ellipsis">...</span></li>
+                        {% endif %}
+                    {% endblock pagination.navigation.firstlink %}
+
+                    {# Middle Links #}
+                    {% block pagination.navigation.pagelinks %}
+                        {# {% for page in table.paginator.page_range %}#}
+                        {% for page in table.page_numbers %}
+                            {% ifequal page table.page.number %}
+                                <li class="active current"><a href="#">{{ page }}</a></li>
+                            {% else %}
+                                <li><a href="{% querystring 'page'=page %}{{ getvars }}">{{ page }}</a></li>
+                            {% endifequal %}
+                        {% endfor %}
+                    {% endblock pagination.navigation.pagelinks %}
+
+                    {# Last Page Link #}
+                    {% block pagination.navigation.lastlink %}
+                        {% if table.show_last %}
+                            <li>
+                                <span class="ellipsis">...</span>
+                            </li>
+                            <li>
+                                <a href="{% querystring 'page'=table.page.paginator.num_pages %}">{{ table.page.paginator.num_pages }}</a>
+                            </li>
+                        {% endif %}
+                    {% endblock pagination.navigation.lastlink %}
+
+                    {# Next Link #}
+                    {% block pagination.navigation.nextlink %}
+                        {% with disabled=table.page.has_next|yesno:", unavailable disabled,"%}
+                            <li class="next arrow{{ disabled }}">
+                                <a href="{% if table.page.has_next %}{% querystring 'page'=table.page.next_page_number %}{{ getvars }}{% endif %}">
+                                    &raquo;{{ next_link_decorator|safe }}
+                                </a>
+                            </li>
+                        {% endwith %}
+                    {% endblock pagination.navigation.nextlink %}
+                </ul>
+            </span>
+        {% endblock pagination.navigation %}
+
+    </div>
+
+{% endspaceless %}

@@ -9,13 +9,12 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
-from django.views.generic import RedirectView, UpdateView, CreateView
+from django.views.generic import RedirectView, UpdateView, CreateView, ListView
 
 from django_tables2 import RequestConfig
-from django_filters.views import FilterView
 from braces.views import GroupRequiredMixin
 
-from . import forms, filters, tables
+from . import forms, tables
 
 
 class Login(TemplateView):
@@ -67,13 +66,12 @@ class Logout(TemplateView):
 
 
 # Admin: List Users
-class UserList(GroupRequiredMixin, FilterView):
+class UserList(ListView):  # GroupRequiredMixin
     """
     List of users. Uses UserFilter and UserTable.
     """
     group_required = 'Admin'
-    template_name_suffix = '_list'
-    filterset_class = filters.UserFilter
+    template_name = 'accounts/user_list.html'
     table_class = tables.UserListTable
 
     def get_queryset(self):
@@ -89,7 +87,7 @@ class UserList(GroupRequiredMixin, FilterView):
 
 
 # Admin Change/Edit User (modal)
-class UserChange(GroupRequiredMixin, UpdateView):
+class UserChange(UpdateView):  # GroupRequiredMixin
     """
     Change/Edit User view. Used in a modal window.
     """
@@ -100,7 +98,7 @@ class UserChange(GroupRequiredMixin, UpdateView):
 
 
 # Admin Add Users (modal)
-class UserAdd(GroupRequiredMixin, CreateView):
+class UserAdd(CreateView):  # GroupRequiredMixin
     """
     Create User view. Used in a modal window.
     """
@@ -120,7 +118,7 @@ class UserAdd(GroupRequiredMixin, CreateView):
 
 
 # Admin Delete User
-class UserDelete(GroupRequiredMixin, RedirectView):
+class UserDelete(RedirectView):  # GroupRequiredMixin
     """
     Deletes a user from the system.
     """
