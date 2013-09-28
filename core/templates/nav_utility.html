@@ -7,7 +7,7 @@
                 <li><a href="{% url 'index' %}">Dashboard</a></li>
 
                 <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ request.user.email }} <b class="caret"></b></a>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#"><img class="gravatar" src="{{ request.user.gravatar }}"/> &nbsp;{{ request.user.email }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="{% url 'accounts_user_logout' %}">Logout</a></li>
                         <li><a href="{% url 'django.contrib.auth.views.password_change' %}">Reset Password</a></li>
