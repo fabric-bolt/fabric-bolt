@@ -4,3 +4,6 @@ django-grappelli
 south
 psycopg2
 PIL
+django-stronghold
+django-crispy-forms
+django-custom-user

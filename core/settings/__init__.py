@@ -126,9 +126,18 @@ INSTALLED_APPS = (
     'grappelli',
     'django.contrib.admin',
     'south',
+    'crispy_forms',
+    'custom_user',
+    'accounts',
     'hosts',
     'projects',
 )
+
+
+########## EMAIL CONFIGURATION
+AUTH_USER_MODEL = 'custom_user.EmailUser'
+########## END EMAIL CONFIGURATION
+
 
 ########## EMAIL CONFIGURATION
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
