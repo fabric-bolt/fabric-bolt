@@ -49,12 +49,14 @@ class ConfigurationCreateForm(forms.ModelForm):
         fields = [
             'key',
             'value',
+            'prompt_me_for_input',
         ]
 
     helper = FormHelper()
     helper.layout = Layout(
         'key',
         'value',
+        'prompt_me_for_input',
         ButtonHolder(
             Submit('submit', 'Create Configuration', css_class='button')
         )
@@ -68,12 +70,14 @@ class ConfigurationUpdateForm(ConfigurationCreateForm):
         fields = [
             'key',
             'value',
+            'prompt_me_for_input',
         ]
 
     helper = FormHelper()
     helper.layout = Layout(
         'key',
         'value',
+        'prompt_me_for_input',
         ButtonHolder(
             Submit('submit', 'Update Configuration', css_class='button')
         )
