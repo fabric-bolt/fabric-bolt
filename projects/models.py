@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.contrib.auth import get_user_model
 
 from core.mixins.models import TrackingFields
 
@@ -101,6 +102,7 @@ class Deployment(TrackingFields):
 
     STATUS = [(PENDING, 'Pending'), (FAILED, 'Failed'), (SUCCESS, 'Success')]
 
+    user = models.ForeignKey(get_user_model())
     stage = models.ForeignKey(Stage)
     comments = models.TextField()
     status = models.CharField(choices=STATUS, max_length=10)
