@@ -23,8 +23,7 @@ class Login(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
-            #return HttpResponseRedirect(reverse('index'))
-            pass
+            return HttpResponseRedirect(reverse('index'))
 
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
