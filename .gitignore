@@ -56,3 +56,5 @@ atlassian-ide-plugin.xml
 ###############################
 /core/public/static
 /core/public/media
+
+production.py
