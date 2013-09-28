@@ -167,6 +167,7 @@ class DeploymentCreate(CreateView):
     form_class = forms.DeploymentForm
 
     def dispatch(self, request, *args, **kwargs):
+        #save the stage for later
         self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
 
         return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
@@ -176,9 +177,14 @@ class DeploymentCreate(CreateView):
         stage_configurations = self.stage.stage_configurations().filter(prompt_me_for_input=True)
 
         for config in stage_configurations:
-            form_class._meta.fields.append('extra_field_{}'.format(config.key))
+
+            # We want to inject fields into the form for the configurations they've marked as prompt for
+            str_config_key = 'configuration_value_for_{}'.format(config.key)
+
+            form_class._meta.fields.append(str_config_key)
+            form_class.helper.layout.fields.insert(len(form_class.helper.layout.fields)-1, str_config_key)
             #form_class.declared_fields['extra_field_{}'.format(config.key)] = CharField()
-            form_class.base_fields['extra_field_{}'.format(config.key)] = CharField()
+            form_class.base_fields[str_config_key] = CharField()
 
         form = form_class(**self.get_form_kwargs())
 
