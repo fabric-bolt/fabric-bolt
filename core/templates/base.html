@@ -12,8 +12,12 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Projects</div>
                     <div class="panel-body">
-                        No Projects
-                        <br/><br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Project</a>
+                        {% for project in sidebar_projects %}
+                            <a href="{% url 'projects_project_edit' project.pk %}">{{ project }}</a><br/>
+                        {% empty %}
+                            No Projects
+                        {% endfor %}
+                        <br/><a href="{% url 'projects_project_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Project</a>
                     </div>
                 </div>
                 <div class="panel panel-default">
