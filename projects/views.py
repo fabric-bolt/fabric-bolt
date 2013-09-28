@@ -4,6 +4,7 @@ from django.views.generic import CreateView, UpdateView
 from django_tables2.views import SingleTableView
 
 import models
+import forms
 import tables
 
 
@@ -14,6 +15,8 @@ class ProjectList(SingleTableView):
 
 class ProjectCreate(CreateView):
     model = models.Project
+    form_class = forms.ProjectCreateForm
+    template_name_suffix = '_create'
 
     def get_success_url(self):
         if self.success_url:
@@ -30,3 +33,5 @@ class ProjectCreate(CreateView):
 
 class ProjectUpdate(UpdateView):
     model = models.Project
+    form_class = forms.ProjectUpdateForm
+    template_name_suffix = '_update'

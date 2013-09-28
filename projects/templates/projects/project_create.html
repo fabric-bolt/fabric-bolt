@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Add New Project</h1>
+
+    {{ form.as_p }}
+    {% crispy form %}
+
+{% endblock %}
