@@ -46,7 +46,7 @@ class Logout(TemplateView):
     def get(self, request, *args, **kwargs):
 
         if not request.user.is_authenticated():
-            return HttpResponseRedirect(reverse('accounts_user_logout'))
+            return HttpResponseRedirect(reverse('accounts_user_login'))
 
         auth.logout(request)
 
