@@ -6,7 +6,7 @@
     <ol class="breadcrumb">
         <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
         <li><a href="{% url 'projects_project_view' object.stage.project.pk %}">{{ object.stage.project.name }}</a></li>
-        <li><a href="#">{{ object.stage.name }}</a></li>
+        <li><a href="{% url 'projects_stage_view' object.stage.project.pk object.stage.pk %}">{{ object.stage.name }}</a></li>
         <li class="active">Deployment started {{ object.date_created|naturaltime }}</li>
     </ol>
 {% endblock breadcrumb %}

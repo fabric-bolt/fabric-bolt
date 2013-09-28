@@ -5,7 +5,7 @@
     <ol class="breadcrumb">
         <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
         <li><a href="{% url 'projects_project_view' stage.project.pk %}">{{ stage.project.name }}</a></li>
-        <li><a href="#">{{ stage.name }}</a></li>
+        <li><a href="{% url 'projects_stage_view' stage.project.pk stage.pk %}">{{ stage.name }}</a></li>
         <li class="active">New Deployment</li>
     </ol>
 {% endblock breadcrumb %}
@@ -18,7 +18,14 @@
         </div>
         <div class="col-md-6">
             <div class="well">
-                Detials...
+                <dl class="dl-horizontal">
+                    <dt>Project</dt>
+                    <dd>{{ stage.project.name }}</dd>
+                    <dt>Stage</dt>
+                    <dd>{{ stage.name }}</dd>
+                    <dt>Task</dt>
+                    <dd>{{ task_name }}</dd>
+                </dl>
             </div>
         </div>
     </div>

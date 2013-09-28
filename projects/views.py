@@ -81,9 +81,13 @@ class ProjectView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
-        stages = models.Stage.objects.all()
+        stages = self.object.stage_set.all()
 
         context['stages'] = stages
+
+        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages))
+        RequestConfig(self.request).configure(deployment_table)
+        context['deployment_table'] = deployment_table
 
         return context
 
@@ -166,6 +170,12 @@ class DeploymentCreate(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.stage = self.stage
+
+        self.object.task, created = models.Task.objects.get_or_create(name=self.kwargs['task_name'])
+        if not created:
+            self.object.task.times_used += 1
+            self.object.task.save()
+
         self.object.save()
 
         return super(DeploymentCreate, self).form_valid(form)
@@ -173,6 +183,7 @@ class DeploymentCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = super(DeploymentCreate, self).get_context_data(**kwargs)
         context['stage'] = self.stage
+        context['task_name'] = self.kwargs['task_name']
         return context
 
     def get_success_url(self):
@@ -248,6 +259,6 @@ class ProjectStageView(DetailView):
         all_tasks = sorted(_task_names(callables))
 
         context['all_tasks'] = all_tasks
-        context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')
+        context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')[:3]
 
         return context
