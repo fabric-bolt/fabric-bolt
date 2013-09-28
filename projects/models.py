@@ -29,4 +29,4 @@ class Project(TrackingFields):
         return '%s' % self.name
 
     def get_absolute_url(self):
-        return reverse('projects_project_edit', args=(self.pk,))
+        return reverse('projects_project_update', args=(self.pk,))

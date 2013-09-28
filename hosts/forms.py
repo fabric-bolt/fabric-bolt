@@ -11,6 +11,9 @@ class HostCreateForm(forms.ModelForm):
         model = models.Host
 
     helper = FormHelper()
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-lg-2'
+    helper.field_class = 'col-lg-8'
     helper.layout = Layout(
         'name',
         ButtonHolder(
@@ -22,6 +25,9 @@ class HostCreateForm(forms.ModelForm):
 class HostUpdateForm(HostCreateForm):
 
     helper = FormHelper()
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-lg-2'
+    helper.field_class = 'col-lg-8'
     helper.layout = Layout(
         'name',
         ButtonHolder(

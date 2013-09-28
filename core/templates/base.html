@@ -12,10 +12,10 @@
             {% block sidebar %}
                 <div class="col-md-3">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Projects</div>
+                        <div class="panel-heading"><a href="{% url 'projects_project_list' %}">Projects</a></div>
                         <div class="panel-body">
                             {% for project in sidebar_projects %}
-                                <a href="{% url 'projects_project_edit' project.pk %}">{{ project }}</a><br/>
+                                <a href="{% url 'projects_project_update' project.pk %}">{{ project }}</a><br/>
                             {% empty %}
                                 No Projects<br/>
                             {% endfor %}
@@ -44,6 +44,13 @@
             {% endblock sidebar %}
 
             <div class="col-md-9">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
                 {% block content %}
                 {% endblock content %}
             </div>
