@@ -54,7 +54,7 @@ class Configuration(TrackingFields):
     stage = models.ForeignKey(Stage, null=True, blank=True)
 
     key = models.CharField(max_length=255)
-    value = models.CharField(max_length=500)
+    value = models.CharField(max_length=500, null=True, blank=True)
 
     def __unicode__(self):
         return '{}: {}'.format(self.key, self.value)
