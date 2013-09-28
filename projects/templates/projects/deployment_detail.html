@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load sekizai_tags %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -38,6 +39,21 @@
         </div>
     </div>
     <div class="well">
-        <div id="deployment_output"></div>
+        <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
     </div>
+
+    {% addtoblock "js" %}
+        <script>
+            $(function(){
+                var scroll_iframe_ticker = setInterval(function(){
+                    var $contents = $('#deployment_output').contents();
+                    $contents.scrollTop($contents.height());
+                    if($contents.find('#finished').length > 0){
+                        clearInterval(scroll_iframe_ticker);
+                    }
+                }, 100);
+
+            });
+        </script>
+    {% endaddtoblock %}
 {% endblock content %}

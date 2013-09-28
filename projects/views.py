@@ -1,4 +1,7 @@
 import time
+import subprocess
+import sys
+
 
 from django.core.exceptions import ImproperlyConfigured
 from django.http import StreamingHttpResponse
@@ -140,9 +143,19 @@ class DeploymentDetail(DetailView):
 class DeploymentOutputStream(View):
 
     def output_stream_generator(self):
-        for x in range(1,11):
-            yield '{} <br /> {}'.format(x, ' '*1024)
-            time.sleep(1)
+        process = subprocess.Popen('ls -l /*', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+        # Poll process for new output until finished
+        while True:
+            nextline = process.stdout.readline()
+            if nextline == '' and process.poll() != None:
+                yield '<span id="finished"></span> {}'.format(' '*1024)
+                break
+
+            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">$ {} </span><br /> {}'.format(nextline, ' '*1024)
+            sys.stdout.flush()
+
+        exitCode = process.returncode
 
     def get(self, request, *args, **kwargs):
         self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']))
