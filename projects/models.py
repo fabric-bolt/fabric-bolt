@@ -45,3 +45,22 @@ class Configuration(TrackingFields):
         """Go back to the project page"""
         return self.project.get_absolute_url()
 
+
+class Stage(TrackingFields):
+    project = models.ForeignKey(Project)
+    name = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        """Go back to the project page"""
+        return self.project.get_absolute_url()
+
+
+class Deployment(TrackingFields):
+    stage = models.ForeignKey(Stage)
+    comments = models.TextField()
+
+    def __unicode__(self):
+        return "Deployment at {} for stage {} on project {}".format(self.date_created, self.stage.name, self.stage.project.name)
