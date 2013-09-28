@@ -176,6 +176,7 @@ class DeploymentCreate(CreateView):
             self.object.task.times_used += 1
             self.object.task.save()
 
+        self.object.user = self.request.user
         self.object.save()
 
         return super(DeploymentCreate, self).form_valid(form)
@@ -255,8 +256,12 @@ class ProjectStageView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
-        docstring, callables, default = load_fabfile(find_fabfile(None))
-        all_tasks = sorted(_task_names(callables))
+        try:
+            docstring, callables, default = load_fabfile(find_fabfile(None))
+            all_tasks = sorted(_task_names(callables))
+        except Exception as e:
+            messages.error(self.request, 'Error loading fabfile: ' + e.message)
+            all_tasks = []
 
         context['all_tasks'] = all_tasks
         context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')[:3]
