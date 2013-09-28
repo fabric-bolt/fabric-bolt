@@ -52,7 +52,7 @@
 
                     {% block messages %}
                         {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissable">
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissable">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 {{ message }}
                             </div>

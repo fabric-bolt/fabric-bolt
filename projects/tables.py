@@ -43,6 +43,7 @@ class ConfigurationTable(tables.Table):
         sequence = fields = (
             'key',
             'value',
+            'prompt_me_for_input',
         )
 
 

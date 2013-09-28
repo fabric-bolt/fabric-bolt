@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
+from django.forms import CharField
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
@@ -170,6 +171,19 @@ class DeploymentCreate(CreateView):
 
         return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
 
+    def get_form(self, form_class):
+
+        stage_configurations = self.stage.stage_configurations().filter(prompt_me_for_input=True)
+
+        for config in stage_configurations:
+            form_class._meta.fields.append('extra_field_{}'.format(config.key))
+            #form_class.declared_fields['extra_field_{}'.format(config.key)] = CharField()
+            form_class.base_fields['extra_field_{}'.format(config.key)] = CharField()
+
+        form = form_class(**self.get_form_kwargs())
+
+        return form
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.stage = self.stage
@@ -179,6 +193,7 @@ class DeploymentCreate(CreateView):
             self.object.task.times_used += 1
             self.object.task.save()
 
+        self.object.user = self.request.user
         self.object.save()
 
         return super(DeploymentCreate, self).form_valid(form)
@@ -258,8 +273,12 @@ class ProjectStageView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
-        docstring, callables, default = load_fabfile(find_fabfile(None))
-        all_tasks = sorted(_task_names(callables))
+        try:
+            docstring, callables, default = load_fabfile(find_fabfile(None))
+            all_tasks = sorted(_task_names(callables))
+        except Exception as e:
+            messages.error(self.request, 'Error loading fabfile: ' + e.message)
+            all_tasks = []
 
         context['all_tasks'] = all_tasks
         context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')[:3]
