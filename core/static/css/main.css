@@ -2,10 +2,19 @@
   width: 100%;
   background: black;
   border: none;
-  height: 400px;
+  height: 600px;
   outline: none;
   color: #c8c8c8;
   padding: 20px;
-  overflow-y: scroll;
   cursor: text;
+}
+#deployment_output pre {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  color: #c8c8c8;
+  overflow-y: scroll;
+  font-size: 14px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

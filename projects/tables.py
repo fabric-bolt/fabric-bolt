@@ -11,6 +11,7 @@ class ProjectTable(tables.Table):
         {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_project_update', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'Edit Project', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ], delimiter='&#160;&#160;&#160;')
+
     name = tables.LinkColumn('projects_project_view', kwargs={'pk': tables.A('pk')})
 
     class Meta:
@@ -24,6 +25,13 @@ class ProjectTable(tables.Table):
 
 
 class ConfigurationTable(tables.Table):
+
+    actions = ActionsColumn([
+        {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_configuration_update', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'Edit Configuration', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_configuration_delete', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'Delete Configuration', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+    ], delimiter='&#160;&#160;&#160;')
 
     key = tables.LinkColumn('projects_configuration_update', kwargs={'pk': tables.A('pk')})
 

@@ -3,10 +3,9 @@ import subprocess
 import sys
 
 
-from django.core.exceptions import ImproperlyConfigured
 from django.http import StreamingHttpResponse
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView, DetailView, View
+from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
@@ -64,7 +63,7 @@ class ProjectView(DetailView):
         context = super(ProjectView, self).get_context_data(**kwargs)
 
         configuration_table = tables.ConfigurationTable(self.object.project_configurations())
-        #RequestConfig(self.request).configure(configuration_table)
+        RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
         stages = models.Stage.objects.all()
@@ -111,6 +110,37 @@ class ProjectConfigurationUpdate(UpdateView):
     form_class = forms.ConfigurationUpdateForm
 
 
+class ProjectConfigurationDelete(DeleteView):
+    model = models.Configuration
+
+    def dispatch(self, request, *args, **kwargs):
+
+        return super(ProjectConfigurationDelete, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        """Get the url depending on what type of configuration I deleted."""
+        
+        if self.stage_id:
+            url = reverse('projects_stage_view', args=(self.project_id, self.stage_id))
+        else:
+            url = reverse('projects_project_view', args=(self.project_id))
+
+        return url
+
+    def delete(self, request, *args, **kwargs):
+
+        obj = self.get_object()
+
+        # Save where I was before I go an delete myself
+        self.project_id = obj.project.pk
+        self.stage_id = obj.stage.pk if obj.stage else None
+
+        messages.success(self.request, 'Configuration {} Successfully Deleted'.format(self.get_object()))
+        return super(ProjectConfigurationDelete, self).delete(self, request, *args, **kwargs)
+
+
+
+
 class DeploymentCreate(CreateView):
     model = models.Deployment
     form_class = forms.DeploymentForm
@@ -145,20 +175,23 @@ class DeploymentOutputStream(View):
     def output_stream_generator(self):
         process = subprocess.Popen('ls -l /*', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        # Poll process for new output until finished
+        all_output = ''
         while True:
             nextline = process.stdout.readline()
             if nextline == '' and process.poll() != None:
                 yield '<span id="finished"></span> {}'.format(' '*1024)
                 break
 
+            all_output += nextline
             yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">$ {} </span><br /> {}'.format(nextline, ' '*1024)
             sys.stdout.flush()
 
-        exitCode = process.returncode
+        self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
+        self.object.output = all_output
+        self.object.save()
 
     def get(self, request, *args, **kwargs):
-        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']))
+        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']), status=models.Deployment.PENDING)
         resp = StreamingHttpResponse(self.output_stream_generator())
         return resp
 
