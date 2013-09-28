@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'hosts',
+    'projects',
 )
 
 ########## EMAIL CONFIGURATION
