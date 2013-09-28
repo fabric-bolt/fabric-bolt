@@ -3,7 +3,6 @@ from django.db import models
 
 from core.mixins.models import TrackingFields
 
-
 class ProjectType(TrackingFields):
     name = models.CharField(max_length=255)
 
@@ -25,8 +24,11 @@ class Project(TrackingFields):
     # Misc information for a project
     number_of_deployments = models.IntegerField(default=0)
 
+    def project_configurations(self):
+        return Configuration.objects.filter(project_id=self.pk, stage__isnull=True)
+
     def __unicode__(self):
-        return '%s' % self.name
+        return '%s -' % self.name
 
     def get_absolute_url(self):
         return reverse('projects_project_view', args=(self.pk,))
@@ -39,6 +41,9 @@ class Stage(TrackingFields):
     def __unicode__(self):
         return self.name
 
+    def stage_configurations(self):
+        return Configuration.objects.filter(stage=self)
+
     def get_absolute_url(self):
         """Go back to the project page"""
         return self.project.get_absolute_url()
@@ -50,11 +55,6 @@ class Configuration(TrackingFields):
 
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500)
-
-    # Managers
-    objects = models.Manager()
-
-    # End Managers
 
     def __unicode__(self):
         return '%s: %s' % (self.key, self.value)
