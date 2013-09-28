@@ -22,7 +22,7 @@
         <div class="col-md-5">
             <div class="well well-sm">
                 {% for stage in stages %}
-
+                    <a href="{% url 'projects_stage_view' object.pk stage.pk %}">{{ stage.name }}</a>
                 {% empty %}
                     <div>No stage configured yet</div>
                 {% endfor %}

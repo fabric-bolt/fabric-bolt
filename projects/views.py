@@ -60,6 +60,10 @@ class ProjectView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
+        stages = models.Stage.objects.all()
+
+        context['stages'] = stages
+
         return context
 
 
