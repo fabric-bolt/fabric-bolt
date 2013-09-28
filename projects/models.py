@@ -28,7 +28,7 @@ class Project(TrackingFields):
         return Configuration.objects.filter(project_id=self.pk, stage__isnull=True)
 
     def __unicode__(self):
-        return '%s -' % self.name
+        return '%s' % self.name
 
     def get_absolute_url(self):
         return reverse('projects_project_view', args=(self.pk,))
@@ -57,7 +57,7 @@ class Configuration(TrackingFields):
     value = models.CharField(max_length=500)
 
     def __unicode__(self):
-        return '%s: %s' % (self.key, self.value)
+        return '{}: {}'.format(self.key, self.value)
 
     def get_absolute_url(self):
         """Go back to the project page"""
