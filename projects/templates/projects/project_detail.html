@@ -45,9 +45,18 @@
 
                         <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{ "show": 300, "hide": 0 }" data-original-title="Configurations added here will be added to env.custom_configuration"></i>
                     </legend>
+
+                    {% for configuration in object.configuration_set.all %}
+                        <div>
+                            {{ configuration.key }}: {{ configuration.value }}
+                        </div>
+                    {% empty %}
+                        <div>No configurations yet</div>
+                    {% endfor %}
+
                 </fieldset>
 
-                <a class="btn btn-default btn-sm" href="#">
+                <a class="btn btn-default btn-sm" href="{% url 'projects_configuration_create' object.pk %}">
                     <i class="glyphicon glyphicon-plus-sign"></i>
                     Add Configuration
                 </a>
