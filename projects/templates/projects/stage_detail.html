@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% load render_table from django_tables2 %}
 
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+        <li><a href="{% url 'projects_project_view' object.project.pk %}">{{ object.project.name }}</a></li>
+        <li><a href="{% url 'projects_project_view' object.project.pk %}">Stages</a></li>
+        <li class="active">{{ object.name }}</li>
+    </ol>
+{% endblock breadcrumb %}
+
 {% block content %}
     <div class="row">
         <h1 class="col-lg-12">Stage - {{ object.name }} </h1>
@@ -17,7 +26,7 @@
             <div class="well well-sm">
 
                 <div class="list-group">
-                    {% for task in tasks %}
+                    {% for task in frequent_tasks_run %}
                         <a href="" class="list-group-item">
                             <span class="badge">{{ task.times_used }}</span>
                             {{ task.name }}
