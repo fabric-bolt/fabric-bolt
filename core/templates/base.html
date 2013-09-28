@@ -24,7 +24,7 @@
                         <div class="panel-heading"><a href="{% url 'hosts_host_list' %}">Hosts</a></div>
                         <div class="panel-body">
                             {% for host in sidebar_hosts %}
-                                <a href="{% url 'hosts_host_update' host.pk %}">{{ host }}</a><br/>
+                                <a href="{% url 'hosts_host_detail' host.pk %}">{{ host }}</a><br/>
                             {% empty %}
                                 No Hosts<br/>
                             {% endfor %}
@@ -32,14 +32,14 @@
                         </div>
                     </div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">Users</div>
+                        <div class="panel-heading"><a href="{% url 'accounts_user_list' %}">Users</a></div>
                         <div class="panel-body">
                             {% for user in sidebar_users %}
-                                <a href="#">{{ user }}</a><br/>
+                                <a href="{% url 'accounts_user_change' user.pk %}">{{ user }}</a><br/>
                             {% empty %}
                                 No Users<br/>
                             {% endfor %}
-                            <br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
+                            <br/><a href="{% url 'accounts_user_add' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
                         </div>
                     </div>
                 </div>
