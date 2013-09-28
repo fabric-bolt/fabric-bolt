@@ -81,8 +81,11 @@ class ProjectView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
-        stages = self.object.stage_set.all()
+        stage_table = tables.StageTable(models.Stage.objects.filter(project=self.get_object()))
+        RequestConfig(self.request).configure(stage_table)
+        context['stage_table'] = stage_table
 
+        stages = self.object.stage_set.all()
         context['stages'] = stages
 
         deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages))

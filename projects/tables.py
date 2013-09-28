@@ -46,6 +46,26 @@ class ConfigurationTable(tables.Table):
         )
 
 
+class StageTable(tables.Table):
+    actions = ActionsColumn([
+        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_stage_detail', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'View Stage Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+    ], delimiter='&#160;&#160;&#160;')
+
+    hosts = tables.Column(accessor='host_set.all.count', verbose_name='# Hosts')
+    deployments = tables.Column(accessor='deployment_set.all.count', verbose_name='# Deployments')
+
+    class Meta:
+        model = models.Stage
+        attrs = {"class": "table table-striped"}
+        sequence = fields = (
+            'name',
+            'hosts',
+            'deployments',
+            'actions',
+        )
+
+
 class DeploymentTable(tables.Table):
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_deployment_detail', 'args': [tables.A('pk')],
