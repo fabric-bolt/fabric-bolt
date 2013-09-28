@@ -6,6 +6,7 @@
 
     <div class="container">
         <div class="row">
+
             {% block sidebar %}
                 <div class="col-md-3">
                     <div class="panel panel-default">
@@ -40,17 +41,21 @@
                 </div>
             {% endblock sidebar %}
 
-            <div class="col-md-9">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{ message }}
-                    </div>
-                {% endfor %}
+            {% block wrapper %}
+                <div class="col-md-9">
 
-                {% block content %}
-                {% endblock content %}
-            </div>
+                    {% block messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endblock messages %}
+
+                    {% block content %}{% endblock content %}
+                </div>
+            {% endblock  %}
 
         </div>
 

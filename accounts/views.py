@@ -21,6 +21,14 @@ class Login(TemplateView):
     def get_context_data(self, **kwargs):
         return {'form': forms.LoginForm}
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            #return HttpResponseRedirect(reverse('index'))
+            pass
+
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
