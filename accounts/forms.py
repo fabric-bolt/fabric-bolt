@@ -116,6 +116,10 @@ class UserChangeForm(forms.ModelForm):
             instance.groups.clear()
             instance.groups.add(Group.objects.get(id=self.cleaned_data['user_level']))
 
+            # Set staff status based on user group
+            instance.is_staff = instance.user_is_admin()
+            instance.save()
+
         return instance
 
 
