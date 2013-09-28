@@ -36,7 +36,11 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Users</div>
                         <div class="panel-body">
-                            No Users<br/>
+                            {% for user in sidebar_users %}
+                                <a href="#">{{ user }}</a><br/>
+                            {% empty %}
+                                No Users<br/>
+                            {% endfor %}
                             <br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
                         </div>
                     </div>
