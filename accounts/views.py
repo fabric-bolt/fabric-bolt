@@ -95,6 +95,7 @@ class UserChange(UpdateView):  # GroupRequiredMixin
     model = auth.get_user_model()
     success_url = reverse_lazy('accounts_user_list', args=())
     form_class = forms.UserChangeForm
+    template_name = 'accounts/deployuser_change.html'
 
 
 # Admin Add Users (modal)
@@ -106,13 +107,14 @@ class UserAdd(CreateView):  # GroupRequiredMixin
     model = auth.get_user_model()
     success_url = reverse_lazy('accounts_user_list', args=())
     form_class = forms.UserCreationForm
+    template_name = 'accounts/deployuser_create.html'
 
     def form_valid(self, form):
         response = super(UserAdd, self).form_valid(form)
 
         # Send a password recover email
-        form = PasswordResetForm({'email': form.cleaned_data['email']})
-        form.save(email_template_name='accounts/welcome_email.html')
+        #form = PasswordResetForm({'email': form.cleaned_data['email']})
+        #form.save(email_template_name='accounts/welcome_email.html')
 
         return response
 
