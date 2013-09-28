@@ -7,3 +7,4 @@ PIL
 django-stronghold
 django-crispy-forms
 django-custom-user
+django-tables2
