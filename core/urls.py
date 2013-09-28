@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^', include('accounts.urls')),
     url(r'^$', views.Dashboard.as_view()),
     url(r'^hosts/', include('hosts.urls')),
-    url(r'^', include('projects.urls')),
+    url(r'^projects/', include('projects.urls')),
 )
 
 #Serve the static files from django

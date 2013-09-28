@@ -3,11 +3,13 @@
 {% block body %}
     <nav class="navbar navbar-default" role="navigation">
         <div class="container">
-                 <a class="navbar-brand" href="/">Webric</a>
+                 <a class="navbar-brand" href="/">Kitsune - Foxy Fabric Deployments</a>
         </div>
     </nav>
     <div class="container">
         <div class="row">
+
+            {% block sidebar %}
             <div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-heading">Projects</div>
@@ -38,7 +40,8 @@
                         <br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
                     </div>
                 </div>
-            </div>
+            {% endblock sidebar %}
+
             <div class="col-md-9">
                 {% block content %}
                 {% endblock content %}
