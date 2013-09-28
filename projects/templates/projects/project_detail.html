@@ -30,7 +30,10 @@
             <div class="well well-sm">
                 <div class="list-group">
                     {% for stage in stages %}
-                        <a href="{% url 'projects_stage_view' object.pk stage.pk %}" class="list-group-item">{{ stage.name }}</a>
+                        <a href="{% url 'projects_stage_view' object.pk stage.pk %}" class="list-group-item">
+                            <span class="badge" data-toggle="tooltip" data-delay="{ 'show': 300, 'hide': 0 }" data-original-title="Number of configurations">{{ stage.stage_configurations.count }}</span>
+                            {{ stage.name }}
+                        </a>
                     {% empty %}
                         <div class="list-group-item">No stage configured yet</div>
                     {% endfor %}
@@ -52,7 +55,7 @@
                 <div class="panel-heading">
                     <h4>
                         Project Configuration
-                        <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{ "show": 300, "hide": 0 }" data-original-title="Configurations added here will be added to env.custom_configuration"></i>
+                        <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{ 'show': 300, 'hide': 0 }" data-original-title="Configurations added here will be added to env.custom_configuration"></i>
                     </h4>
                 </div>
 
