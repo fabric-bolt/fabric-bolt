@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span5 offset3">
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock %}
