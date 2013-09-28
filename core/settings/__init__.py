@@ -126,6 +126,8 @@ INSTALLED_APPS = (
     'grappelli',
     'django.contrib.admin',
     'south',
+
+    'projects',
 )
 
 ########## EMAIL CONFIGURATION
