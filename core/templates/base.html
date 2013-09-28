@@ -10,34 +10,35 @@
         <div class="row">
 
             {% block sidebar %}
-            <div class="col-md-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Projects</div>
-                    <div class="panel-body">
-                        {% for project in sidebar_projects %}
-                            <a href="{% url 'projects_project_edit' project.pk %}">{{ project }}</a><br/>
-                        {% empty %}
-                            No Projects<br/>
-                        {% endfor %}
-                        <br/><a href="{% url 'projects_project_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Project</a>
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Projects</div>
+                        <div class="panel-body">
+                            {% for project in sidebar_projects %}
+                                <a href="{% url 'projects_project_edit' project.pk %}">{{ project }}</a><br/>
+                            {% empty %}
+                                No Projects<br/>
+                            {% endfor %}
+                            <br/><a href="{% url 'projects_project_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Project</a>
+                        </div>
                     </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading"><a href="{% url 'hosts_host_list' %}">Hosts</a></div>
-                    <div class="panel-body">
-                        {% for host in sidebar_hosts %}
-                            <a href="{% url 'hosts_host_update' host.pk %}">{{ host }}</a><br/>
-                        {% empty %}
-                            No Hosts<br/>
-                        {% endfor %}
-                        <br/><a href="{% url 'hosts_host_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Host</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><a href="{% url 'hosts_host_list' %}">Hosts</a></div>
+                        <div class="panel-body">
+                            {% for host in sidebar_hosts %}
+                                <a href="{% url 'hosts_host_update' host.pk %}">{{ host }}</a><br/>
+                            {% empty %}
+                                No Hosts<br/>
+                            {% endfor %}
+                            <br/><a href="{% url 'hosts_host_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Host</a>
+                        </div>
                     </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">Users</div>
-                    <div class="panel-body">
-                        No Users<br/>
-                        <br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Users</div>
+                        <div class="panel-body">
+                            No Users<br/>
+                            <br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
+                        </div>
                     </div>
                 </div>
             {% endblock sidebar %}
