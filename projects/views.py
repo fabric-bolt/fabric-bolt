@@ -2,6 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import get_object_or_404
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
@@ -60,6 +61,10 @@ class ProjectView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
+        stages = models.Stage.objects.all()
+
+        context['stages'] = stages
+
         return context
 
 
@@ -95,6 +100,28 @@ class ProjectConfigurationUpdate(UpdateView):
     form_class = forms.ConfigurationUpdateForm
 
 
+class DeploymentCreate(CreateView):
+    model = models.Deployment
+    form_class = forms.DeploymentForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
+
+        return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.stage = self.stage
+        self.object.save()
+
+        return super(DeploymentCreate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(DeploymentCreate, self).get_context_data(**kwargs)
+        context['stage'] = self.stage
+        return context
+
+
 class ProjectStageCreate(BaseGetProjectCreateView):
     model = models.Stage
     template_name_suffix = '_create'
@@ -115,4 +142,3 @@ class ProjectStageCreate(BaseGetProjectCreateView):
 
 class ProjectStageView(DetailView):
     model = models.Stage
-

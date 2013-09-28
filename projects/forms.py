@@ -80,6 +80,21 @@ class ConfigurationUpdateForm(ConfigurationCreateForm):
     )
 
 
+class DeploymentForm(forms.ModelForm):
+    class Meta:
+        fields = ['comments']
+        model = models.Deployment
+
+    helper = FormHelper()
+
+    helper.layout = Layout(
+        'comments',
+        ButtonHolder(
+            Submit('submit', 'Go!', css_class='btn btn-success')
+        )
+    )
+
+
 class StageCreateForm(forms.ModelForm):
 
     class Meta:

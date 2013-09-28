@@ -9,13 +9,33 @@
     <div class="row">
         <div class="col-md-7">
             <div class="well well-sm">
-                Well
+                Details
             </div>
         </div>
 
         <div class="col-md-5">
             <div class="well well-sm">
-                Well
+
+                <div class="list-group">
+                    {% for task in tasks %}
+                        <a href="" class="list-group-item">
+                            <span class="badge">{{ task.times_used }}</span>
+                            {{ task.name }}
+                        </a>
+                    {% empty %}
+                        <div class="list-group-item">
+                            <span class="badge">0</span>
+                            No frequent tasks yet
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <select class="form-control">
+                        <option value="">Choose</option>
+                    </select>
+                </div>
+
             </div>
         </div>
     </div>
