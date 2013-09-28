@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+        <li><a href="{% url 'projects_project_view' object.stage.project.pk %}">{{ object.stage.project.name }}</a></li>
+        <li><a href="#">{{ object.stage.name }}</a></li>
+        <li class="active">Deployment started {{ object.date_created|naturaltime }}</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <h1>Deployment started {{ object.date_created|naturaltime }}</h1><br/>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well">
+                <dl class="dl-horizontal">
+                    <dt>Comments</dt>
+                    <dd>{{ object.comments }}</dd>
+                    <dt>Date Started</dt>
+                    <dd>{{ object.date_created }}</dd>
+                    <dt>Project</dt>
+                    <dd>{{ object.stage.project.name }}</dd>
+                    <dt>Stage</dt>
+                    <dd>{{ object.stage.name }}</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="well">
+                <fieldset>
+                    <legend>Status</legend>
+                    <i class="glyphicon glyphicon-time"></i> Working
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    <div class="well">
+        <div id="deployment_output"></div>
+    </div>
+{% endblock content %}

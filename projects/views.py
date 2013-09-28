@@ -126,6 +126,13 @@ class DeploymentCreate(CreateView):
         context['stage'] = self.stage
         return context
 
+    def get_success_url(self):
+        return reverse('projects_deployment_detail', kwargs={'pk': self.object.pk})
+
+
+class DeploymentDetail(DetailView):
+    model = models.Deployment
+
 
 class ProjectStageCreate(BaseGetProjectCreateView):
     model = models.Stage
