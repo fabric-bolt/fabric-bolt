@@ -27,7 +27,7 @@
 
                 <div class="list-group">
                     {% for task in frequent_tasks_run %}
-                        <a href="" class="list-group-item">
+                        <a href="{% url 'projects_deployment_create' object.pk task.name %}" class="list-group-item">
                             <span class="badge">{{ task.times_used }}</span>
                             {{ task.name }}
                         </a>

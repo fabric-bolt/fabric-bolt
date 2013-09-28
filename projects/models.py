@@ -81,12 +81,13 @@ class Deployment(TrackingFields):
     comments = models.TextField()
     status = models.CharField(choices=STATUS, max_length=10)
     output = models.TextField(null=True, blank=True)
+    task = models.ForeignKey('projects.Task')
 
     def __unicode__(self):
         return "Deployment at {} for stage {} on project {}".format(self.date_created, self.stage.name, self.stage.project.name)
 
 
-class TaskUsage(models.Model):
+class Task(models.Model):
     name = models.CharField(max_length=255)
     times_used = models.PositiveIntegerField(default=1)
 

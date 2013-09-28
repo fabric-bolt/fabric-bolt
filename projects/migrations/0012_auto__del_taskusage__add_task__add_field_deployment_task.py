@@ -8,18 +8,37 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'TaskUsage'
-        db.create_table(u'projects_taskusage', (
+        # Deleting model 'TaskUsage'
+        db.delete_table(u'projects_taskusage')
+
+        # Adding model 'Task'
+        db.create_table(u'projects_task', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('times_used', self.gf('django.db.models.fields.PositiveIntegerField')(default=1)),
         ))
-        db.send_create_signal(u'projects', ['TaskUsage'])
+        db.send_create_signal(u'projects', ['Task'])
+
+        # Adding field 'Deployment.task'
+        db.add_column(u'projects_deployment', 'task',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['projects.Task']),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'TaskUsage'
-        db.delete_table(u'projects_taskusage')
+        # Adding model 'TaskUsage'
+        db.create_table(u'projects_taskusage', (
+            ('times_used', self.gf('django.db.models.fields.PositiveIntegerField')(default=1)),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
+        ))
+        db.send_create_signal(u'projects', ['TaskUsage'])
+
+        # Deleting model 'Task'
+        db.delete_table(u'projects_task')
+
+        # Deleting field 'Deployment.task'
+        db.delete_column(u'projects_deployment', 'task_id')
 
 
     models = {
@@ -41,7 +60,8 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'output': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'stage': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Stage']"}),
-            'status': ('django.db.models.fields.CharField', [], {'max_length': '10'})
+            'status': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'task': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Task']"})
         },
         u'projects.project': {
             'Meta': {'object_name': 'Project'},
@@ -68,8 +88,8 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"})
         },
-        u'projects.taskusage': {
-            'Meta': {'object_name': 'TaskUsage'},
+        u'projects.task': {
+            'Meta': {'object_name': 'Task'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'times_used': ('django.db.models.fields.PositiveIntegerField', [], {'default': '1'})

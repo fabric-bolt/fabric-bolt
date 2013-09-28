@@ -233,6 +233,9 @@ class ProjectStageView(DetailView):
         context['configurations'] = configuration_table
 
         docstring, callables, default = load_fabfile(find_fabfile(None))
-        context['all_tasks'] = _task_names(callables)
+        all_tasks = sorted(_task_names(callables))
+
+        context['all_tasks'] = all_tasks
+        context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')
 
         return context
