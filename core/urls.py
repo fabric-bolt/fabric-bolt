@@ -8,7 +8,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'', TemplateView.as_view(template_name='dashboard.html')),
+    url(r'^$', TemplateView.as_view(template_name='dashboard.html')),
+    url(r'^hosts/', include('hosts.urls')),
 )
 
 #Serve the static files from django
