@@ -15,7 +15,7 @@ from django_tables2 import RequestConfig
 from django_filters.views import FilterView
 from braces.views import GroupRequiredMixin
 
-from . import forms
+from . import forms, filters, tables
 
 
 class Login(TemplateView):
@@ -107,7 +107,7 @@ class UserAdd(GroupRequiredMixin, CreateView):
     group_required = 'Admin'
     model = auth.get_user_model()
     success_url = reverse_lazy('accounts_user_list', args=())
-    form_class = forms.AtheneUserCreationForm
+    form_class = forms.UserCreationForm
 
     def form_valid(self, form):
         response = super(UserAdd, self).form_valid(form)
@@ -132,4 +132,4 @@ class UserDelete(GroupRequiredMixin, RedirectView):
         user.delete()
 
         messages.info(request, 'User %s was deleted successfully.' % user.email)
-        return HttpResponseRedirect(reverse('athene_user_list'))
+        return HttpResponseRedirect(reverse('accounts_user_list'))
