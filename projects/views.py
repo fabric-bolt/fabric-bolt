@@ -1,9 +1,8 @@
 import time
 
-from django.core.exceptions import ImproperlyConfigured
 from django.http import StreamingHttpResponse
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView, DetailView, View
+from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
@@ -61,7 +60,7 @@ class ProjectView(DetailView):
         context = super(ProjectView, self).get_context_data(**kwargs)
 
         configuration_table = tables.ConfigurationTable(self.object.project_configurations())
-        #RequestConfig(self.request).configure(configuration_table)
+        RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
         stages = models.Stage.objects.all()
@@ -106,6 +105,37 @@ class ProjectConfigurationUpdate(UpdateView):
     model = models.Configuration
     template_name_suffix = '_update'
     form_class = forms.ConfigurationUpdateForm
+
+
+class ProjectConfigurationDelete(DeleteView):
+    model = models.Configuration
+
+    def dispatch(self, request, *args, **kwargs):
+
+        return super(ProjectConfigurationDelete, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        """Get the url depending on what type of configuration I deleted."""
+        
+        if self.stage_id:
+            url = reverse('projects_stage_view', args=(self.project_id, self.stage_id))
+        else:
+            url = reverse('projects_project_view', args=(self.project_id))
+
+        return url
+
+    def delete(self, request, *args, **kwargs):
+
+        obj = self.get_object()
+
+        # Save where I was before I go an delete myself
+        self.project_id = obj.project.pk
+        self.stage_id = obj.stage.pk if obj.stage else None
+
+        messages.success(self.request, 'Configuration {} Successfully Deleted'.format(self.get_object()))
+        return super(ProjectConfigurationDelete, self).delete(self, request, *args, **kwargs)
+
+
 
 
 class DeploymentCreate(CreateView):

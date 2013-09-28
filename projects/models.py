@@ -61,7 +61,13 @@ class Configuration(TrackingFields):
 
     def get_absolute_url(self):
         """Go back to the project page"""
-        return self.project.get_absolute_url()
+
+        if self.stage:
+            url = reverse('projects_stage_view', args=(self.project.pk, self.stage.pk))
+        else:
+            url = self.project.get_absolute_url()
+
+        return url
 
 
 class Deployment(TrackingFields):
