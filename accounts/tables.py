@@ -15,6 +15,8 @@ class UserListTable(PaginateTable):
     """
 
     actions = ActionsColumn([
+        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'accounts_user_view', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'View User', 'data-delay': '{ "show": 300, "hide": 0 }'}},
         {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'accounts_user_change', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'Edit User', 'data-delay': '{ "show": 300, "hide": 0 }'}},
         {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'accounts_user_delete', 'args': [tables.A('pk')],
