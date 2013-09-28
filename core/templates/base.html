@@ -1,21 +1,18 @@
 {% extends '_base.html' %}
 
 {% block body %}
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container">
-                 <a class="navbar-brand" href="/">Kitsune - Foxy Fabric Deployments</a>
-        </div>
-    </nav>
+
+    {% block navigation %}{% include 'nav_utility.html' %}{% endblock navigation %}
+
     <div class="container">
         <div class="row">
-
             {% block sidebar %}
                 <div class="col-md-3">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Projects</div>
+                        <div class="panel-heading"><a href="{% url 'projects_project_list' %}">Projects</a></div>
                         <div class="panel-body">
                             {% for project in sidebar_projects %}
-                                <a href="{% url 'projects_project_edit' project.pk %}">{{ project }}</a><br/>
+                                <a href="{% url 'projects_project_update' project.pk %}">{{ project }}</a><br/>
                             {% empty %}
                                 No Projects<br/>
                             {% endfor %}
