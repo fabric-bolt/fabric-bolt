@@ -12,6 +12,17 @@ import forms
 import tables
 
 
+class BaseGetProjectCreateView(CreateView):
+
+    def dispatch(self, request, *args, **kwargs):
+
+        # Lets set the project so we can use it later
+        project_id = kwargs.get('project_id')
+        self.project = models.Project.objects.get(pk=project_id)
+
+        return super(BaseGetProjectCreateView, self).dispatch(request, *args, **kwargs)
+
+
 class ProjectList(SingleTableView):
     table_class = tables.ProjectTable
     model = models.Project
@@ -50,21 +61,25 @@ class ProjectView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
+        stages = models.Stage.objects.all()
+
+        context['stages'] = stages
+
         return context
 
 
-class ProjectConfigurationCreate(CreateView):
+class ProjectConfigurationCreate(BaseGetProjectCreateView):
     model = models.Configuration
     template_name_suffix = '_create'
     form_class = forms.ConfigurationCreateForm
 
-    def dispatch(self, request, *args, **kwargs):
-
-        # Lets set the project so we can use it later
-        project_id = kwargs.get('project_id')
-        self.project = models.Project.objects.get(pk=project_id)
-
-        return super(ProjectConfigurationCreate, self).dispatch(request, *args, **kwargs)
+    #def dispatch(self, request, *args, **kwargs):
+    #
+    #    # Lets set the project so we can use it later
+    #    project_id = kwargs.get('project_id')
+    #    self.project = models.Project.objects.get(pk=project_id)
+    #
+    #    return super(ProjectConfigurationCreate, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         """Set the project on this configuration after it's valid"""
@@ -105,3 +120,25 @@ class DeploymentCreate(CreateView):
         context = super(DeploymentCreate, self).get_context_data(**kwargs)
         context['stage'] = self.stage
         return context
+
+
+class ProjectStageCreate(BaseGetProjectCreateView):
+    model = models.Stage
+    template_name_suffix = '_create'
+    form_class = forms.StageCreateForm
+
+    def form_valid(self, form):
+        """Set the project on this configuration after it's valid"""
+
+        self.object = form.save(commit=False)
+        self.object.project = self.project
+        self.object.save()
+
+        # Good to make note of that
+        messages.add_message(self.request, messages.SUCCESS, 'Stage %s created' % self.object.name)
+
+        return super(ProjectStageCreate, self).form_valid(form)
+
+
+class ProjectStageView(DetailView):
+    model = models.Stage

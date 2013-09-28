@@ -93,3 +93,20 @@ class DeploymentForm(forms.ModelForm):
             Submit('submit', 'Go!', css_class='btn btn-success')
         )
     )
+
+
+class StageCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Stage
+        fields = [
+            'name',
+        ]
+
+    helper = FormHelper()
+    helper.layout = Layout(
+        'name',
+        ButtonHolder(
+            Submit('submit', 'Create Stage', css_class='button')
+        )
+    )
