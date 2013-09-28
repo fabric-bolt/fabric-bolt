@@ -42,7 +42,6 @@ class UserChangeForm(forms.ModelForm):
     """
     A form for updating users.
     """
-
     user_level = forms.ChoiceField(choices=Group.objects.all().values_list(), label='User Level')
     is_active = forms.ChoiceField(choices=((True, 'Active'), (False, 'Disabled')), label='Status')
 
@@ -59,7 +58,7 @@ class UserChangeForm(forms.ModelForm):
         Field('is_active'),
         Field('template'),
         FormActions(
-            Submit('btnSubmit', 'Submit', css_class="button btn-primary"),
+            Submit('btnSubmit', 'Submit', css_class="button btn-primary pull-right"),
         ),
     )
 
@@ -98,6 +97,12 @@ class UserChangeForm(forms.ModelForm):
     def clean_password(self):
         return self.initial["password"]
 
+    def clean_last_login(self):
+        return self.initial["last_login"]
+
+    def clean_date_joined(self):
+        return self.initial["date_joined"]
+
     def save(self, commit=True):
         """
         Save the model instance with the correct Auth Group based on the user_level question
@@ -125,16 +130,11 @@ class UserCreationForm(UserChangeForm):
     class Meta:
         model = get_user_model()
 
-    def __init__(self, *args, **kwargs):
-        initial = kwargs.get('initial', {})
+    def clean_date_joined(self):
+        return now()
 
-        # Set some initial values
-        initial['date_joined'] = now()
-        initial['password'] = 'blank'
-
-        kwargs['initial'] = initial
-
-        super(UserCreationForm, self).__init__(*args, **kwargs)
+    def clean_last_login(self):
+        return now()
 
     def clean_email(self):
         """

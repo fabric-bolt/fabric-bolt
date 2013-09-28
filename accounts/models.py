@@ -33,16 +33,16 @@ class DeployUser(AbstractEmailUser):
 
         return False
 
-    def user_is_pusher(self):
+    def user_is_deployer(self):
         for group in self.groups.all():
-            if group.name == "Pusher":
+            if group.name == "Deployer":
                 return True
 
         return False
 
-    def user_is_curious(self):
+    def user_is_historian(self):
         for group in self.groups.all():
-            if group.name == "Curious":
+            if group.name == "Historian":
                 return True
 
         return False
