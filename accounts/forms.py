@@ -24,6 +24,6 @@ class LoginForm(forms.Form):
         ),
         FormActions(
             Submit('login', 'Login', css_class="button"),
-            HTML('<br/><a href="{% url \'password_recover\' %}">Recover Password</a>'),
+            #HTML('<br/><a href="{% url \'password_reset\' %}">Recover Password</a>'),
         )
     )
