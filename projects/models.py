@@ -62,6 +62,7 @@ class Configuration(TrackingFields):
 class Deployment(TrackingFields):
     stage = models.ForeignKey(Stage)
     comments = models.TextField()
+    started = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "Deployment at {} for stage {} on project {}".format(self.date_created, self.stage.name, self.stage.project.name)
