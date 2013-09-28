@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load render_table from django_tables2 %}
+{% load sekizai_tags %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -40,10 +41,10 @@
                 </div>
 
                 <div>
-                    <select class="form-control">
+                    <select class="form-control" id="all_tasks_dropdown">
                         <option value="">All Tasks</option>
                         {% for task_name in all_tasks %}
-                            <option value="{{ task_name }}">{{ task_name }}</option>
+                            <option value="{% url 'projects_deployment_create' object.pk task_name %}">{{ task_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -75,5 +76,15 @@
             </div>
         </div>
     </div>
+
+    {% addtoblock "js" %}
+        <script>
+            $(function(){
+                $('#all_tasks_dropdown').change(function(){
+                    document.location = $(this).val();
+                });
+            });
+        </script>
+    {% endaddtoblock %}
 
 {% endblock content %}

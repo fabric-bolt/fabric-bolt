@@ -42,3 +42,23 @@ class ConfigurationTable(tables.Table):
             'key',
             'value',
         )
+
+
+class DeploymentTable(tables.Table):
+    actions = ActionsColumn([
+        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_deployment_detail', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'View Deployment Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+    ], delimiter='&#160;&#160;&#160;')
+
+    task_name = tables.Column(accessor='task.name', verbose_name='Task')
+
+    class Meta:
+        model = models.Deployment
+        attrs = {"class": "table table-striped"}
+        sequence = fields = (
+            'date_created',
+            'stage',
+            'task_name',
+            'status',
+            'actions'
+        )

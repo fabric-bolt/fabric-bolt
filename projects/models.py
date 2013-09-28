@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.db.models import Count, Sum
 from django.db import models
 
 from core.mixins.models import TrackingFields
@@ -32,6 +33,10 @@ class Project(TrackingFields):
 
     def get_absolute_url(self):
         return reverse('projects_project_view', args=(self.pk,))
+
+    def get_deployment_count(self):
+        ret = self.stage_set.annotate(num_deployments=Count('deployment')).aggregate(total_deployments=Sum('num_deployments'))
+        return ret['total_deployments']
 
 
 class Stage(TrackingFields):
@@ -79,7 +84,7 @@ class Deployment(TrackingFields):
 
     stage = models.ForeignKey(Stage)
     comments = models.TextField()
-    status = models.CharField(choices=STATUS, max_length=10)
+    status = models.CharField(choices=STATUS, max_length=10, default=PENDING)
     output = models.TextField(null=True, blank=True)
     task = models.ForeignKey('projects.Task')
 

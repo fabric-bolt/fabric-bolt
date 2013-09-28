@@ -21,7 +21,7 @@
                     Description: {{ object.description }}
                 </div>
                 <div>Project Type: {{ object.type }}</div>
-                <div>Deployments: {{ object.number_of_deployments }}</div>
+                <div>Deployments: {{ object.get_deployment_count }}</div>
                 <div></div>
             </div>
         </div>
@@ -107,7 +107,7 @@
                 </div>
 
                 <div class="panel-body">
-                    Panel Body
+                    {% render_table deployment_table %}
                 </div>
 
             </div>
