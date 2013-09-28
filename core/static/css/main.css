@@ -1,6 +1,7 @@
 #deployment_output {
   width: 100%;
   background: black;
+  border: none;
   height: 400px;
   outline: none;
   color: #c8c8c8;
