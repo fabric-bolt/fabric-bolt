@@ -7,6 +7,9 @@ import models
 
 
 class ProjectCreateForm(forms.ModelForm):
+
+    type = forms.ModelChoiceField(models.ProjectType.objects.all(), empty_label=None)
+
     class Meta:
         model = models.Project
         fields = [

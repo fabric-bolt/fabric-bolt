@@ -4,23 +4,31 @@
 
 {% block sidebar %}{% endblock sidebar %}
 
-{% block content %}
-    <div class="row-fluid">
-        <div class="col-md-5">
-            {% crispy form %}
-        </div>
+{% block wrapper %}
+    {% block messages %}
+        {{ block.super }}
+    {% endblock %}
 
-        <div class="col-md-6 col-md-offset-1 logo">
-            <h1>Kitsune</h1>
-            <h2>Foxy Fabric Deployments</h2>
-            <img src="{% static 'images/foxy_icon.png' %}" />
-        </div>
+    <div class="col-md-12">
+        {% block content %}
+            <div class="row-fluid">
+                <div class="col-md-4">
+                    {% crispy form %}
+                </div>
+
+                <div class="col-md-7 col-md-offset-1 logo">
+                    <h1>Kitsune</h1>
+                    <h2>Foxy Fabric Deployments</h2>
+                    <img src="{% static 'images/foxy_icon.png' %}" />
+                </div>
+            </div>
+            <style>
+                .logo{
+                    background-color: #8A9196;
+                    border: solid 5px #C8C8C8;
+                    text-align: center;
+                }
+            </style>
+        {% endblock %}
     </div>
-    <style>
-        .logo{
-            background-color: #8A9196;
-            border: solid 5px #C8C8C8;
-            text-align: center;
-        }
-    </style>
 {% endblock %}

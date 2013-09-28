@@ -1,7 +1,70 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="row">
 
-    <h1>Project - {{ object.name }} </h1>
+        <h1 class="col-lg-12">Project - {{ object.name }} </h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="well well-sm">
+                <div>
+                    Description: {{ object.description }}
+                </div>
+                <div>Project Type: {{ object.type }}</div>
+                <div>Deployments: {{ object.number_of_deployments }}</div>
+                <div></div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="well well-sm">
+                {% for stage in stages %}
+
+                {% empty %}
+                    <div>No stage configured yet</div>
+                {% endfor %}
+
+                <div>
+                    <a class="btn btn-default btn-sm" href="#">
+                        <i class="glyphicon glyphicon-plus-sign"></i>
+                        Add Stage
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+                <fieldset>
+                    <legend>Project Configuration</legend>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+                <fieldset>
+                    <legend>Stages</legend>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+                <fieldset>
+                    <legend>Recent Deployments</legend>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
 
 {% endblock content %}
