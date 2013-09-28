@@ -132,6 +132,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.core.context_processors.request',
+    'core.context_processors.main_lists',
 )
 ########## END TEMPLATE CONFIGURATION
 
@@ -144,7 +145,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'stronghold.middleware.LoginRequiredMiddleware',
+    #'stronghold.middleware.LoginRequiredMiddleware',
 )
 ########## END MIDDLEWARE CONFIGURATION
 
@@ -162,7 +163,8 @@ INSTALLED_APPS = (
     'south',
     'crispy_forms',
     'custom_user',
-    'stronghold',
+    #'stronghold',
+    'django_tables2',
     'accounts',
     'hosts',
     'projects',

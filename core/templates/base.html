@@ -3,7 +3,7 @@
 {% block body %}
     <nav class="navbar navbar-default" role="navigation">
         <div class="container">
-                 <a class="navbar-brand" href="#">Webric</a>
+                 <a class="navbar-brand" href="/">Webric</a>
         </div>
     </nav>
     <div class="container">
@@ -17,10 +17,14 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading">Hosts</div>
+                    <div class="panel-heading"><a href="{% url 'hosts_host_list' %}">Hosts</a></div>
                     <div class="panel-body">
-                        No Hosts
-                        <br/><br/><a href="{% url 'hosts_host_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Host</a>
+                        {% for host in hosts %}
+                            <a href="{% url 'hosts_host_update' host.pk %}">{{ host }}</a><br/>
+                        {% empty %}
+                            No Hosts
+                        {% endfor %}
+                        <br/><a href="{% url 'hosts_host_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Host</a>
                     </div>
                 </div>
                 <div class="panel panel-default">
