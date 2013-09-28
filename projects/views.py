@@ -1,6 +1,9 @@
+import time
+
 from django.core.exceptions import ImproperlyConfigured
+from django.http import StreamingHttpResponse
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView, DetailView
+from django.views.generic import CreateView, UpdateView, DetailView, View
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
@@ -132,6 +135,19 @@ class DeploymentCreate(CreateView):
 
 class DeploymentDetail(DetailView):
     model = models.Deployment
+
+
+class DeploymentOutputStream(View):
+
+    def output_stream_generator(self):
+        for x in range(1,11):
+            yield '{} <br /> {}'.format(x, ' '*1024)
+            time.sleep(1)
+
+    def get(self, request, *args, **kwargs):
+        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']))
+        resp = StreamingHttpResponse(self.output_stream_generator())
+        return resp
 
 
 class ProjectStageCreate(BaseGetProjectCreateView):
