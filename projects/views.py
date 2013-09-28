@@ -33,7 +33,7 @@ class ProjectCreate(CreateView):
                     " a get_absolute_url method on the Model.")
 
         # Good to make note of that
-        messages.add_message(self.request, messages.INFO, 'Project %s created' % self.object.name)
+        messages.add_message(self.request, messages.SUCCESS, 'Project %s created' % self.object.name)
 
         return url
 
