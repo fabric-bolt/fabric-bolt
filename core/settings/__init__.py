@@ -162,7 +162,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'crispy_forms',
-    'custom_user',
     #'stronghold',
     'django_tables2',
     'accounts',
@@ -187,7 +186,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 
 ########## EMAIL CONFIGURATION
-AUTH_USER_MODEL = 'custom_user.EmailUser'
+AUTH_USER_MODEL = 'accounts.DeployUser'
 ########## END EMAIL CONFIGURATION
 
 

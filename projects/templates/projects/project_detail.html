@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% load render_table from django_tables2 %}
 
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+        <li class="active">{{ object.name }}</li>
+    </ol>
+{% endblock breadcrumb %}
+
 {% block content %}
     <div class="row">
 
@@ -21,11 +28,13 @@
 
         <div class="col-md-5">
             <div class="well well-sm">
-                {% for stage in stages %}
-                    <a href="{% url 'projects_stage_view' object.pk stage.pk %}">{{ stage.name }}</a>
-                {% empty %}
-                    <div>No stage configured yet</div>
-                {% endfor %}
+                <div class="list-group">
+                    {% for stage in stages %}
+                        <a href="{% url 'projects_stage_view' object.pk stage.pk %}" class="list-group-item">{{ stage.name }}</a>
+                    {% empty %}
+                        <div class="list-group-item">No stage configured yet</div>
+                    {% endfor %}
+                </div>
 
                 <div>
                     <a class="btn btn-default btn-sm" href="{% url 'projects_stage_create' object.pk %}">

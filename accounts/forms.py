@@ -9,7 +9,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, HTML
+from crispy_forms.layout import Layout, Fieldset, Submit, Field, HTML, Div
 from crispy_forms.bootstrap import FormActions
 
 
@@ -28,11 +28,11 @@ class LoginForm(forms.Form):
     helper.layout = Layout(
         Fieldset(
             'Please Login',
-            Field('email'),
-            Field('password'),
+            Field('email', placeholder='demo@example.com'),
+            Field('password', placeholder='123456'),
         ),
         FormActions(
-            Submit('login', 'Login', css_class="button"),
+            Submit('login', 'Login', css_class="button pull-right"),
             #HTML('<br/><a href="{% url \'password_reset\' %}">Recover Password</a>'),
         )
     )
