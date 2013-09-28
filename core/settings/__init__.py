@@ -161,7 +161,7 @@ INSTALLED_APPS = (
     'south',
     'crispy_forms',
     'custom_user',
-    'stronghold'
+    'stronghold',
     'accounts',
     'hosts',
     'projects',
