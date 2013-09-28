@@ -6,4 +6,5 @@ import views
 
 urlpatterns = patterns('',
     url(r'^$', views.CreateProject.as_view(), name='projects_project_create'),
+    url(r'^edit/project/(?P<pk>\w+)/$', views.EditProject.as_view(), name='projects_project_edit'),
 )
