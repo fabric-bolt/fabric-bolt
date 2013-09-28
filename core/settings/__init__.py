@@ -1,19 +1,39 @@
 # Global settings for core project.
 import os
 
+########## PATH CONFIGURATION
 PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))
 PUBLIC_DIR = os.path.join(PROJECT_DIR, 'public')
 
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'core.wsgi.application'
+########## END PATH CONFIGURATION
+
+
+########## DEBUG CONFIGURATION
 DEBUG = False
 TEMPLATE_DEBUG = True
+########## END DEBUG CONFIGURATION
 
-GRAPPELLI_ADMIN_TITLE = 'Admin'
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+########## MANAGER CONFIGURATION
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
+########## END MANAGER CONFIGURATION
+
+
+########## URL CONFIGURATION
+ROOT_URLCONF = 'core.urls'
+########## END URL CONFIGURATION
+
+
+########## GENERAL CONFIGURATION
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '3(-(r&8u8t)6-xqk9922i7d9ezaj6u7@5sd&+%4$q=48-5p&(f'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -41,6 +61,14 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+# Location of fixtures for the project
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_DIR, 'fixtures'),
+)
+########## END GENERAL CONFIGURATION
+
+
+########## MEDIA CONFIGURATION
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(PUBLIC_DIR, 'media')
@@ -49,7 +77,10 @@ MEDIA_ROOT = os.path.join(PUBLIC_DIR, 'media')
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
+########## END MEDIA CONFIGURATION
 
+
+########## STATIC FILE CONFIGURATION
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
@@ -74,26 +105,17 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+########## END STATIC FILE CONFIGURATION
+
+
+########## TEMPLATE CONFIGURATION
+GRAPPELLI_ADMIN_TITLE = 'Admin'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 )
-
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
-
-ROOT_URLCONF = 'core.urls'
-
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'core.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -111,11 +133,23 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.request',
 )
+########## END TEMPLATE CONFIGURATION
 
-FIXTURE_DIRS = (
-    os.path.join(PROJECT_DIR, 'fixtures'),
+
+########## MIDDLEWARE CONFIGURATION
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'stronghold.middleware.LoginRequiredMiddleware',
 )
+########## END MIDDLEWARE CONFIGURATION
 
+
+########## APP CONFIGURATION
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -128,10 +162,26 @@ INSTALLED_APPS = (
     'south',
     'crispy_forms',
     'custom_user',
+    'stronghold',
     'accounts',
     'hosts',
     'projects',
 )
+########## END APP CONFIGURATION
+
+
+########## STRONGHOLD CONFIGURATION
+LOGIN_URL = '/login/'
+STRONGHOLD_PUBLIC_URLS = (
+    '^/login/',
+    '^/logout/',
+)
+########## END STRONGHOLD CONFIGURATION
+
+
+########## CRISPY CONFIGURATION
+CRISPY_TEMPLATE_PACK = "bootstrap3"
+########## END CRISPY CONFIGURATION
 
 
 ########## EMAIL CONFIGURATION
@@ -146,6 +196,8 @@ EMAIL_PORT = 25
 EMAIL_USE_TLS = False
 ########## END EMAIL CONFIGURATION 
 
+
+########## LOGGING CONFIGURATION
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -174,8 +226,6 @@ LOGGING = {
         },
     }
 }
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '3(-(r&8u8t)6-xqk9922i7d9ezaj6u7@5sd&+%4$q=48-5p&(f'
+########## END LOGGING CONFIGURATION
 
 

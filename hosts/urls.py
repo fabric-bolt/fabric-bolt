@@ -5,5 +5,6 @@ from django.views.generic import TemplateView
 import views
 
 urlpatterns = patterns('',
-    url(r'^$', views.CreateHost.as_view(), name='hosts_host_create'),
+    url(r'^$', views.HostList.as_view(), name='hosts_host_list'),
+    url(r'^create$', views.HostCreate.as_view(), name='hosts_host_create'),
 )
