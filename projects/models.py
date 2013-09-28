@@ -81,6 +81,7 @@ class Configuration(TrackingFields):
 
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500, null=True, blank=True)
+    prompt_me_for_input = models.BooleanField(default=False, help_text='When a deployments you will be asked to input the value at that time.')
 
     # Managers
     objects = models.Manager()
