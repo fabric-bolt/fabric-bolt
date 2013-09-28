@@ -6,7 +6,7 @@ from core.mixins.tables import ActionsColumn
 class HostTable(tables.Table):
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'hosts_host_update', 'args': [tables.A('pk')],
-         'attrs':{'data-toggle': 'tooltip', 'title': 'Edit Host'}},
+         'attrs':{'data-toggle': 'tooltip', 'title': 'Edit Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ])
 
     class Meta:
