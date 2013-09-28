@@ -44,6 +44,13 @@
             {% endblock sidebar %}
 
             <div class="col-md-9">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
                 {% block content %}
                 {% endblock content %}
             </div>

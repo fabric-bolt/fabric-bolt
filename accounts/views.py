@@ -34,7 +34,7 @@ class Login(TemplateView):
 
         else:
             messages.error(request, 'Invalid username or password. Please try again.')
-            return HttpResponseRedirect(reverse('account_user_login'))
+            return HttpResponseRedirect(reverse('accounts_user_login'))
 
 
 class Logout(TemplateView):
@@ -46,8 +46,8 @@ class Logout(TemplateView):
     def get(self, request, *args, **kwargs):
 
         if not request.user.is_authenticated():
-            return HttpResponseRedirect(reverse('account_user_login'))
+            return HttpResponseRedirect(reverse('accounts_user_login'))
 
         auth.logout(request)
 
-        return HttpResponseRedirect(reverse('account_user_login'))
+        return HttpResponseRedirect(reverse('accounts_user_login'))
