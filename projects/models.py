@@ -32,26 +32,27 @@ class Project(TrackingFields):
         return reverse('projects_project_view', args=(self.pk,))
 
 
-class Configuration(TrackingFields):
-    project = models.ForeignKey(Project)
-
-    key = models.CharField(max_length=255)
-    value = models.CharField(max_length=500)
-
-    def __unicode__(self):
-        return '%s: %s' % (self.key, self.value)
-    
-    def get_absolute_url(self):
-        """Go back to the project page"""
-        return self.project.get_absolute_url()
-
-
 class Stage(TrackingFields):
     project = models.ForeignKey(Project)
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        """Go back to the project page"""
+        return self.project.get_absolute_url()
+
+
+class Configuration(TrackingFields):
+    project = models.ForeignKey(Project)
+    stage = models.ForeignKey(Stage, null=True, blank=True)
+
+    key = models.CharField(max_length=255)
+    value = models.CharField(max_length=500)
+
+    def __unicode__(self):
+        return '%s: %s' % (self.key, self.value)
 
     def get_absolute_url(self):
         """Go back to the project page"""
