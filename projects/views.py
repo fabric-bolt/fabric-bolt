@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
 from django_tables2 import RequestConfig
@@ -73,25 +73,30 @@ class ProjectConfigurationCreate(BaseGetProjectCreateView):
     template_name_suffix = '_create'
     form_class = forms.ConfigurationCreateForm
 
-    #def dispatch(self, request, *args, **kwargs):
-    #
-    #    # Lets set the project so we can use it later
-    #    project_id = kwargs.get('project_id')
-    #    self.project = models.Project.objects.get(pk=project_id)
-    #
-    #    return super(ProjectConfigurationCreate, self).dispatch(request, *args, **kwargs)
-
     def form_valid(self, form):
         """Set the project on this configuration after it's valid"""
 
         self.object = form.save(commit=False)
         self.object.project = self.project
+
+        if self.kwargs.get('stage_id', None):
+            current_stage = models.Stage.objects.get(pk=self.kwargs.get('stage_id'))
+            self.object.stage = current_stage
+
         self.object.save()
 
         # Good to make note of that
         messages.add_message(self.request, messages.SUCCESS, 'Configuration %s created' % self.object.key)
 
         return super(ProjectConfigurationCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        success_url = super(ProjectConfigurationCreate, self).get_success_url()
+
+        if self.object.stage:
+            success_url = reverse('projects_stage_view', args=(self.object.pk, self.object.stage.pk))
+
+        return success_url
 
 
 class ProjectConfigurationUpdate(UpdateView):
@@ -138,6 +143,12 @@ class ProjectStageCreate(BaseGetProjectCreateView):
         messages.add_message(self.request, messages.SUCCESS, 'Stage %s created' % self.object.name)
 
         return super(ProjectStageCreate, self).form_valid(form)
+
+
+class ProjectStageUpdate(UpdateView):
+    model = models.Stage
+    template_name_suffix = '_update'
+    form_class = forms.StageUpdateForm
 
 
 class ProjectStageView(DetailView):

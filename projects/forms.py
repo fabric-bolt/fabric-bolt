@@ -110,3 +110,20 @@ class StageCreateForm(forms.ModelForm):
             Submit('submit', 'Create Stage', css_class='button')
         )
     )
+
+
+class StageUpdateForm(StageCreateForm):
+
+    class Meta:
+        model = models.Stage
+        fields = [
+            'name',
+        ]
+
+    helper = FormHelper()
+    helper.layout = Layout(
+        'name',
+        ButtonHolder(
+            Submit('submit', 'Update Stage', css_class='button')
+        )
+    )
