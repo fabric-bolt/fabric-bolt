@@ -40,3 +40,22 @@ class ProjectUpdateForm(ProjectCreateForm):
             Submit('submit', 'Update Project', css_class='button')
         )
     )
+
+
+class ConfigurationCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Configuration
+        fields = [
+            'key',
+            'value',
+        ]
+
+    helper = FormHelper()
+    helper.layout = Layout(
+        'key',
+        'value',
+        ButtonHolder(
+            Submit('submit', 'Create Configuration', css_class='button')
+        )
+    )

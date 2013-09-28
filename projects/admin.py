@@ -4,3 +4,4 @@ import models
 
 admin.site.register(models.Project)
 admin.site.register(models.ProjectType)
+admin.site.register(models.Configuration)

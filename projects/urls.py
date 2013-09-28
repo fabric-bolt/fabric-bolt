@@ -10,4 +10,6 @@ urlpatterns = patterns('',
     url(r'^update/(?P<pk>\w+)/$', views.ProjectUpdate.as_view(), name='projects_project_update'),
     url(r'^view/(?P<pk>\w+)/$', views.ProjectView.as_view(), name='projects_project_view'),
 
+    url(r'^(?P<project_id>\w+)/configuration/create/$', views.ProjectConfigurationCreate.as_view(), name='projects_configuration_create'),
+
 )
