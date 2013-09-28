@@ -12,6 +12,7 @@ urlpatterns = patterns('',
 
     url(r'', views.Dashboard.as_view, name='dashboard_view'),
     url(r'^hosts/', include('hosts.urls')),
+    url(r'^projects/', include('projects.urls')),
 
 )
 
