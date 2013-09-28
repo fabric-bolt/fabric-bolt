@@ -73,10 +73,11 @@ class UserList(ListView):  # GroupRequiredMixin
     group_required = 'Admin'
     template_name = 'accounts/user_list.html'
     table_class = tables.UserListTable
+    model = auth.get_user_model()
 
-    def get_queryset(self):
-        users = auth.get_user_model()
-        return users.objects.filter(is_staff=False)
+    #def get_queryset(self):
+    #    users = auth.get_user_model()
+    #    return users.objects.filter(is_staff=False)
 
     def get_context_data(self, **kwargs):
         context = super(UserList, self).get_context_data(**kwargs)

@@ -25,10 +25,20 @@ class DeployUser(AbstractEmailUser):
     """
     Custom user class for deployments. Email as username using django-custom-user.
     """
+    DEFAULT = 'bootstrap.min.css'
+    AMELIA = 'amelia.min.css'
+    CERULEAN = 'cerulean.min.css'
+    SIMPLEX = 'simplex.min.css'
+    TEMPLATES = (
+        (DEFAULT, 'Slate'),
+        (AMELIA, 'Amelia'),
+        (CERULEAN, 'Cerulean'),
+        (SIMPLEX, 'simplex'),
+    )
 
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    template = models.CharField(max_length=255, blank=True)
+    template = models.CharField(max_length=255, blank=True, choices=TEMPLATES, default=DEFAULT)
 
     objects = UserManager()
 
