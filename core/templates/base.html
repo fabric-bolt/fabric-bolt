@@ -3,11 +3,13 @@
 {% block body %}
     <nav class="navbar navbar-default" role="navigation">
         <div class="container">
-                 <a class="navbar-brand" href="/">Webric</a>
+                 <a class="navbar-brand" href="/">Kitsune - Foxy Fabric Deployments</a>
         </div>
     </nav>
     <div class="container">
         <div class="row">
+
+            {% block sidebar %}
             <div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-heading">Projects</div>
@@ -15,7 +17,7 @@
                         {% for project in sidebar_projects %}
                             <a href="{% url 'projects_project_edit' project.pk %}">{{ project }}</a><br/>
                         {% empty %}
-                            No Projects
+                            No Projects<br/>
                         {% endfor %}
                         <br/><a href="{% url 'projects_project_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Project</a>
                     </div>
@@ -26,7 +28,7 @@
                         {% for host in sidebar_hosts %}
                             <a href="{% url 'hosts_host_update' host.pk %}">{{ host }}</a><br/>
                         {% empty %}
-                            No Hosts
+                            No Hosts<br/>
                         {% endfor %}
                         <br/><a href="{% url 'hosts_host_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Host</a>
                     </div>
@@ -34,11 +36,12 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Users</div>
                     <div class="panel-body">
-                        No Users
-                        <br/><br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
+                        No Users<br/>
+                        <br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
                     </div>
                 </div>
-            </div>
+            {% endblock sidebar %}
+
             <div class="col-md-9">
                 {% block content %}
                 {% endblock content %}

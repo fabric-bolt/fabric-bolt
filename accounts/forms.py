@@ -19,8 +19,8 @@ class LoginForm(forms.Form):
     helper.layout = Layout(
         Fieldset(
             'Please Login',
-            Field('username', css_class='input-xlarge'),
-            Field('password', css_class='input-xlarge'),
+            Field('email'),
+            Field('password'),
         ),
         FormActions(
             Submit('login', 'Login', css_class="button"),
