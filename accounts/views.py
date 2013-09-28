@@ -11,6 +11,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic import RedirectView, UpdateView, CreateView
 
+from django_tables2 import RequestConfig
+from django_filters.views import FilterView
 from braces.views import GroupRequiredMixin
 
 from . import forms
@@ -62,6 +64,28 @@ class Logout(TemplateView):
         auth.logout(request)
 
         return HttpResponseRedirect(reverse('accounts_user_login'))
+
+
+# Admin: List Users
+class UserList(GroupRequiredMixin, FilterView):
+    """
+    List of users. Uses UserFilter and UserTable.
+    """
+    group_required = 'Admin'
+    template_name_suffix = '_list'
+    filterset_class = filters.UserFilter
+    table_class = tables.UserListTable
+
+    def get_queryset(self):
+        users = auth.get_user_model()
+        return users.objects.filter(is_staff=False)
+
+    def get_context_data(self, **kwargs):
+        context = super(UserList, self).get_context_data(**kwargs)
+        table = self.table_class(kwargs['object_list'])
+        RequestConfig(self.request, paginate={"per_page": 20}).configure(table)
+        context['table'] = table
+        return context
 
 
 # Admin Change/Edit User (modal)
