@@ -145,7 +145,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'stronghold.middleware.LoginRequiredMiddleware',
+    'stronghold.middleware.LoginRequiredMiddleware',
 )
 ########## END MIDDLEWARE CONFIGURATION
 
@@ -164,7 +164,7 @@ INSTALLED_APPS = (
     'south',
     'sekizai',
     'crispy_forms',
-    #'stronghold',
+    'stronghold',
     'django_tables2',
     'accounts',
     'hosts',
