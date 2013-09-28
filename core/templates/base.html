@@ -13,7 +13,7 @@
                         <div class="panel-heading"><a href="{% url 'projects_project_list' %}">Projects</a></div>
                         <div class="panel-body">
                             {% for project in sidebar_projects %}
-                                <a href="{% url 'projects_project_update' project.pk %}">{{ project }}</a><br/>
+                                <a href="{% url 'projects_project_view' project.pk %}">{{ project }}</a><br/>
                             {% empty %}
                                 No Projects<br/>
                             {% endfor %}
@@ -34,7 +34,11 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Users</div>
                         <div class="panel-body">
-                            No Users<br/>
+                            {% for user in sidebar_users %}
+                                <a href="#">{{ user }}</a><br/>
+                            {% empty %}
+                                No Users<br/>
+                            {% endfor %}
                             <br/><a href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
                         </div>
                     </div>
@@ -60,5 +64,12 @@
         </div>
 
     </div>
+
+    <footer style="margin:100px 0;">
+        <div class="container">
+            Created by Dan Dietz, Nathanial Pardington and Jared Proffitt for <a href="http://djangodash.com">Django Dash</a> 2013<br/>
+            Icons by <a href="http://glyphicons.com/">Glyphicons</a>
+        </div>
+    </footer>
 
 {% endblock body %}
