@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load staticfiles %}
 
 {% block sidebar %}{% endblock sidebar %}
 
@@ -9,8 +10,17 @@
             {% crispy form %}
         </div>
 
-        <div class="col-md-4 col-md-offset-1">
+        <div class="col-md-6 col-md-offset-1 logo">
             <h1>Kitsune</h1>
+            <h2>Foxy Fabric Deployments</h2>
+            <img src="{% static 'images/foxy_icon.png' %}" />
         </div>
     </div>
+    <style>
+        .logo{
+            background-color: #8A9196;
+            border: solid 5px #C8C8C8;
+            text-align: center;
+        }
+    </style>
 {% endblock %}
