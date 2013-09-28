@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
     <div class="row">
@@ -46,13 +47,7 @@
                         <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{ "show": 300, "hide": 0 }" data-original-title="Configurations added here will be added to env.custom_configuration"></i>
                     </legend>
 
-                    {% for configuration in object.configuration_set.all %}
-                        <div>
-                            {{ configuration.key }}: {{ configuration.value }}
-                        </div>
-                    {% empty %}
-                        <div>No configurations yet</div>
-                    {% endfor %}
+                    {% render_table configurations %}
 
                 </fieldset>
 

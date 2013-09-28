@@ -21,3 +21,16 @@ class ProjectTable(tables.Table):
             'type',
             'number_of_deployments',
         )
+
+
+class ConfigurationTable(tables.Table):
+
+    key = tables.LinkColumn('projects_configuration_update', kwargs={'pk': tables.A('pk')})
+
+    class Meta:
+        model = models.Configuration
+        attrs = {"class": "table table-striped"}
+        sequence = fields = (
+            'key',
+            'value',
+        )
