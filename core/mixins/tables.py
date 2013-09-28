@@ -1,9 +1,11 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.core.paginator import Paginator
 from django.core import urlresolvers
 from django.utils.html import mark_safe, escape
 
 import django_tables2 as tables
+from django_tables2.tables import Table
 from django_tables2.utils import Accessor as A, AttributeDict
 
 
@@ -53,3 +55,53 @@ class ActionsColumn(tables.Column):
             ))
 
         return mark_safe(self.delimiter.join(links))
+
+
+class PaginateTable(Table):
+
+    def __init__(self, *args, **kwargs):
+        super(PaginateTable, self).__init__(*args, **kwargs)
+        self.template = kwargs.get('template', 'fancy_paged_tables/table.html')
+
+    def paginate(self, klass=Paginator, per_page=None, page=1, *args, **kwargs):
+        """
+        Paginates the table using a paginator and creates a ``page`` property
+        containing information for the current page.
+
+        :type     klass: Paginator class
+        :param    klass: a paginator class to paginate the results
+        :type  per_page: `int`
+        :param per_page: how many records are displayed on each page
+        :type      page: `int`
+        :param     page: which page should be displayed.
+
+        Extra arguments are passed to the paginator.
+
+        Pagination exceptions (`~django.core.paginator.EmptyPage` and
+        `~django.core.paginator.PageNotAnInteger`) may be raised from this
+        method and should be handled by the caller.
+        """
+
+        self.per_page_options = [20, 50, 100, 200]  # This should probably be a passed in option
+        self.per_page = per_page = per_page or self._meta.per_page
+
+        self.paginator = klass(self.rows, per_page, *args, **kwargs)
+        self.page = self.paginator.page(page)
+
+        # Calc variables for use in displaying first, adjacent, and last page links
+        adjacent_pages = 1  # This should probably be a passed in option
+
+        # Starting page (first page between the ellipsis)
+        start_page = max(self.page.number - adjacent_pages, 1)
+        if start_page <= 3:
+            start_page = 1
+
+        # Ending page (last page between the ellipsis)
+        end_page = self.page.number + adjacent_pages + 1
+        if end_page >= self.paginator.num_pages - 1:
+            end_page = self.paginator.num_pages + 1
+
+        # Paging vars used in template
+        self.page_numbers = [n for n in range(start_page, end_page) if 0 < n <= self.paginator.num_pages]
+        self.show_first = 1 not in self.page_numbers
+        self.show_last = self.paginator.num_pages not in self.page_numbers
