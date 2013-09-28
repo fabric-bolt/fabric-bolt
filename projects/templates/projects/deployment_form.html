@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+        <li><a href="{% url 'projects_project_view' stage.project.pk %}">{{ stage.project.name }}</a></li>
+        <li><a href="#">{{ stage.name }}</a></li>
+        <li class="active">New Deployment</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            {% crispy form %}
+        </div>
+        <div class="col-md-6">
+            <div class="well">
+                Detials...
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

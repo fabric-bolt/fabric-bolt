@@ -47,6 +47,8 @@
 
             {% block wrapper %}
                 <div class="col-md-9">
+                    {% block breadcrumb %}
+                    {% endblock breadcrumb %}
 
                     {% block messages %}
                         {% for message in messages %}
