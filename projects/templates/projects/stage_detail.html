@@ -41,7 +41,10 @@
 
                 <div>
                     <select class="form-control">
-                        <option value="">Choose</option>
+                        <option value="">All Tasks</option>
+                        {% for task_name in all_tasks %}
+                            <option value="{{ task_name }}">{{ task_name }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 

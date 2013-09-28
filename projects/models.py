@@ -84,3 +84,11 @@ class Deployment(TrackingFields):
 
     def __unicode__(self):
         return "Deployment at {} for stage {} on project {}".format(self.date_created, self.stage.name, self.stage.project.name)
+
+
+class TaskUsage(models.Model):
+    name = models.CharField(max_length=255)
+    times_used = models.PositiveIntegerField(default=1)
+
+    def __unicode__(self):
+        return '{} ({})'.format(self.name, self.times_used)

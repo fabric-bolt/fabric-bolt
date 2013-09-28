@@ -1,6 +1,7 @@
 import time
 import subprocess
 import sys
+from fabric.main import find_fabfile, load_fabfile, _task_names
 
 
 from django.http import StreamingHttpResponse
@@ -230,5 +231,8 @@ class ProjectStageView(DetailView):
         configuration_table = tables.ConfigurationTable(self.object.stage_configurations())
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
+
+        docstring, callables, default = load_fabfile(find_fabfile(None))
+        context['all_tasks'] = _task_names(callables)
 
         return context
