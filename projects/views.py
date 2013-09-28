@@ -1,10 +1,11 @@
 import time
+import datetime
 import subprocess
 import sys
 from fabric.main import find_fabfile, load_fabfile, _task_names
 
 
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -32,6 +33,7 @@ class BaseGetProjectCreateView(CreateView):
 class ProjectList(SingleTableView):
     table_class = tables.ProjectTable
     model = models.Project
+    queryset = models.Project.active_records.all()
 
 
 class ProjectCreate(CreateView):
@@ -48,6 +50,18 @@ class ProjectCreate(CreateView):
         messages.add_message(self.request, messages.SUCCESS, 'Project %s created' % self.object.name)
 
         return ret
+
+
+class ProjectDelete(DeleteView):
+    model = models.Project
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.date_deleted = datetime.datetime.now()
+        self.object.save()
+
+        messages.add_message(request, messages.WARNING, 'Project {} Successfully Deleted'.format(self.object))
+        return HttpResponseRedirect(reverse('projects_project_list'))
 
 
 class ProjectUpdate(UpdateView):
@@ -138,8 +152,6 @@ class ProjectConfigurationDelete(DeleteView):
 
         messages.success(self.request, 'Configuration {} Successfully Deleted'.format(self.get_object()))
         return super(ProjectConfigurationDelete, self).delete(self, request, *args, **kwargs)
-
-
 
 
 class DeploymentCreate(CreateView):
