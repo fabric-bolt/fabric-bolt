@@ -118,6 +118,12 @@ class UserAdd(CreateView):  # GroupRequiredMixin
     form_class = forms.UserCreationForm
     template_name = 'accounts/deployuser_create.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(UserAdd, self).get_form_kwargs()
+        kwargs['user_is_admin'] = self.request.user.user_is_admin()
+
+        return kwargs
+
     def form_valid(self, form):
         # Save form
         response = super(UserAdd, self).form_valid(form)
