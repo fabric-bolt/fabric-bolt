@@ -27,9 +27,6 @@ class Project(TrackingFields):
 
     description = models.TextField(blank=True, null=True)
 
-    # Misc information for a project
-    number_of_deployments = models.IntegerField(default=0)
-
     # Managers
     objects = models.Manager()
     active_records = ActiveManager()
