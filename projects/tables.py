@@ -119,7 +119,7 @@ class DeploymentTable(PaginateTable):
         )
 
 
-class StageHostTable(tables.Table):
+class StageHostTable(PaginateTable):
     """This table lists the Stage->Host through table records
 
     Also provides actions to view and un-map the host to the stage
