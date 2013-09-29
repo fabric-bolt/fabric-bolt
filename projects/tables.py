@@ -37,6 +37,7 @@ class ConfigurationTable(PaginateTable):
 
     key = tables.LinkColumn('projects_configuration_update', kwargs={'pk': tables.A('pk')})
     sensitive_value = tables.BooleanColumn(verbose_name="Sensitive",)
+    value = tables.Column(accessor='get_value', orderable=False)
 
     class Meta:
         model = models.Configuration

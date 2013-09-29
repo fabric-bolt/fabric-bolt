@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'projects/configuration_update.html' %}
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
@@ -8,9 +8,4 @@
     </ol>
 {% endblock breadcrumb %}
 
-{% block content %}
-    <h1>Add New Configuration</h1>
-
-    {% crispy form %}
-
-{% endblock %}
+{% block action %}Add New{% endblock %}

@@ -109,8 +109,8 @@ class Configuration(TrackingFields):
 
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500, null=True, blank=True)
-    value_number = models.FloatField(verbose_name='Value', null=True, blank=True)
-    value_boolean = models.BooleanField(verbose_name='Value')
+    value_number = models.FloatField(verbose_name='Value', null=True, blank=True, default=0)
+    value_boolean = models.BooleanField(verbose_name='Value', default=False)
     data_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10, default=STRING_TYPE)
 
     prompt_me_for_input = models.BooleanField(default=False, help_text='When deploying you will be prompted for this value.')
@@ -133,6 +133,14 @@ class Configuration(TrackingFields):
             url = self.project.get_absolute_url()
 
         return url
+
+    def get_value(self):
+        if self.data_type == self.BOOLEAN_TYPE:
+            return self.value_boolean
+        elif self.data_type == self.NUMBER_TYPE:
+            return self.value_number
+        else:
+            return self.value
 
 
 class Deployment(TrackingFields):
