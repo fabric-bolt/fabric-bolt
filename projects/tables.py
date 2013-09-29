@@ -104,20 +104,24 @@ class StageHostTable(tables.Table):
     """
     This table lists the Stage->Host through table records
     """
-    actions = ActionsColumn([
-        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('host_id')],
-         'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_unmaphost', 'args': [tables.A('stage_id'), tables.A('pk'),],
-         'attrs':{'data-toggle': 'tooltip', 'title': 'Remove Host from Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-    ], delimiter='&#160;&#160;&#160;')
 
-    host = tables.Column(accessor='host.name', verbose_name='Name')
+    def __init__(self, *args, **kwargs):
+        stage_id = kwargs.pop('stage_id')
+
+        self.base_columns['actions'] = ActionsColumn([
+            {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('pk')],
+             'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+            {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_unmaphost', 'args': [stage_id, tables.A('pk'),],
+             'attrs':{'data-toggle': 'tooltip', 'title': 'Remove Host from Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+        ], delimiter='&#160;&#160;&#160;')
+
+        super(StageHostTable, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Host
         attrs = {"class": "table table-striped"}
         exclude = ('id',)
         sequence = fields = (
-            'host',
+            'name',
             'actions'
         )
