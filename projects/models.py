@@ -72,7 +72,25 @@ class Stage(TrackingFields):
 
         Any configurations on a project that are duplicated on a stage, the stage configuration will take precedence.
         """
-        pass
+
+        p_list = {}
+        project_configurations = self.project.project_configurations()
+
+        for p in project_configurations:
+            p_list[p.key] = p.value
+
+        d_list = {}
+        stage_configurations = self.stage_configurations()
+
+        for s in stage_configurations:
+            d_list[s.key] = s.value
+
+        p_list.update(d_list)
+
+        return p_list
+
+
+
 
 
 class Configuration(TrackingFields):
