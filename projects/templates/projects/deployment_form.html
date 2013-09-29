@@ -18,6 +18,7 @@
         </div>
         <div class="col-md-6">
             <div class="well">
+                <legend>Stats</legend>
                 <dl class="dl-horizontal">
                     <dt>Project</dt>
                     <dd>{{ stage.project.name }}</dd>
@@ -27,6 +28,19 @@
                     <dd>{{ task_name }}</dd>
                     <dt>Task Description</dt>
                     <dd>{{ task_description }}</dd>
+                </dl>
+            </div>
+
+            <div class="well">
+                <legend>Applied Configs (env)</legend>
+                <dl class="dl-horizontal">
+                    {% for config in configs %}
+                        <dt>{{ config.key }}</dt>
+                        <dd>{{ config.value }}</dd>
+                    {% empty %}
+                        <dt>Configs</dt>
+                        <dd>None Set</dd>
+                    {% endfor %}
                 </dl>
             </div>
         </div>

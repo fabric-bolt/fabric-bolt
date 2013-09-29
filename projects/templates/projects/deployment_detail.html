@@ -54,13 +54,14 @@
         {% if object.status == object.PENDING %}
             <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
         {% else %}
-            <div id="deployment_output"><pre>{{ object.output }}</pre></div>
+            <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
         {% endif %}
     </div>
 
-    {% if object.status == object.PENDING %}
-        {% addtoblock "js" %}
-            <script>
+
+    {% addtoblock "js" %}
+        <script>
+            {% if object.status == object.PENDING %}
                 $(function(){
                     var scroll_iframe_ticker = setInterval(function(){
                         var $contents = $('#deployment_output').contents();
@@ -81,7 +82,12 @@
                     }, 100);
 
                 });
-            </script>
-        {% endaddtoblock %}
-    {% endif %}
+            {% else %}
+                $(function(){
+                    $('#deployment_output pre').scrollTop($('#deployment_output pre')[0].scrollHeight);
+                });
+            {% endif %}
+         </script>
+    {% endaddtoblock %}
+
 {% endblock content %}
