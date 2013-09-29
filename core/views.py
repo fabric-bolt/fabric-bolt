@@ -47,7 +47,7 @@ class Dashboard(TemplateView):
 
             context['chart_data'] = json.dumps(chart_data)
 
-        items = [[item['status'], item['count']] for item in Deployment.objects.values('status').annotate(count=Count('id'))]
+        items = [[item['status'], item['count']] for item in Deployment.objects.order_by('status').values('status').annotate(count=Count('id'))]
 
         context['pie_chart_data'] = json.dumps(items)
 
