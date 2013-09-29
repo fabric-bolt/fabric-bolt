@@ -70,11 +70,11 @@ class StageTable(PaginateTable):
     Also provides actions for view, edit, and delete"""
 
     actions = ActionsColumn([
-        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_stage_view', 'args': [tables.A('project.pk'), tables.A('pk')],
+        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_stage_view', 'args': [tables.A('project_id'), tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Stage Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-        {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_stage_update', 'args': [tables.A('project.pk'), tables.A('pk')],
+        {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_stage_update', 'args': [tables.A('project_id'), tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'Edit Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_delete', 'args': [tables.A('project.pk'), tables.A('pk')],
+        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_delete', 'args': [tables.A('project_id'), tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'Delete Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ], delimiter='&#160;&#160;&#160;')
 
@@ -105,7 +105,7 @@ class DeploymentTable(PaginateTable):
     task_name = tables.Column(accessor='task.name', verbose_name='Task')
 
     #Prettify the status
-    status = tables.TemplateColumn('<span class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}">{{ record.get_status_display }}</span>')
+    status = tables.TemplateColumn('<span style="font-size:13px;" class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}"><i class="glyphicon glyphicon-{% if record.status == "success" %}ok{% elif record.status == "failed" %}warning-sign{% else %}time{% endif %}"></i> &#160;{{ record.get_status_display }}</span>')
 
     class Meta:
         model = models.Deployment
