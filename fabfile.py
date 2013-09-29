@@ -1,8 +1,4 @@
 from fabric.api import *
-from fabric.contrib.project import rsync_project
-from fabric.contrib import files, console
-from fabric import utils
-from fabric.operations import *
 
 
 def update():
