@@ -320,10 +320,15 @@ class DeploymentOutputStream(View):
     def build_command(self):
         command = 'fab ' + self.object.task.name + ' --abort-on-prompts'
 
+        # Get the dictionary of configurations for this stage
         config = self.object.stage.get_configurations()
+        
         config.update(self.request.session.get('configuration_values', {}))
 
+        # Take the special env variables out
         normal_options = list(set(config.keys()) - set(fabric_special_options))
+
+        # Special ones get set a different way
         special_options = list(set(config.keys()) & set(fabric_special_options))
 
         def get_key_value_string(key, value):
