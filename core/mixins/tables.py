@@ -58,6 +58,7 @@ class ActionsColumn(tables.Column):
 
 
 class PaginateTable(Table):
+    """Generic table class that makes use of Django's built in paginate functionality"""
 
     def __init__(self, *args, **kwargs):
         super(PaginateTable, self).__init__(*args, **kwargs)

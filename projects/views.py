@@ -320,11 +320,22 @@ class DeploymentOutputStream(View):
     def build_command(self):
         command = 'fab ' + self.object.task.name + ' --abort-on-prompts'
 
+        hosts = self.object.stage.hosts.values_list('name', flat=True)
+        if hosts:
+            command += ' --hosts=' + ','.join(hosts)
+
+        # Get the dictionary of configurations for this stage
         config = self.object.stage.get_configurations()
+
         config.update(self.request.session.get('configuration_values', {}))
 
-        normal_options = list(set(config.keys()) - set(fabric_special_options))
-        special_options = list(set(config.keys()) & set(fabric_special_options))
+        command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
+
+        # Take the special env variables out
+        normal_options = list(set(config.keys()) - set(command_to_config.keys()))
+
+        # Special ones get set a different way
+        special_options = list(set(config.keys()) & set(command_to_config.keys()))
 
         def get_key_value_string(key, value):
             if isinstance(value, bool):
@@ -338,7 +349,7 @@ class DeploymentOutputStream(View):
             command += ' --set ' + ','.join(get_key_value_string(key, config[key]) for key in normal_options)
 
         if special_options:
-            command += ' ' + ' '.join('--' + get_key_value_string(key, config[key]) for key in special_options)
+            command += ' ' + ' '.join('--' + get_key_value_string(command_to_config[key], config[key]) for key in special_options)
 
         return command
 
@@ -420,13 +431,13 @@ class ProjectStageView(DetailView):
         context = super(ProjectStageView, self).get_context_data(**kwargs)
 
         # Hosts Table (Stage->Host Through table)
-        stage_hosts = [host.pk for host in self.object.hosts.all()]
+        stage_hosts = self.object.hosts.all()
 
-        host_table = tables.StageHostTable(self.object.hosts.through.objects.select_related('host').all())  # Through table
+        host_table = tables.StageHostTable(stage_hosts, stage_id=self.object.pk)  # Through table
         RequestConfig(self.request).configure(host_table)
         context['hosts'] = host_table
 
-        context['available_hosts'] = Host.objects.exclude(id__in=stage_hosts).all()
+        context['available_hosts'] = Host.objects.exclude(id__in=[host.pk for host in stage_hosts]).all()
 
         # Configuration Table
         configuration_table = tables.ConfigurationTable(self.object.stage_configurations())
@@ -490,7 +501,8 @@ class ProjectStageUnmapHost(RedirectView):
         host_id = kwargs.get('host_id')
 
         self.stage = models.Stage.objects.get(pk=self.stage_id)
-        self.stage.hosts.through.objects.get(pk=host_id).delete()
+        host = Host.objects.get(pk=int(host_id))
+        self.stage.hosts.remove(host)
 
         return super(ProjectStageUnmapHost, self).get(request, *args, **kwargs)
 

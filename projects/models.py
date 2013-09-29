@@ -12,7 +12,8 @@ class ProjectType(TrackingFields):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return '%s' % self.name
+        return '{}'.format(self.name)
+
 
 
 class Project(TrackingFields):
@@ -38,15 +39,21 @@ class Project(TrackingFields):
         return Configuration.objects.filter(project_id=self.pk, stage__isnull=True)
 
     def __unicode__(self):
-        return '%s' % self.name
+        return '{}'.format(self.name)
 
     def get_stages(self):
+        """Utility function that returns the stages on a specific project"""
+
         return Stage.active_records.filter(project=self)
 
     def get_absolute_url(self):
+        """Let's see the project detail page now."""
+
         return reverse('projects_project_view', args=(self.pk,))
 
     def get_deployment_count(self):
+        """Utility function to get the number of deployments a given project has"""
+
         ret = self.stage_set.annotate(num_deployments=Count('deployment')).aggregate(total_deployments=Sum('num_deployments'))
         return ret['total_deployments']
 
@@ -62,13 +69,16 @@ class Stage(TrackingFields):
     # End Managers
 
     def __unicode__(self):
-        return self.name
+        return '{}'.format(self.name)
 
     def stage_configurations(self):
+        """Helper function that returns the stage specific configurations"""
+
         return Configuration.objects.filter(stage=self)
 
     def get_absolute_url(self):
-        """Go back to the project page"""
+        """Stages are show on a project page so that's where we're sending you to see them"""
+
         return self.project.get_absolute_url()
 
     def get_configurations(self):
@@ -113,6 +123,15 @@ class Stage(TrackingFields):
 
 
 class Configuration(TrackingFields):
+    """Configurations can be on a project or a specific stage.
+
+    If a configuration value is found on both a project and a stage then the stage's configuration value will be the
+    one used.
+
+    These are key:value pairs that are pumped into the fab script via the command line. Inside your fab script you'll
+    have access to env.key (env.server_ip, env.port_number, etc).
+    """
+
     BOOLEAN_TYPE = 'boolean'
     NUMBER_TYPE = 'number'
     STRING_TYPE = 'string'
@@ -140,16 +159,21 @@ class Configuration(TrackingFields):
         return '{}: {}'.format(self.key, self.value)
 
     def get_absolute_url(self):
-        """Go back to the project page"""
+        """Determine where I am coming from and where I am going"""
 
+        # Determine if this configuration is on a stage
         if self.stage:
+            # Stage specific configurations go back to the stage view
             url = reverse('projects_stage_view', args=(self.project.pk, self.stage.pk))
         else:
+            # Project specific configurations go back to the project page
             url = self.project.get_absolute_url()
 
         return url
 
     def get_value(self):
+        """Determine the proper value based on the data_type"""
+
         if self.data_type == self.BOOLEAN_TYPE:
             return self.value_boolean
         elif self.data_type == self.NUMBER_TYPE:
@@ -159,6 +183,17 @@ class Configuration(TrackingFields):
 
 
 class Deployment(TrackingFields):
+    """Archival record of an actual deployment, tracks:
+
+    - Which user ran it
+    - Stage it was on
+    - Status
+    - Fabric task that was run
+    - The configuration used
+
+    - Among other miscellaneous things
+    """
+
     PENDING = 'pending'
     FAILED = 'failed'
     SUCCESS = 'success'
