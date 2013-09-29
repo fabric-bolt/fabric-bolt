@@ -4,6 +4,9 @@ python:
 
 install:
     - pip install -r requirements/local.txt --use-mirrors
+    - python manage.py syncdb
+    - python manage.py migrate
+    - python manage.py runserver
 
 script:
     - python manage.py test projects hosts accounts
