@@ -37,7 +37,7 @@ class ProjectCreateForm(forms.ModelForm):
 class ProjectUpdateForm(ProjectCreateForm):
 
     button_prefix = "Update"
-    
+
 
 class ConfigurationUpdateForm(forms.ModelForm):
 
