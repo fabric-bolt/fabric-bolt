@@ -1,10 +1,10 @@
 import django_tables2 as tables
 
 import models
-from core.mixins.tables import ActionsColumn
+from core.mixins.tables import ActionsColumn, PaginateTable
 
 
-class ProjectTable(tables.Table):
+class ProjectTable(PaginateTable):
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_project_view', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Project', 'data-delay': '{ "show": 300, "hide": 0 }'}},
@@ -26,7 +26,7 @@ class ProjectTable(tables.Table):
         )
 
 
-class ConfigurationTable(tables.Table):
+class ConfigurationTable(PaginateTable):
 
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_configuration_update', 'args': [tables.A('pk')],
@@ -43,6 +43,27 @@ class ConfigurationTable(tables.Table):
         sequence = fields = (
             'key',
             'value',
+            'prompt_me_for_input',
+        )
+
+
+class StageTable(PaginateTable):
+    actions = ActionsColumn([
+        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_stage_detail', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'View Stage Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+    ], delimiter='&#160;&#160;&#160;')
+
+    hosts = tables.Column(accessor='host_set.all.count', verbose_name='# Hosts')
+    deployments = tables.Column(accessor='deployment_set.all.count', verbose_name='# Deployments')
+
+    class Meta:
+        model = models.Stage
+        attrs = {"class": "table table-striped"}
+        sequence = fields = (
+            'name',
+            'hosts',
+            'deployments',
+            'actions',
         )
 
 

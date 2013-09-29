@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
+from django.forms import CharField
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
@@ -20,6 +21,7 @@ import tables
 
 
 class BaseGetProjectCreateView(CreateView):
+    """Reusable class for create views that need the project pulled in"""
 
     def dispatch(self, request, *args, **kwargs):
 
@@ -52,6 +54,37 @@ class ProjectCreate(CreateView):
         return ret
 
 
+class ProjectDetail(DetailView):
+    model = models.Project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectDetail, self).get_context_data(**kwargs)
+
+        configuration_table = tables.ConfigurationTable(self.object.project_configurations())
+        RequestConfig(self.request).configure(configuration_table)
+        context['configurations'] = configuration_table
+
+        stage_table = tables.StageTable(models.Stage.objects.filter(project=self.get_object()))
+        RequestConfig(self.request).configure(stage_table)
+        context['stage_table'] = stage_table
+
+        stages = self.object.stage_set.all()
+        context['stages'] = stages
+
+        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages))
+        RequestConfig(self.request).configure(deployment_table)
+        context['deployment_table'] = deployment_table
+
+        return context
+
+
+class ProjectUpdate(UpdateView):
+    model = models.Project
+    form_class = forms.ProjectUpdateForm
+    template_name_suffix = '_update'
+    success_url = reverse_lazy('projects_project_list')
+
+
 class ProjectDelete(DeleteView):
     model = models.Project
 
@@ -62,34 +95,6 @@ class ProjectDelete(DeleteView):
 
         messages.add_message(request, messages.WARNING, 'Project {} Successfully Deleted'.format(self.object))
         return HttpResponseRedirect(reverse('projects_project_list'))
-
-
-class ProjectUpdate(UpdateView):
-    model = models.Project
-    form_class = forms.ProjectUpdateForm
-    template_name_suffix = '_update'
-    success_url = reverse_lazy('projects_project_list')
-
-
-class ProjectView(DetailView):
-    model = models.Project
-
-    def get_context_data(self, **kwargs):
-        context = super(ProjectView, self).get_context_data(**kwargs)
-
-        configuration_table = tables.ConfigurationTable(self.object.project_configurations())
-        RequestConfig(self.request).configure(configuration_table)
-        context['configurations'] = configuration_table
-
-        stages = self.object.stage_set.all()
-
-        context['stages'] = stages
-
-        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages))
-        RequestConfig(self.request).configure(deployment_table)
-        context['deployment_table'] = deployment_table
-
-        return context
 
 
 class ProjectConfigurationCreate(BaseGetProjectCreateView):
@@ -163,9 +168,28 @@ class DeploymentCreate(CreateView):
     form_class = forms.DeploymentForm
 
     def dispatch(self, request, *args, **kwargs):
+        #save the stage for later
         self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
 
         return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class):
+
+        stage_configurations = self.stage.stage_configurations().filter(prompt_me_for_input=True)
+
+        for config in stage_configurations:
+
+            # We want to inject fields into the form for the configurations they've marked as prompt for
+            str_config_key = 'configuration_value_for_{}'.format(config.key)
+
+            form_class._meta.fields.append(str_config_key)
+            form_class.helper.layout.fields.insert(len(form_class.helper.layout.fields)-1, str_config_key)
+            #form_class.declared_fields['extra_field_{}'.format(config.key)] = CharField()
+            form_class.base_fields[str_config_key] = CharField()
+
+        form = form_class(**self.get_form_kwargs())
+
+        return form
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
