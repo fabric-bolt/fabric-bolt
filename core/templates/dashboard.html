@@ -11,9 +11,11 @@
     </div>
     <div class="row">
         <div class="col-md-7">
+            <h3>Deployment History</h3>
             <div id="chart_div"></div>
         </div>
         <div class="col-md-5">
+            <h3>Deployment Status</h3>
             <div id="pie_chart_div"></div>
         </div>
     </div>
@@ -27,7 +29,7 @@
             var data = google.visualization.arrayToDataTable({{ chart_data|safe }});
 
             var options = {
-              title: 'Deployment History',
+              title: '',
                 height:300
             };
 
@@ -41,7 +43,7 @@
             data2.addRows({{ pie_chart_data|safe }});
 
             // Set chart options
-            var options2 = {'title':'Deployment Status',
+            var options2 = {'title':'',
                            'height':300};
 
             // Instantiate and draw our chart, passing in some options.
