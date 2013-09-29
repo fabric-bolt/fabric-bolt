@@ -49,6 +49,9 @@ class DeployUser(AbstractEmailUser):
     objects = UserManager()
 
     def user_is_admin(self):
+        if not self.pk:
+            return False
+
         for group in self.groups.all():
             if group.name == "Admin":
                 return True
@@ -56,6 +59,9 @@ class DeployUser(AbstractEmailUser):
         return False
 
     def user_is_deployer(self):
+        if not self.pk:
+            return False
+
         for group in self.groups.all():
             if group.name == "Deployer":
                 return True
@@ -63,6 +69,9 @@ class DeployUser(AbstractEmailUser):
         return False
 
     def user_is_historian(self):
+        if not self.pk:
+            return False
+
         for group in self.groups.all():
             if group.name == "Historian":
                 return True
