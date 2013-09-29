@@ -244,13 +244,12 @@ class DeploymentCreate(CreateView):
 
     def get_form(self, form_class):
 
-        # TODO: Fix this to show all configs
-        stage_configurations = self.stage.stage_configurations().all()
+        stage_configurations = self.stage.get_queryset_configurations(prompt_me_for_input=True)
 
         form = form_class(**self.get_form_kwargs())
 
         # We want to inject fields into the form for the configurations they've marked as prompt
-        for config in stage_configurations.filter(prompt_me_for_input=True):
+        for config in stage_configurations:
             str_config_key = 'configuration_value_for_{}'.format(config.key)
 
             if config.data_type == config.BOOLEAN_TYPE:
@@ -293,9 +292,7 @@ class DeploymentCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = super(DeploymentCreate, self).get_context_data(**kwargs)
 
-        # TODO: Fix this to show all configs
-        stage_configurations = self.stage.stage_configurations().all()
-        context['configs'] = stage_configurations.exclude(prompt_me_for_input=True)
+        context['configs'] = self.stage.get_queryset_configurations(prompt_me_for_input=False)
         context['stage'] = self.stage
         context['task_name'] = self.task_name
         context['task_description'] = self.task_description
