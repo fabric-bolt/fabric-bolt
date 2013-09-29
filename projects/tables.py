@@ -101,7 +101,9 @@ class DeploymentTable(PaginateTable):
 
 
 class StageHostTable(tables.Table):
-
+    """
+    This table lists the Stage->Host through table records
+    """
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('host_id')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
