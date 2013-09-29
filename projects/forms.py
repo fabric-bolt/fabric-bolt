@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
@@ -52,6 +53,11 @@ class ConfigurationCreateForm(forms.ModelForm):
             'prompt_me_for_input',
         ]
 
+    def __init__(self, *args, **kwargs):
+        super(ConfigurationCreateForm, self).__init__(*args, **kwargs)
+
+        self.fields['key'].validators.append(RegexValidator(r'^[a-zA-Z_]+[0-9a-zA-Z_]*$')) # valid python variable name
+
     helper = FormHelper()
     helper.layout = Layout(
         'key',
@@ -89,14 +95,17 @@ class DeploymentForm(forms.ModelForm):
         fields = ['comments']
         model = models.Deployment
 
-    helper = FormHelper()
+    def __init__(self, *args, **kwargs):
+        super(DeploymentForm, self).__init__(*args, **kwargs)
 
-    helper.layout = Layout(
-        'comments',
-        ButtonHolder(
-            Submit('submit', 'Go!', css_class='btn btn-success')
+        self.helper = FormHelper()
+
+        self.helper.layout = Layout(
+            'comments',
+            ButtonHolder(
+                Submit('submit', 'Go!', css_class='btn btn-success')
+            )
         )
-    )
 
 
 class StageCreateForm(forms.ModelForm):

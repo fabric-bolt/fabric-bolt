@@ -72,7 +72,26 @@ class Stage(TrackingFields):
 
         Any configurations on a project that are duplicated on a stage, the stage configuration will take precedence.
         """
-        pass
+
+        project_configurations_dictionary = {}
+        project_configurations = self.project.project_configurations()
+
+        # Create project specific configurations dictionary
+        for config in project_configurations:
+            project_configurations_dictionary[config.key] = config.value
+
+        stage_configurations_dictionary = {}
+        stage_configurations = self.stage_configurations()
+
+        # Create stage specific configurations dictionary
+        for s in stage_configurations:
+            stage_configurations_dictionary[s.key] = s.value
+
+        # override project specific configuration with the ones in the stage if they are there
+        project_configurations_dictionary.update(stage_configurations_dictionary)
+
+        # Return the updated configurations
+        return project_configurations_dictionary
 
 
 class Configuration(TrackingFields):
@@ -81,7 +100,8 @@ class Configuration(TrackingFields):
 
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500, null=True, blank=True)
-    prompt_me_for_input = models.BooleanField(default=False, help_text='When a deployments you will be asked to input the value at that time.')
+    prompt_me_for_input = models.BooleanField(default=False, help_text='When deploying you will be prompted for this value.')
+    sensitive_value = models.BooleanField(default=False, help_text='Password or other value that should not be stored in the logs.')
 
     # Managers
     objects = models.Manager()
@@ -115,6 +135,7 @@ class Deployment(TrackingFields):
     status = models.CharField(choices=STATUS, max_length=10, default=PENDING)
     output = models.TextField(null=True, blank=True)
     task = models.ForeignKey('projects.Task')
+    configuration = models.TextField(null=True, blank=True)
 
     # Managers
     objects = models.Manager()
