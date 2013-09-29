@@ -5,7 +5,7 @@ Deployment User Views
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.views import password_change
+from django.contrib.auth.views import password_reset_confirm
 
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
@@ -165,3 +165,22 @@ class PasswordChange(FormView):
     def form_valid(self, form):
         form.save()
         return super(PasswordChange, self).form_valid(form)
+
+
+class PasswordCreate(FormView):
+
+    template_name = 'accounts/password_create.html'
+
+    def get_success_url(self):
+        return reverse('accounts_user_view', args=(self.request.user.id,))
+
+    def get_form(self, form_class):
+        return forms.UserPasswordCreateForm(self.request.user, self.request.POST or None)
+
+    def post(self, request, *args, **kwargs):
+        return password_reset_confirm(request, **kwargs)
+
+    #def form_valid(self, form):
+    #    self.user
+    #    form.save()
+    #    return super(PasswordCreate, self).form_valid(form)
