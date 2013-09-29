@@ -1,6 +1,8 @@
+{% load staticfiles %}
+
 <nav class="navbar navbar-default" role="navigation">
     <div class="container">
-        <a class="navbar-brand" href="/">Kitsune - Foxy Fabric Deployments</a>
+        <a class="navbar-brand" href="/">Kitsune</a>
 
         {% if request.user.is_authenticated %}
             <ul class="nav navbar-nav pull-right">
