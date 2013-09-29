@@ -28,7 +28,7 @@
 
             <span class="per_page">
                 Items per page
-                <select id="per_page" name="per_page" class="input-mini" onchange="window.location=this.options[this.selectedIndex].value">
+                <select id="per_page" name="per_page" class="input-mini form-control" onchange="window.location=this.options[this.selectedIndex].value">
                     {% for i in table.per_page_options %}
                         <option value="{% querystring table.prefix|add:"per_page"=i %}" {% if i == table.per_page %}selected="selected"{% endif %}>
                             {{ i }}
@@ -107,6 +107,12 @@
     <style>
     .pagination-sm{
         margin: 0;
+    }
+    #per_page{
+        width: 60px;
+        height: 27px;
+        padding: 2px;
+        display: inline-block;
     }
     </style>
 {% endspaceless %}
