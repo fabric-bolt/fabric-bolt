@@ -59,7 +59,39 @@
         </div>
     </div>
 
-     <div class="row">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>
+                        Hosts
+                        <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{'show': 300, 'hide': 0 }"
+                            data-original-title="These are the hosts that will be deployed to when running tasks for this stage."></i>
+                    </h4>
+                </div>
+
+                <div class="panel-body">
+                    {% render_table hosts %}
+                </div>
+
+                <div class="panel-footer">
+                    <a class="btn btn-default btn-sm" href="{% url 'projects_configuration_stage_create' object.project.pk object.pk %}">
+                        <i class="glyphicon glyphicon-plus-sign"></i>
+                        Add Stage Host
+                    </a>
+
+                    <select name="stage_host" id="stage_host">
+                        <option value="">Select Host</option>
+                        {% for host in available_hosts %}
+                            <option value="{{ host.pk }}">{{ host.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">

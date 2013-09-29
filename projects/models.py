@@ -54,6 +54,7 @@ class Project(TrackingFields):
 class Stage(TrackingFields):
     project = models.ForeignKey(Project)
     name = models.CharField(max_length=255)
+    hosts = models.ManyToManyField('hosts.Host')
 
     # Managers
     objects = models.Manager()
