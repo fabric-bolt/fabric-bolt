@@ -31,8 +31,6 @@ ROOT_URLCONF = 'core.urls'
 
 
 ########## GENERAL CONFIGURATION
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '3(-(r&8u8t)6-xqk9922i7d9ezaj6u7@5sd&+%4$q=48-5p&(f'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

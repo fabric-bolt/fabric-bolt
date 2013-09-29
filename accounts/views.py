@@ -19,7 +19,9 @@ from . import forms, tables
 
 
 class Login(TemplateView):
-    """ Login view handles generating the login form, login authentication, and redirect after auth """
+    """
+    Login view handles generating the login form, login authentication, and redirect after auth
+    """
 
     template_name = 'accounts/login.html'
 
@@ -36,7 +38,9 @@ class Login(TemplateView):
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        """Verify the correct username and password have been set and let them in if so"""
+        """
+        Verify the correct username and password have been set and let them in if so
+        """
 
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
@@ -55,7 +59,10 @@ class Login(TemplateView):
 
 
 class Logout(TemplateView):
-    """ Logout view calls logout() on the request and redirects to the login screen """
+    """
+    Logout view calls logout() on the request and redirects to the login screen
+    """
+
     template_name = 'accounts/login.html'
 
     def get(self, request, *args, **kwargs):
@@ -179,8 +186,3 @@ class PasswordCreate(FormView):
 
     def post(self, request, *args, **kwargs):
         return password_reset_confirm(request, **kwargs)
-
-    #def form_valid(self, form):
-    #    self.user
-    #    form.save()
-    #    return super(PasswordCreate, self).form_valid(form)
