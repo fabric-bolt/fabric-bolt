@@ -1,9 +1,9 @@
 import django_tables2 as tables
 import models
-from core.mixins.tables import ActionsColumn
+from core.mixins.tables import ActionsColumn, PaginateTable
 
 
-class HostTable(tables.Table):
+class HostTable(PaginateTable):
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
