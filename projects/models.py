@@ -96,7 +96,8 @@ class Configuration(TrackingFields):
 
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500, null=True, blank=True)
-    prompt_me_for_input = models.BooleanField(default=False, help_text='When a deployments you will be asked to input the value at that time.')
+    prompt_me_for_input = models.BooleanField(default=False, help_text='When deploying you will be prompted for this value.')
+    sensitive_value = models.BooleanField(default=False, help_text='Password or other value that should not be stored in the logs.')
 
     # Managers
     objects = models.Manager()
