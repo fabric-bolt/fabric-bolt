@@ -217,6 +217,13 @@ class DeploymentCreate(CreateView):
         self.object.user = self.request.user
         self.object.save()
 
+        configuration_values = {}
+        for key, value in form.cleaned_data.iteritems():
+            if key.startswith('configuration_value_for_'):
+                configuration_values[key.replace('configuration_value_for_', '')] = value
+
+        self.request.session['configuration_values'] = configuration_values
+
         return super(DeploymentCreate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -233,12 +240,13 @@ class DeploymentDetail(DetailView):
     model = models.Deployment
 
 
-config = {'port': '8015', 'ip': '127.0.0.1', 'server_name': "example.com"}
-
 class DeploymentOutputStream(View):
 
     def build_command(self):
         command = 'fab ' + self.object.task.name
+
+        config = self.object.stage.get_configurations()
+        config.update(self.request.session.get('configuration_values', {}))
 
         if config:
             command += ' --set ' + ','.join('{}="{}"'.format(key, value.replace('"', '\\"')) for key, value in config.iteritems())
