@@ -11,16 +11,23 @@ import tables
 
 
 class HostCreate(CreateView):
+    """View for creating a host. Hosts let us know where we can shovel code to."""
+
     model = models.Host
     form_class = forms.HostCreateForm
     template_name_suffix = '_create'
 
     def form_valid(self, form):
-        ret = super(HostCreate, self).form_valid(form)
+        """First call the parent's form valid then let the user know it worked."""
+
+        form_valid_from_parent = super(HostCreate, self).form_valid(form)
         messages.success(self.request, 'Host {} Successfully Created'.format(self.object))
-        return ret
+
+        return form_valid_from_parent
 
     def get_success_url(self):
+        """Send them back to the detail view for that host"""
+
         return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
 
 
@@ -34,11 +41,15 @@ class HostUpdate(UpdateView):
     template_name_suffix = '_update'
 
     def form_valid(self, form):
-        ret = super(HostUpdate, self).form_valid(form)
+        """First call the parent's form valid then let the user know it worked."""
+
+        form_valid_from_parent = super(HostUpdate, self).form_valid(form)
         messages.success(self.request, 'Host {} Successfully Updated'.format(self.object))
-        return ret
+
+        return form_valid_from_parent
 
     def get_success_url(self):
+        """"""
         return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
 
 
