@@ -98,6 +98,12 @@ class UserChange(UpdateView):  # GroupRequiredMixin
     form_class = forms.UserChangeForm
     template_name = 'accounts/deployuser_change.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(UserChange, self).get_form_kwargs()
+        kwargs['user_is_admin'] = self.request.user.user_is_admin()
+
+        return kwargs
+
 
 # Admin Add Users (modal)
 class UserAdd(CreateView):  # GroupRequiredMixin
