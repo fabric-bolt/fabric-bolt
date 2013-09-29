@@ -441,6 +441,11 @@ class ProjectStageView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
+        #deployment table
+        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage=self.object).select_related('stage', 'task'), prefix='deploy_')
+        RequestConfig(self.request).configure(deployment_table)
+        context['deployment_table'] = deployment_table
+
         all_tasks = get_fabric_tasks(self.request)
 
         context['all_tasks'] = all_tasks.keys()
