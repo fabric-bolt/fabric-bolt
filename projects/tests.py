@@ -149,3 +149,53 @@ class SimpleTest(TestCase):
 
         result = c.get(reverse('projects_stage_view', args=(self.project.pk, self.stage.pk)))
         self.assertEqual(result.status_code, 200)
+
+    def test_stage_configuration_cram_a_lam(self):
+        """Let's make sure our configuration mashing together works as expected"""
+        project_configs = [
+            {'key': 'number1', 'value': '100'},
+            {'key': 'number2', 'value': '200'},
+            {'key': 'number3', 'value': '300'},
+            {'key': 'number4', 'value': '400'},
+        ]
+
+        for config in project_configs:
+            c = models.Configuration()
+            c.project = self.project
+            c.key = config['key']
+            c.value = config['value']
+            c.save()
+
+        configurations_round_one = self.stage.get_configurations()
+
+        # These should be what we're expecting
+        self.assertEqual(configurations_round_one['number1'], '100')
+        self.assertEqual(configurations_round_one['number2'], '200')
+        self.assertEqual(configurations_round_one['number3'], '300')
+        self.assertEqual(configurations_round_one['number4'], '400')
+
+        stage_configs = [
+
+            {'key': 'number2', 'value': '5'},
+            {'key': 'number3', 'value': '4'},
+            {'key': 'number4', 'value': '3'},
+        ]
+
+        for config in stage_configs:
+            c = models.Configuration()
+            c.project = self.project
+            c.stage = self.stage
+            c.key = config['key']
+            c.value = config['value']
+            c.save()
+
+        configurations = self.stage.get_configurations()
+
+        # The stage configs take the cake over project configs
+        self.assertEqual(configurations['number1'], '100')
+        self.assertEqual(configurations['number2'], '5')
+        self.assertEqual(configurations['number3'], '4')
+        self.assertEqual(configurations['number4'], '3')
+
+
+

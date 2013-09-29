@@ -2,6 +2,9 @@ language: python
 python:
  - "2.7"
 
+notifications:
+    email: false
+
 install:
     - pip install -r requirements/local.txt --use-mirrors
 
@@ -9,3 +12,4 @@ script:
     - python manage.py syncdb
     - python manage.py migrate
     - python manage.py test projects hosts accounts
+
