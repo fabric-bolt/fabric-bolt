@@ -9,7 +9,6 @@ Get your magical code magically deployed with the help of our nine tailed friend
 
 ## Examples Screens
 
-![image](docs/images/project_dashboard.png)
 ![image](docs/images/Screen Shot 2013-09-29 at 7.34.45 PM.png)
 ![image](docs/images/Screen Shot 2013-09-29 at 7.35.16 PM.png)
 ![image](docs/images/Screen Shot 2013-09-29 at 7.35.44 PM.png)
