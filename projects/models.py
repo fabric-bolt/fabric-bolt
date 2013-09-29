@@ -90,9 +90,6 @@ class Stage(TrackingFields):
         return p_list
 
 
-
-
-
 class Configuration(TrackingFields):
     project = models.ForeignKey(Project)
     stage = models.ForeignKey(Stage, null=True, blank=True)
@@ -133,6 +130,7 @@ class Deployment(TrackingFields):
     status = models.CharField(choices=STATUS, max_length=10, default=PENDING)
     output = models.TextField(null=True, blank=True)
     task = models.ForeignKey('projects.Task')
+    configuration = models.TextField(null=True, blank=True)
 
     # Managers
     objects = models.Manager()
