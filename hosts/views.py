@@ -24,8 +24,7 @@ class HostCreate(CreateView):
         return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
 
 
-class HostList(SingleTableView):
-    table_class = tables.HostTable
+class HostDetail(DetailView):
     model = models.Host
 
 
@@ -43,10 +42,6 @@ class HostUpdate(UpdateView):
         return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
 
 
-class HostDetail(DetailView):
-    model = models.Host
-
-
 class HostDelete(DeleteView):
     model = models.Host
     success_url = reverse_lazy('hosts_host_list')
@@ -54,3 +49,10 @@ class HostDelete(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Host {} Successfully Deleted'.format(self.get_object()))
         return super(HostDelete, self).delete(self, request, *args, **kwargs)
+
+
+class HostList(SingleTableView):
+    table_class = tables.HostTable
+    model = models.Host
+
+
