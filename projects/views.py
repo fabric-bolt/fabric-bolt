@@ -211,7 +211,7 @@ class ProjectConfigurationDelete(DeleteView):
 
         obj = self.get_object()
 
-        # Save where I was before I go an delete myself
+        # Save where I was before I go and delete myself
         self.project_id = obj.project.pk
         self.stage_id = obj.stage.pk if obj.stage else None
 
@@ -240,6 +240,7 @@ class DeploymentCreate(CreateView):
 
     def get_form(self, form_class):
 
+        # TODO: Fix this to show all configs
         stage_configurations = self.stage.stage_configurations().all()
 
         form = form_class(**self.get_form_kwargs())
@@ -287,12 +288,9 @@ class DeploymentCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = super(DeploymentCreate, self).get_context_data(**kwargs)
 
-        ## We want to inject fields into the form not prompted for
-        #for config in stage_configurations.exclude(prompt_me_for_input=True):
-        #    str_config_key = 'configuration_value_for_{}'.format(config.key)
-        #    #form.fields[str_config_key] = CharField()
-        #    form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, Field(str_config_key, template="custom-slider.html"))
-
+        # TODO: Fix this to show all configs
+        stage_configurations = self.stage.stage_configurations().all()
+        context['configs'] = stage_configurations.exclude(prompt_me_for_input=True)
         context['stage'] = self.stage
         context['task_name'] = self.kwargs['task_name']
         return context
