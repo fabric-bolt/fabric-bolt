@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView, RedirectView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
-from django.forms import CharField, PasswordInput
+from django.forms import CharField, PasswordInput, Select, FloatField, BooleanField
 
 from crispy_forms.layout import Field
 
@@ -208,10 +208,16 @@ class DeploymentCreate(CreateView):
         for config in stage_configurations.filter(prompt_me_for_input=True):
             str_config_key = 'configuration_value_for_{}'.format(config.key)
 
-            if config.sensitive_value:
-                form.fields[str_config_key] = CharField(widget=PasswordInput)
+            if config.data_type == config.BOOLEAN_TYPE:
+                form.fields[str_config_key] = BooleanField(widget=Select(choices=((False, 'False'), (True, 'True'))))
+                form.fields[str_config_key].coerce=lambda x: x == 'True',
+            elif config.data_type == config.NUMBER_TYPE:
+                form.fields[str_config_key] = FloatField()
             else:
-                form.fields[str_config_key] = CharField()
+                if config.sensitive_value:
+                    form.fields[str_config_key] = CharField(widget=PasswordInput)
+                else:
+                    form.fields[str_config_key] = CharField()
 
             form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
 
