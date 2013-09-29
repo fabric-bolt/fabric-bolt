@@ -69,6 +69,7 @@ class UserChangeForm(forms.ModelForm):
         # form instance and initial values
         initial = kwargs.get('initial', {})
         instance = kwargs.get('instance', {})
+        user_is_admin = kwargs.pop('user_is_admin', False)
 
         # Set initial values for the non-model questions
         if instance:
@@ -88,7 +89,7 @@ class UserChangeForm(forms.ModelForm):
         self.fields['date_joined'].required = False
         self.fields['template'].required = False
 
-        if not self.instance.user_is_admin():
+        if not user_is_admin:
             self.fields.pop('user_level', None)
             self.fields.pop('is_active', None)
 
