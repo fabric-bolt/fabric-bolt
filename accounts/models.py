@@ -25,15 +25,17 @@ class DeployUser(AbstractEmailUser):
     """
     Custom user class for deployments. Email as username using django-custom-user.
     """
-    DEFAULT = 'bootstrap.min.css'
+    SLATE = 'slate.min.css'
     AMELIA = 'amelia.min.css'
     CERULEAN = 'cerulean.min.css'
     SIMPLEX = 'simplex.min.css'
     FLATLY = 'flatly.min.css'
     READABLE = 'readable.min.css'
     JOURNAL = 'journal.min.css'
+    DEFAULT = FLATLY
+
     TEMPLATES = (
-        (DEFAULT, 'Slate'),
+        (SLATE, 'Slate'),
         (AMELIA, 'Amelia'),
         (CERULEAN, 'Cerulean'),
         (SIMPLEX, 'Simplex'),

@@ -22,6 +22,7 @@ class ProjectTable(PaginateTable):
     ], delimiter='&#160;&#160;&#160;')
 
     name = tables.LinkColumn('projects_project_view', kwargs={'pk': tables.A('pk')})
+    deployments = tables.Column(accessor='get_deployment_count', verbose_name='# Deployments', orderable=False)
 
     class Meta:
         model = models.Project
@@ -29,7 +30,7 @@ class ProjectTable(PaginateTable):
         sequence = fields = (
             'name',
             'type',
-            'number_of_deployments',
+            'deployments',
         )
 
 
