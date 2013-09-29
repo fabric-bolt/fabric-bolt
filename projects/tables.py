@@ -36,6 +36,7 @@ class ConfigurationTable(PaginateTable):
     ], delimiter='&#160;&#160;&#160;')
 
     key = tables.LinkColumn('projects_configuration_update', kwargs={'pk': tables.A('pk')})
+    value = tables.Column(accessor='get_value', orderable=False)
     prompt_me_for_input = tables.BooleanColumn(verbose_name="Prompt?",)
     sensitive_value = tables.BooleanColumn(verbose_name="Sensitive?",)
 
