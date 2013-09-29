@@ -88,6 +88,10 @@ class UserChangeForm(forms.ModelForm):
         self.fields['date_joined'].required = False
         self.fields['template'].required = False
 
+        if not self.instance.user_is_admin():
+            self.fields.pop('user_level', None)
+            self.fields.pop('is_active', None)
+
         f = self.fields.get('user_permissions', None)
         if f is not None:
             f.queryset = f.queryset.select_related('content_type')
@@ -113,8 +117,9 @@ class UserChangeForm(forms.ModelForm):
             instance.save()
 
             # Assign user to selected group
-            instance.groups.clear()
-            instance.groups.add(Group.objects.get(id=self.cleaned_data['user_level']))
+            if self.cleaned_data.get('user_level', False):
+                instance.groups.clear()
+                instance.groups.add(Group.objects.get(id=self.cleaned_data['user_level']))
 
             # Set staff status based on user group
             instance.is_staff = instance.user_is_admin()
