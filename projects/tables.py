@@ -105,7 +105,7 @@ class DeploymentTable(PaginateTable):
     task_name = tables.Column(accessor='task.name', verbose_name='Task')
 
     #Prettify the status
-    status = tables.TemplateColumn('<span class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}">{{ record.get_status_display }}</span>')
+    status = tables.TemplateColumn('<span style="font-size:13px;" class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}"><i class="glyphicon glyphicon-{% if record.status == "success" %}ok{% elif record.status == "failed" %}warning-sign{% else %}time{% endif %}"></i> &#160;{{ record.get_status_display }}</span>')
 
     class Meta:
         model = models.Deployment
