@@ -2,7 +2,7 @@ import django_tables2 as tables
 
 from core.mixins.tables import ActionsColumn, PaginateTable
 
-from hosts.tables import HostTable
+from hosts.models import Host
 
 from . import models
 
@@ -100,14 +100,16 @@ class DeploymentTable(PaginateTable):
         )
 
 
-class StageHostTable(HostTable):
+class StageHostTable(tables.Table):
 
-    def __init__(self):
-        super(StageHostTable, self).__init__()
+    actions = ActionsColumn([
+        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_unmaphost', 'args': [tables.A('pk'),], #tables.A('stage_set.pk'),
+         'attrs':{'data-toggle': 'tooltip', 'title': 'Remove Host from Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+    ], delimiter='&#160;&#160;&#160;')
 
-        self.actions = ActionsColumn([
-            {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('pk')],
-             'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-            {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_unmaphost', 'args': [tables.A('pk')],
-             'attrs':{'data-toggle': 'tooltip', 'title': 'Unmap Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-        ], delimiter='&#160;&#160;&#160;')
+    class Meta:
+        model = Host
+        attrs = {"class": "table table-striped"}
+        exclude = ('id',)

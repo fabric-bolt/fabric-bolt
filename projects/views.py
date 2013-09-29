@@ -18,7 +18,6 @@ from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
 from fabric.main import find_fabfile, load_fabfile, _task_names
 
-from hosts.tables import HostTable
 from hosts.models import Host
 
 import models
@@ -352,7 +351,7 @@ class ProjectStageView(DetailView):
         # Hosts Table
         stage_hosts = [host.pk for host in self.object.hosts.all()]
 
-        host_table = HostTable(Host.objects.filter(pk__in=stage_hosts))
+        host_table = tables.StageHostTable(Host.objects.filter(pk__in=stage_hosts))
         RequestConfig(self.request).configure(host_table)
         context['hosts'] = host_table
 
@@ -410,10 +409,10 @@ class ProjectStageUnmapHost(RedirectView):
         self.stage_id = kwargs.get('pk')
         host_id = kwargs.get('host_id')
 
-        stage = models.Stage.objects.get(pk=self.stage_id)
-        stage.hosts.remove(Host.objects.get(pk=host_id))
+        self.stage = models.Stage.objects.get(pk=self.stage_id)
+        self.stage.hosts.remove(Host.objects.get(pk=host_id))
 
         return super(ProjectStageUnmapHost, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        return reverse('projects_stage_view', args=(self.project_id, self.stage_id,))
+        return reverse('projects_stage_view', args=(self.stage.project.pk, self.stage_id,))
