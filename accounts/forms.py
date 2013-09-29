@@ -29,7 +29,7 @@ class LoginForm(forms.Form):
     helper.layout = Layout(
         Fieldset(
             'Please Login',
-            Field('email', placeholder='demo@example.com'),
+            Field('email', placeholder='demo@worthwhile.com'),
             Field('password', placeholder='123456'),
         ),
         FormActions(
