@@ -322,7 +322,7 @@ class DeploymentOutputStream(View):
 
         # Get the dictionary of configurations for this stage
         config = self.object.stage.get_configurations()
-        
+
         config.update(self.request.session.get('configuration_values', {}))
 
         # Take the special env variables out
