@@ -2,8 +2,7 @@ import time
 import datetime
 import subprocess
 import sys
-from fabric.main import find_fabfile, load_fabfile, _task_names
-
+import pipes
 
 from django.http import StreamingHttpResponse, HttpResponseRedirect
 from django.contrib import messages
@@ -14,10 +13,21 @@ from django.forms import CharField
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
+from fabric.main import find_fabfile, load_fabfile, _task_names
 
 import models
 import forms
 import tables
+
+
+def get_fabric_tasks(request):
+    try:
+        docstring, callables, default = load_fabfile(find_fabfile(None))
+        all_tasks = sorted(_task_names(callables))
+    except Exception as e:
+        messages.error(request, 'Error loading fabfile: ' + e.message)
+        all_tasks = []
+    return all_tasks
 
 
 class BaseGetProjectCreateView(CreateView):
@@ -147,7 +157,7 @@ class ProjectConfigurationDelete(DeleteView):
         if self.stage_id:
             url = reverse('projects_stage_view', args=(self.project_id, self.stage_id))
         else:
-            url = reverse('projects_project_view', args=(self.project_id))
+            url = reverse('projects_project_view', args=(self.project_id,))
 
         return url
 
@@ -171,23 +181,27 @@ class DeploymentCreate(CreateView):
         #save the stage for later
         self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
 
+        all_tasks = get_fabric_tasks(self.request)
+        if self.kwargs['task_name'] not in all_tasks:
+            messages.error(self.request, '"{}" is not a valid task.'. format(self.kwargs['task_name']))
+            return HttpResponseRedirect(reverse('projects_stage_view', kwargs={'project_id': self.stage.project_id, 'pk': self.stage.pk }))
+
         return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class):
 
         stage_configurations = self.stage.stage_configurations().filter(prompt_me_for_input=True)
 
+        form = form_class(**self.get_form_kwargs())
+
         for config in stage_configurations:
 
             # We want to inject fields into the form for the configurations they've marked as prompt for
             str_config_key = 'configuration_value_for_{}'.format(config.key)
 
-            form_class._meta.fields.append(str_config_key)
-            form_class.helper.layout.fields.insert(len(form_class.helper.layout.fields)-1, str_config_key)
-            #form_class.declared_fields['extra_field_{}'.format(config.key)] = CharField()
-            form_class.base_fields[str_config_key] = CharField()
+            form.fields[str_config_key] = CharField()
 
-        form = form_class(**self.get_form_kwargs())
+            form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
 
         return form
 
@@ -219,10 +233,23 @@ class DeploymentDetail(DetailView):
     model = models.Deployment
 
 
+config = {'port': '8015', 'ip': '127.0.0.1', 'server_name': "example.com"}
+
 class DeploymentOutputStream(View):
 
+    def build_command(self):
+        command = 'fab ' + self.object.task.name
+
+        if config:
+            command += ' --set ' + ','.join('{}="{}"'.format(key, value.replace('"', '\\"')) for key, value in config.iteritems())
+
+        return command
+
     def output_stream_generator(self):
-        process = subprocess.Popen('fab ' + self.object.task.name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if self.object.task.name not in get_fabric_tasks(self.request):
+            return
+
+        process = subprocess.Popen(self.build_command(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         all_output = ''
         while True:
@@ -280,12 +307,7 @@ class ProjectStageView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
-        try:
-            docstring, callables, default = load_fabfile(find_fabfile(None))
-            all_tasks = sorted(_task_names(callables))
-        except Exception as e:
-            messages.error(self.request, 'Error loading fabfile: ' + e.message)
-            all_tasks = []
+        all_tasks = get_fabric_tasks(self.request)
 
         context['all_tasks'] = all_tasks
         context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')[:3]
