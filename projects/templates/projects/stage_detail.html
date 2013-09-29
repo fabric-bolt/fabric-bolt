@@ -75,7 +75,7 @@
                 </div>
 
                 <div class="panel-footer">
-                    <a class="btn btn-default btn-sm" href="{% url 'projects_configuration_stage_create' object.project.pk object.pk %}">
+                    <a class="btn btn-default btn-sm js-add-host" href="{% url 'projects_stage_maphost' object.project.pk object.pk 'host_id' %}">
                         <i class="glyphicon glyphicon-plus-sign"></i>
                         Add Stage Host
                     </a>
@@ -86,6 +86,7 @@
                             <option value="{{ host.pk }}">{{ host.name }}</option>
                         {% endfor %}
                     </select>
+                    <span id="select_host_msg" style="display: none;">Please Select Host</span>
                 </div>
             </div>
         </div>
@@ -118,11 +119,29 @@
 
     {% addtoblock "js" %}
         <script>
-            $(function(){
-                $('#all_tasks_dropdown').change(function(){
-                    document.location = $(this).val();
+            (function($){
+                $(function(){
+                    $('#all_tasks_dropdown').change(function(){
+                        document.location = $(this).val();
+                    });
+
+                    $('.js-add-host').click(function(event){
+                        event.preventDefault();
+
+                        var link = $(this)
+                        , host = $('#stage_host').val();
+
+                        if(host===''){
+                            $('#select_host_msg').show();
+                            return false;
+                        }else{
+                            $('#select_host_msg').hide();
+                        }
+
+                        location.href = link.attr('href').replace('host_id', host);
+                    });
                 });
-            });
+            }(jQuery));
         </script>
     {% endaddtoblock %}
 

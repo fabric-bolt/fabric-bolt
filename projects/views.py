@@ -7,7 +7,7 @@ import pipes
 from django.http import StreamingHttpResponse, HttpResponseRedirect
 from django.db.models.aggregates import Count
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
+from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView, RedirectView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.forms import CharField, PasswordInput
@@ -348,8 +348,8 @@ class ProjectStageView(DetailView):
         RequestConfig(self.request).configure(host_table)
         context['hosts'] = host_table
 
-        #context['available_hosts'] = Host.objects.exclude(id__in=self.object.hosts).all()
-        
+        context['available_hosts'] = Host.objects.exclude(id__in=[host.pk for host in self.object.hosts.all()]).all()
+
         # Configuration Table
         configuration_table = tables.ConfigurationTable(self.object.stage_configurations())
         RequestConfig(self.request).configure(configuration_table)
@@ -373,3 +373,21 @@ class ProjectStageDelete(DeleteView):
 
         messages.add_message(request, messages.WARNING, 'Stage {} Successfully Deleted'.format(self.object))
         return HttpResponseRedirect(reverse('projects_project_view', args=(self.object.project.pk,)))
+
+
+class ProjectStageMapHost(RedirectView):
+
+    permanent = False
+
+    def get(self, request, *args, **kwargs):
+        self.project_id = kwargs.get('project_id')
+        self.stage_id = kwargs.get('pk')
+        host_id = kwargs.get('host_id')
+
+        stage = models.Stage.objects.get(pk=self.stage_id)
+        stage.hosts.add(Host.objects.get(pk=host_id))
+
+        return super(ProjectStageMapHost, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('projects_stage_view', args=(self.project_id, self.stage_id,))
