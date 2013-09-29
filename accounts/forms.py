@@ -4,7 +4,7 @@ import random
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -184,6 +184,22 @@ class UserPasswordChangeForm(PasswordChangeForm):
     helper.field_class = 'col-md-8'
     helper.layout = Layout(
         Field('old_password'),
+        Field('new_password1'),
+        Field('new_password2'),
+        FormActions(
+            Submit('btnSubmit', 'Submit', css_class="button btn-primary pull-right"),
+        ),
+    )
+
+
+class UserPasswordCreateForm(SetPasswordForm):
+
+    # Form Layout
+    helper = FormHelper()
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-md-4'
+    helper.field_class = 'col-md-8'
+    helper.layout = Layout(
         Field('new_password1'),
         Field('new_password2'),
         FormActions(
