@@ -329,11 +329,13 @@ class DeploymentOutputStream(View):
         
         config.update(self.request.session.get('configuration_values', {}))
 
+        command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
+
         # Take the special env variables out
-        normal_options = list(set(config.keys()) - set(fabric_special_options))
+        normal_options = list(set(config.keys()) - set(command_to_config.keys()))
 
         # Special ones get set a different way
-        special_options = list(set(config.keys()) & set(fabric_special_options))
+        special_options = list(set(config.keys()) & set(command_to_config.keys()))
 
         def get_key_value_string(key, value):
             if isinstance(value, bool):
@@ -347,7 +349,7 @@ class DeploymentOutputStream(View):
             command += ' --set ' + ','.join(get_key_value_string(key, config[key]) for key in normal_options)
 
         if special_options:
-            command += ' ' + ' '.join('--' + get_key_value_string(key, config[key]) for key in special_options)
+            command += ' ' + ' '.join('--' + get_key_value_string(command_to_config[key], config[key]) for key in special_options)
 
         return command
 
