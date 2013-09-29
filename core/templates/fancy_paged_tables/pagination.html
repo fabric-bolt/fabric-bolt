@@ -30,7 +30,7 @@
                 Items per page
                 <select id="per_page" name="per_page" class="input-mini" onchange="window.location=this.options[this.selectedIndex].value">
                     {% for i in table.per_page_options %}
-                        <option value="{% querystring "per_page"=i %}" {% if i == table.per_page %}selected="selected"{% endif %}>
+                        <option value="{% querystring table.prefix|add:"per_page"=i %}" {% if i == table.per_page %}selected="selected"{% endif %}>
                             {{ i }}
                         </option>
                     {% endfor %}
@@ -50,7 +50,7 @@
                     {% block pagination.navigation.previouslink %}
                         {% with disabled=table.page.has_previous|yesno:", unavailable disabled,"%}
                             <li class="prev arrow{{ disabled }}">
-                                <a href="{% if table.page.has_previous %}{% querystring 'page'=table.page.previous_page_number %}{{ getvars }}{% endif %}">
+                                <a href="{% if table.page.has_previous %}{% querystring table.prefix|add:'page'=table.page.previous_page_number %}{{ getvars }}{% endif %}">
                                     {{ previous_link_decorator|safe }}&laquo;
                                 </a>
                             </li>
@@ -72,7 +72,7 @@
                             {% ifequal page table.page.number %}
                                 <li class="active current"><a href="#">{{ page }}</a></li>
                             {% else %}
-                                <li><a href="{% querystring 'page'=page %}{{ getvars }}">{{ page }}</a></li>
+                                <li><a href="{% querystring table.prefix|add:'page'=page %}{{ getvars }}">{{ page }}</a></li>
                             {% endifequal %}
                         {% endfor %}
                     {% endblock pagination.navigation.pagelinks %}
@@ -84,7 +84,7 @@
                                 <span class="ellipsis">...</span>
                             </li>
                             <li>
-                                <a href="{% querystring 'page'=table.page.paginator.num_pages %}">{{ table.page.paginator.num_pages }}</a>
+                                <a href="{% querystring table.prefix|add:'page'=table.page.paginator.num_pages %}">{{ table.page.paginator.num_pages }}</a>
                             </li>
                         {% endif %}
                     {% endblock pagination.navigation.lastlink %}
@@ -93,7 +93,7 @@
                     {% block pagination.navigation.nextlink %}
                         {% with disabled=table.page.has_next|yesno:", unavailable disabled,"%}
                             <li class="next arrow{{ disabled }}">
-                                <a href="{% if table.page.has_next %}{% querystring 'page'=table.page.next_page_number %}{{ getvars }}{% endif %}">
+                                <a href="{% if table.page.has_next %}{% querystring table.prefix|add:'page'=table.page.next_page_number %}{{ getvars }}{% endif %}">
                                     &raquo;{{ next_link_decorator|safe }}
                                 </a>
                             </li>
