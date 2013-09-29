@@ -82,14 +82,14 @@ class Stage(TrackingFields):
 
         # Create project specific configurations dictionary
         for config in project_configurations:
-            project_configurations_dictionary[config.key] = config.value
+            project_configurations_dictionary[config.key] = config.get_value()
 
         stage_configurations_dictionary = {}
         stage_configurations = self.stage_configurations()
 
         # Create stage specific configurations dictionary
         for s in stage_configurations:
-            stage_configurations_dictionary[s.key] = s.value
+            stage_configurations_dictionary[s.key] = s.get_value()
 
         # override project specific configuration with the ones in the stage if they are there
         project_configurations_dictionary.update(stage_configurations_dictionary)

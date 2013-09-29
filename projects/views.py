@@ -26,6 +26,10 @@ import forms
 import tables
 
 
+fabric_special_options = ['no_agent', 'forward-agent', 'abort-on-prompts', 'config', 'disable-known-hosts', 'keepalive',
+                          'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
+                          'command-timeout', 'user', 'warn-only', 'pool-size']
+
 def get_fabric_tasks(request):
     try:
         docstring, callables, default = load_fabfile(find_fabfile(None))
@@ -262,8 +266,22 @@ class DeploymentOutputStream(View):
         config = self.object.stage.get_configurations()
         config.update(self.request.session.get('configuration_values', {}))
 
-        if config:
-            command += ' --set ' + ','.join('{}="{}"'.format(key, value.replace('"', '\\"')) for key, value in config.iteritems())
+        normal_options = list(set(config.keys()) - set(fabric_special_options))
+        special_options = list(set(config.keys()) & set(fabric_special_options))
+
+        def get_key_value_string(key, value):
+            if isinstance(value, bool):
+                return key + ('' if value else '=')
+            elif isinstance(value, float):
+                return key + '=' + str(value)
+            else:
+                return '{}="{}"'.format(key, value.replace('"', '\\"'))
+
+        if normal_options:
+            command += ' --set ' + ','.join(get_key_value_string(key, config[key]) for key in normal_options)
+
+        if special_options:
+            command += ' ' + ' '.join('--' + get_key_value_string(key, config[key]) for key in special_options)
 
         return command
 
