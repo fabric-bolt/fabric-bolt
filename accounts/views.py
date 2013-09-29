@@ -71,7 +71,7 @@ class Logout(TemplateView):
 # Admin: List Users
 class UserList(ListView):  # GroupRequiredMixin
     """ List of users. Uses UserFilter and UserTable. """
-    
+
     group_required = 'Admin'
     template_name = 'accounts/user_list.html'
     table_class = tables.UserListTable
