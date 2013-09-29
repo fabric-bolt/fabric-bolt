@@ -185,6 +185,7 @@ class Deployment(TrackingFields):
 class Task(models.Model):
     name = models.CharField(max_length=255)
     times_used = models.PositiveIntegerField(default=1)
+    description = models.CharField(max_length=1000, null=True, blank=True)
 
     def __unicode__(self):
         return '{} ({})'.format(self.name, self.times_used)

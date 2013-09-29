@@ -16,7 +16,7 @@ from django.forms import CharField, PasswordInput, Select, FloatField, BooleanFi
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
-from fabric.main import find_fabfile, load_fabfile, _task_names
+from fabric.main import find_fabfile, load_fabfile, _task_names, _normal_list, state
 
 from hosts.models import Host
 
@@ -25,7 +25,7 @@ import forms
 import tables
 
 # These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
-fabric_special_options = ['no_agent', 'forward-agent', 'abort-on-prompts', 'config', 'disable-known-hosts', 'keepalive',
+fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',
                           'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
                           'command-timeout', 'user', 'warn-only', 'pool-size']
 
@@ -36,11 +36,12 @@ def get_fabric_tasks(request):
     """
     try:
         docstring, callables, default = load_fabfile(find_fabfile(None))
-        all_tasks = sorted(_task_names(callables))
+        all_tasks = _task_names(callables)
+        dict_with_docs = {task: callables[task].__doc__ for task in all_tasks}
     except Exception as e:
         messages.error(request, 'Error loading fabfile: ' + e.message)
-        all_tasks = []
-    return all_tasks
+        dict_with_docs = {}
+    return dict_with_docs
 
 
 class BaseGetProjectCreateView(CreateView):
@@ -236,6 +237,9 @@ class DeploymentCreate(CreateView):
             messages.error(self.request, '"{}" is not a valid task.'. format(self.kwargs['task_name']))
             return HttpResponseRedirect(reverse('projects_stage_view', kwargs={'project_id': self.stage.project_id, 'pk': self.stage.pk }))
 
+        self.task_name = self.kwargs['task_name']
+        self.task_description = all_tasks.get(self.task_name, None)
+
         return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class):
@@ -268,9 +272,10 @@ class DeploymentCreate(CreateView):
         self.object = form.save(commit=False)
         self.object.stage = self.stage
 
-        self.object.task, created = models.Task.objects.get_or_create(name=self.kwargs['task_name'])
+        self.object.task, created = models.Task.objects.get_or_create(name=self.task_name, defaults={'description': self.task_description})
         if not created:
             self.object.task.times_used += 1
+            self.object.task.description = self.task_description
             self.object.task.save()
 
         self.object.user = self.request.user
@@ -292,7 +297,8 @@ class DeploymentCreate(CreateView):
         stage_configurations = self.stage.stage_configurations().all()
         context['configs'] = stage_configurations.exclude(prompt_me_for_input=True)
         context['stage'] = self.stage
-        context['task_name'] = self.kwargs['task_name']
+        context['task_name'] = self.task_name
+        context['task_description'] = self.task_description
         return context
 
     def get_success_url(self):
@@ -312,7 +318,7 @@ class DeploymentOutputStream(View):
     """
 
     def build_command(self):
-        command = 'fab ' + self.object.task.name
+        command = 'fab ' + self.object.task.name + ' --abort-on-prompts'
 
         config = self.object.stage.get_configurations()
         config.update(self.request.session.get('configuration_values', {}))
@@ -340,22 +346,30 @@ class DeploymentOutputStream(View):
         if self.object.task.name not in get_fabric_tasks(self.request):
             return
 
-        process = subprocess.Popen(self.build_command(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        try:
+            process = subprocess.Popen(self.build_command(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        all_output = ''
-        while True:
-            nextline = process.stdout.readline()
-            if nextline == '' and process.poll() != None:
-                yield '<span id="finished"></span> {}'.format(' '*1024)
-                break
+            all_output = ''
+            while True:
+                nextline = process.stdout.readline()
+                if nextline == '' and process.poll() != None:
+                    break
 
-            all_output += nextline
-            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(nextline, ' '*1024)
-            sys.stdout.flush()
+                all_output += nextline
+                yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(nextline, ' '*1024)
+                sys.stdout.flush()
 
-        self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
-        self.object.output = all_output
-        self.object.save()
+            self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
+
+            yield '<span id="finished" style="display:none;">{}</span> {}'.format(self.object.status, ' '*1024)
+
+            self.object.output = all_output
+            self.object.save()
+
+        except Exception as e:
+            message = "An error occurred: " + e.message
+            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(message, ' '*1024)
+            yield '<span id="finished" style="display:none;">failed</span> {}'.format('*1024')
 
     def get(self, request, *args, **kwargs):
         self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']), status=models.Deployment.PENDING)
@@ -421,8 +435,8 @@ class ProjectStageView(DetailView):
 
         all_tasks = get_fabric_tasks(self.request)
 
-        context['all_tasks'] = all_tasks
-        context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')[:3]
+        context['all_tasks'] = all_tasks.keys()
+        context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks.keys()).order_by('-times_used')[:3]
 
         return context
 
