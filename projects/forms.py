@@ -47,24 +47,36 @@ class ConfigurationUpdateForm(forms.ModelForm):
         model = models.Configuration
         fields = [
             'key',
+            'data_type',
             'value',
+            'value_number',
+            'value_boolean',
             'prompt_me_for_input',
             'sensitive_value',
         ]
+        widgets = {'value_boolean': forms.Select(choices=((True, 'True'), (False, 'False')))}
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
             'key',
+            'data_type',
             'value',
+            'value_number',
+            'value_boolean',
             'prompt_me_for_input',
             'sensitive_value',
             ButtonHolder(
-                Submit('submit', '%s Configuration' % self.button_prefix, css_class='button')
+                Submit('submit', '%s Configuration' % self.button_prefix, css_class='btn')
             )
         )
 
         super(ConfigurationUpdateForm, self).__init__(*args, **kwargs)
+
+        self.fields['data_type'].required = True
 
 
 class ConfigurationCreateForm(ConfigurationUpdateForm):

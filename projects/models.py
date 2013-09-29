@@ -111,7 +111,7 @@ class Configuration(TrackingFields):
     value = models.CharField(max_length=500, null=True, blank=True)
     value_number = models.FloatField(verbose_name='Value', null=True, blank=True)
     value_boolean = models.BooleanField(verbose_name='Value')
-    date_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10)
+    data_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10, default=STRING_TYPE)
 
     prompt_me_for_input = models.BooleanField(default=False, help_text='When deploying you will be prompted for this value.')
     sensitive_value = models.BooleanField(default=False, help_text='Password or other value that should not be stored in the logs.')
