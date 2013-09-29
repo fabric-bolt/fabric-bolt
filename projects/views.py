@@ -9,7 +9,9 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
-from django.forms import CharField
+from django.forms import CharField, PasswordInput
+
+from crispy_forms.layout import Field
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
@@ -190,18 +192,26 @@ class DeploymentCreate(CreateView):
 
     def get_form(self, form_class):
 
-        stage_configurations = self.stage.stage_configurations().filter(prompt_me_for_input=True)
+        stage_configurations = self.stage.stage_configurations().all()
 
         form = form_class(**self.get_form_kwargs())
 
-        for config in stage_configurations:
-
-            # We want to inject fields into the form for the configurations they've marked as prompt for
+        # We want to inject fields into the form for the configurations they've marked as prompt for
+        for config in stage_configurations.filter(prompt_me_for_input=True):
             str_config_key = 'configuration_value_for_{}'.format(config.key)
 
-            form.fields[str_config_key] = CharField()
+            if config.sensitive_value:
+                form.fields[str_config_key] = CharField(widget=PasswordInput)
+            else:
+                form.fields[str_config_key] = CharField()
 
             form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
+
+        ## We want to inject fields into the form not prompted for
+        #for config in stage_configurations.exclude(prompt_me_for_input=True):
+        #    str_config_key = 'configuration_value_for_{}'.format(config.key)
+        #    #form.fields[str_config_key] = CharField()
+        #    form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, Field(str_config_key, template="custom-slider.html"))
 
         return form
 
