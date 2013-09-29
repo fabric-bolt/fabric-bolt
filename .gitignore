@@ -59,4 +59,4 @@ atlassian-ide-plugin.xml
 
 production.py
 scripts
-fabfile.py
+worthwhile_fabfile.py
