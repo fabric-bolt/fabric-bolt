@@ -77,7 +77,7 @@ class ConfigurationUpdateForm(forms.ModelForm):
         super(ConfigurationUpdateForm, self).__init__(*args, **kwargs)
 
         self.fields['data_type'].required = True
-        self.fields['value_boolean'].coerce=lambda x: x == 'True',
+        self.fields['value_boolean'].coerce = lambda x: x == 'True'
 
 
 class ConfigurationCreateForm(ConfigurationUpdateForm):
