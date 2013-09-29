@@ -198,7 +198,7 @@ class DeploymentDetail(DetailView):
 class DeploymentOutputStream(View):
 
     def output_stream_generator(self):
-        process = subprocess.Popen('ls -l /*', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.Popen('fab ' + self.object.task.name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         all_output = ''
         while True:
@@ -208,7 +208,7 @@ class DeploymentOutputStream(View):
                 break
 
             all_output += nextline
-            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">$ {} </span><br /> {}'.format(nextline, ' '*1024)
+            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(nextline, ' '*1024)
             sys.stdout.flush()
 
         self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
