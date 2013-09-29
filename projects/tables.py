@@ -57,8 +57,8 @@ class StageTable(PaginateTable):
          'attrs':{'data-toggle': 'tooltip', 'title': 'Delete Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ], delimiter='&#160;&#160;&#160;')
 
-    hosts = tables.Column(accessor='host_set.all.count', verbose_name='# Hosts')
-    deployments = tables.Column(accessor='deployment_set.all.count', verbose_name='# Deployments')
+    hosts = tables.Column(accessor='host_count', verbose_name='# Hosts')
+    deployments = tables.Column(accessor='deployment_count', verbose_name='# Deployments', order_by='deployment_count')
 
     class Meta:
         model = models.Stage
@@ -71,13 +71,14 @@ class StageTable(PaginateTable):
         )
 
 
-class DeploymentTable(tables.Table):
+class DeploymentTable(PaginateTable):
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_deployment_detail', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Deployment Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ], delimiter='&#160;&#160;&#160;')
 
     task_name = tables.Column(accessor='task.name', verbose_name='Task')
+    status = tables.TemplateColumn('<span class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}">{{ record.get_status_display }}</span>')
 
     class Meta:
         model = models.Deployment
