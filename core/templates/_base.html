@@ -9,7 +9,7 @@
         {% if user.is_authenticated and user.template %}
             <link rel="stylesheet" type="text/css" href="{% static 'css/'|add:user.template %}"/>
         {% else %}
-            <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+            <link rel="stylesheet" type="text/css" href="{% static 'css/flatly.min.css' %}"/>
         {% endif %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
     </head>
