@@ -98,11 +98,21 @@ class Stage(TrackingFields):
 
 
 class Configuration(TrackingFields):
+    BOOLEAN_TYPE = 'boolean'
+    NUMBER_TYPE = 'number'
+    STRING_TYPE = 'string'
+
+    DATA_TYPES = ((BOOLEAN_TYPE, 'Boolean'), (NUMBER_TYPE, 'Number'), (STRING_TYPE, 'String'))
+
     project = models.ForeignKey(Project)
     stage = models.ForeignKey(Stage, null=True, blank=True)
 
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=500, null=True, blank=True)
+    value_number = models.FloatField(verbose_name='Value', null=True, blank=True)
+    value_boolean = models.BooleanField(verbose_name='Value')
+    date_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10)
+
     prompt_me_for_input = models.BooleanField(default=False, help_text='When deploying you will be prompted for this value.')
     sensitive_value = models.BooleanField(default=False, help_text='Password or other value that should not be stored in the logs.')
 
