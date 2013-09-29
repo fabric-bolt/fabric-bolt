@@ -1,7 +1,11 @@
 import django_tables2 as tables
 
-import models
 from core.mixins.tables import ActionsColumn, PaginateTable
+
+from hosts.tables import HostTable
+
+from . import models
+
 
 
 class ProjectTable(PaginateTable):
@@ -94,3 +98,16 @@ class DeploymentTable(PaginateTable):
             'status',
             'actions'
         )
+
+
+class StageHostTable(HostTable):
+
+    def __init__(self):
+        super(StageHostTable, self).__init__()
+
+        self.actions = ActionsColumn([
+            {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('pk')],
+             'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+            {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_unmaphost', 'args': [tables.A('pk')],
+             'attrs':{'data-toggle': 'tooltip', 'title': 'Unmap Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+        ], delimiter='&#160;&#160;&#160;')
