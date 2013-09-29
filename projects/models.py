@@ -72,9 +72,23 @@ class Stage(TrackingFields):
         return self.project.get_absolute_url()
 
     def get_configurations(self):
-        """Generates a dictionary that's made up of the configurations on the project
-
+        """
+        Generates a dictionary that's made up of the configurations on the project.
         Any configurations on a project that are duplicated on a stage, the stage configuration will take precedence.
+
+        Really we just want to do a simple SQL statement like this (but oh the ORM):
+
+        SELECT Distinct(Coalesce(stage.key, project.key)) AS key,
+        (CASE WHEN stage.key IS NOT null THEN stage.data_type ELSE project.data_type END) AS data_type,
+        (CASE WHEN stage.key IS NOT null THEN stage.value ELSE project.value END) AS value,
+        (CASE WHEN stage.key IS NOT null THEN stage.value_number ELSE project.value_number END) AS value_number,
+        (CASE WHEN stage.key IS NOT null THEN stage.value_boolean ELSE project.value_boolean END) AS value_boolean,
+        (CASE WHEN stage.key IS NOT null THEN stage.prompt_me_for_input ELSE project.prompt_me_for_input END) AS prompt_me_for_input,
+        (CASE WHEN stage.key IS NOT null THEN stage.sensitive_value ELSE project.sensitive_value END) AS sensitive_value
+        FROM projects_configuration AS project
+        LEFT JOIN projects_configuration AS stage ON stage.project_id = project.project_id
+            AND project.key = stage.key AND stage.stage_id = STAGE_ID_HERE
+        WHERE project.project_id = PROJECT_ID_HERE AND (project.stage_id is null OR project.stage_id = STAGE_ID_HERE)
         """
 
         project_configurations_dictionary = {}

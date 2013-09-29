@@ -1,8 +1,10 @@
-import time
+"""
+Views for the Projects App
+"""
+
 import datetime
 import subprocess
 import sys
-import pipes
 
 from django.http import StreamingHttpResponse, HttpResponseRedirect
 from django.db.models.aggregates import Count
@@ -11,8 +13,6 @@ from django.views.generic import CreateView, UpdateView, DetailView, View, Delet
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.forms import CharField, PasswordInput, Select, FloatField, BooleanField
-
-from crispy_forms.layout import Field
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
@@ -24,12 +24,16 @@ import models
 import forms
 import tables
 
-
+# These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
 fabric_special_options = ['no_agent', 'forward-agent', 'abort-on-prompts', 'config', 'disable-known-hosts', 'keepalive',
                           'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
                           'command-timeout', 'user', 'warn-only', 'pool-size']
 
+
 def get_fabric_tasks(request):
+    """
+    Generate a list of fabric tasks that are available
+    """
     try:
         docstring, callables, default = load_fabfile(find_fabfile(None))
         all_tasks = _task_names(callables)
@@ -41,7 +45,9 @@ def get_fabric_tasks(request):
 
 
 class BaseGetProjectCreateView(CreateView):
-    """Reusable class for create views that need the project pulled in"""
+    """
+    Reusable class for create views that need the project pulled in
+    """
 
     def dispatch(self, request, *args, **kwargs):
 
@@ -53,12 +59,20 @@ class BaseGetProjectCreateView(CreateView):
 
 
 class ProjectList(SingleTableView):
+    """
+    Project List page
+    """
+
     table_class = tables.ProjectTable
     model = models.Project
     queryset = models.Project.active_records.all()
 
 
 class ProjectCreate(CreateView):
+    """
+    Create a new project
+    """
+
     model = models.Project
     form_class = forms.ProjectCreateForm
     template_name_suffix = '_create'
@@ -75,6 +89,10 @@ class ProjectCreate(CreateView):
 
 
 class ProjectDetail(DetailView):
+    """
+    Display the Project Detail/Summary page: Configurations, Stages, and Deployments
+    """
+
     model = models.Project
 
     def get_context_data(self, **kwargs):
@@ -99,6 +117,10 @@ class ProjectDetail(DetailView):
 
 
 class ProjectUpdate(UpdateView):
+    """
+    Update a project
+    """
+
     model = models.Project
     form_class = forms.ProjectUpdateForm
     template_name_suffix = '_update'
@@ -106,6 +128,9 @@ class ProjectUpdate(UpdateView):
 
 
 class ProjectDelete(DeleteView):
+    """
+    Deletes a project by setting the Project's date_deleted. We save projects for historical tracking.
+    """
     model = models.Project
 
     def delete(self, request, *args, **kwargs):
@@ -118,6 +143,10 @@ class ProjectDelete(DeleteView):
 
 
 class ProjectConfigurationCreate(BaseGetProjectCreateView):
+    """
+    Create a Project Configuration. These are used to set the Fabric env object for a task.
+    """
+
     model = models.Configuration
     template_name_suffix = '_create'
     form_class = forms.ConfigurationCreateForm
@@ -149,12 +178,20 @@ class ProjectConfigurationCreate(BaseGetProjectCreateView):
 
 
 class ProjectConfigurationUpdate(UpdateView):
+    """
+    Update a Project Configuration
+    """
+
     model = models.Configuration
     template_name_suffix = '_update'
     form_class = forms.ConfigurationUpdateForm
 
 
 class ProjectConfigurationDelete(DeleteView):
+    """
+    Delete a project configuration from a project
+    """
+
     model = models.Configuration
 
     def dispatch(self, request, *args, **kwargs):
@@ -175,7 +212,7 @@ class ProjectConfigurationDelete(DeleteView):
 
         obj = self.get_object()
 
-        # Save where I was before I go an delete myself
+        # Save where I was before I go and delete myself
         self.project_id = obj.project.pk
         self.stage_id = obj.stage.pk if obj.stage else None
 
@@ -184,6 +221,10 @@ class ProjectConfigurationDelete(DeleteView):
 
 
 class DeploymentCreate(CreateView):
+    """
+    Form to create a new Deployment for a Project Stage. POST will kick off the DeploymentOutputStream view.
+    """
+
     model = models.Deployment
     form_class = forms.DeploymentForm
 
@@ -200,11 +241,12 @@ class DeploymentCreate(CreateView):
 
     def get_form(self, form_class):
 
+        # TODO: Fix this to show all configs
         stage_configurations = self.stage.stage_configurations().all()
 
         form = form_class(**self.get_form_kwargs())
 
-        # We want to inject fields into the form for the configurations they've marked as prompt for
+        # We want to inject fields into the form for the configurations they've marked as prompt
         for config in stage_configurations.filter(prompt_me_for_input=True):
             str_config_key = 'configuration_value_for_{}'.format(config.key)
 
@@ -220,12 +262,6 @@ class DeploymentCreate(CreateView):
                     form.fields[str_config_key] = CharField()
 
             form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
-
-        ## We want to inject fields into the form not prompted for
-        #for config in stage_configurations.exclude(prompt_me_for_input=True):
-        #    str_config_key = 'configuration_value_for_{}'.format(config.key)
-        #    #form.fields[str_config_key] = CharField()
-        #    form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, Field(str_config_key, template="custom-slider.html"))
 
         return form
 
@@ -253,6 +289,10 @@ class DeploymentCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(DeploymentCreate, self).get_context_data(**kwargs)
+
+        # TODO: Fix this to show all configs
+        stage_configurations = self.stage.stage_configurations().all()
+        context['configs'] = stage_configurations.exclude(prompt_me_for_input=True)
         context['stage'] = self.stage
         context['task_name'] = self.kwargs['task_name']
         return context
@@ -262,10 +302,16 @@ class DeploymentCreate(CreateView):
 
 
 class DeploymentDetail(DetailView):
+    """
+    Display the detail/summary of a deployment
+    """
     model = models.Deployment
 
 
 class DeploymentOutputStream(View):
+    """
+    Deployment view does the heavy lifting of calling Fabric Task for a Project Stage
+    """
 
     def build_command(self):
         command = 'fab ' + self.object.task.name
@@ -320,6 +366,10 @@ class DeploymentOutputStream(View):
 
 
 class ProjectStageCreate(BaseGetProjectCreateView):
+    """
+    Create/Add a Stage to a Project
+    """
+
     model = models.Stage
     template_name_suffix = '_create'
     form_class = forms.StageCreateForm
@@ -338,22 +388,29 @@ class ProjectStageCreate(BaseGetProjectCreateView):
 
 
 class ProjectStageUpdate(UpdateView):
+    """
+    Project Stage Update form
+    """
     model = models.Stage
     template_name_suffix = '_update'
     form_class = forms.StageUpdateForm
 
 
 class ProjectStageView(DetailView):
+    """
+    Display the details on a project stage: List Hosts, Configurations, and Tasks available to run
+    """
+
     model = models.Stage
 
     def get_context_data(self, **kwargs):
 
         context = super(ProjectStageView, self).get_context_data(**kwargs)
 
-        # Hosts Table
+        # Hosts Table (Stage->Host Through table)
         stage_hosts = [host.pk for host in self.object.hosts.all()]
 
-        host_table = tables.StageHostTable(self.object.hosts.through.objects.select_related('host').all())
+        host_table = tables.StageHostTable(self.object.hosts.through.objects.select_related('host').all())  # Through table
         RequestConfig(self.request).configure(host_table)
         context['hosts'] = host_table
 
@@ -373,6 +430,10 @@ class ProjectStageView(DetailView):
 
 
 class ProjectStageDelete(DeleteView):
+    """
+    Delete a project stage
+    """
+
     model = models.Stage
 
     def delete(self, request, *args, **kwargs):
@@ -385,6 +446,9 @@ class ProjectStageDelete(DeleteView):
 
 
 class ProjectStageMapHost(RedirectView):
+    """
+    Map a Project Stage to a Host
+    """
 
     permanent = False
 
@@ -403,6 +467,9 @@ class ProjectStageMapHost(RedirectView):
 
 
 class ProjectStageUnmapHost(RedirectView):
+    """
+    Unmap a Project Stage from a Host (deletes the Stage->Host through table record)
+    """
 
     permanent = False
 
