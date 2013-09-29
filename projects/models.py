@@ -214,7 +214,7 @@ class Deployment(TrackingFields):
         ordering = ['-date_created']
 
     def __unicode__(self):
-        return "Deployment at {} for stage {} on project {}".format(self.date_created, self.stage.name, self.stage.project.name)
+        return "Deployment at {} status: {}".format(self.date_created, self.get_status_display())
 
 
 class Task(models.Model):

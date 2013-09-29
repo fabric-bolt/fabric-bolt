@@ -109,7 +109,7 @@ class ProjectDetail(DetailView):
         RequestConfig(self.request).configure(stage_table)
         context['stage_table'] = stage_table
 
-        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages), prefix='deploy_')
+        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
         context['deployment_table'] = deployment_table
 
