@@ -5,6 +5,7 @@ import sys
 import pipes
 
 from django.http import StreamingHttpResponse, HttpResponseRedirect
+from django.db.models.aggregates import Count
 from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -72,18 +73,18 @@ class ProjectDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectDetail, self).get_context_data(**kwargs)
 
-        configuration_table = tables.ConfigurationTable(self.object.project_configurations())
+        configuration_table = tables.ConfigurationTable(self.object.project_configurations(), prefix='config_')
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
-        stage_table = tables.StageTable(models.Stage.objects.filter(project=self.get_object()))
+        stages = self.object.get_stages().annotate(deployment_count=Count('deployment'))
+        context['stages'] = stages
+
+        stage_table = tables.StageTable(stages, prefix='stage_')
         RequestConfig(self.request).configure(stage_table)
         context['stage_table'] = stage_table
 
-        stages = self.object.stage_set.all()
-        context['stages'] = stages
-
-        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages))
+        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
         context['deployment_table'] = deployment_table
 
@@ -331,3 +332,15 @@ class ProjectStageView(DetailView):
         context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')[:3]
 
         return context
+
+
+class ProjectStageDelete(DeleteView):
+    model = models.Stage
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.date_deleted = datetime.datetime.now()
+        self.object.save()
+
+        messages.add_message(request, messages.WARNING, 'Stage {} Successfully Deleted'.format(self.object))
+        return HttpResponseRedirect(reverse('projects_project_view', args=(self.object.project.pk,)))

@@ -40,6 +40,9 @@ class Project(TrackingFields):
     def __unicode__(self):
         return '%s' % self.name
 
+    def get_stages(self):
+        return Stage.active_records.filter(project=self)
+
     def get_absolute_url(self):
         return reverse('projects_project_view', args=(self.pk,))
 

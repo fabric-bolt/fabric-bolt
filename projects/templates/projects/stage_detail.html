@@ -17,7 +17,7 @@
         <h1 style="margin-bottom:30px;" class="col-lg-12">Stage {{ object.name }}
             <span class="pull-right">
                 <a class="btn btn-primary" href="{% url 'projects_stage_update' object.project.pk object.pk %}">Edit Stage</a>
-                <a class="btn btn-danger" href="">Delete Stage</a>
+                <a class="btn btn-danger" href="{% url 'projects_stage_delete' object.project.pk object.pk %}">Delete Stage</a>
             </span>
         </h1>
     </div>
