@@ -10,6 +10,7 @@ import models
 class ProjectCreateForm(forms.ModelForm):
 
     type = forms.ModelChoiceField(models.ProjectType.objects.all(), empty_label=None)
+    button_prefix = "Create"
 
     class Meta:
         model = models.Project
@@ -19,31 +20,28 @@ class ProjectCreateForm(forms.ModelForm):
             'description',
         ]
 
-    helper = FormHelper()
-    helper.layout = Layout(
-        'name',
-        'type',
-        'description',
-        ButtonHolder(
-            Submit('submit', 'Create Project', css_class='button')
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'name',
+            'type',
+            'description',
+            ButtonHolder(
+                Submit('submit', '%s Project' % self.button_prefix, css_class='button')
+            )
         )
-    )
+
+        super(ProjectCreateForm, self).__init__(*args, **kwargs)
 
 
 class ProjectUpdateForm(ProjectCreateForm):
 
-    helper = FormHelper()
-    helper.layout = Layout(
-        'name',
-        'type',
-        'description',
-        ButtonHolder(
-            Submit('submit', 'Update Project', css_class='button')
-        )
-    )
+    button_prefix = "Update"
+    
 
+class ConfigurationUpdateForm(forms.ModelForm):
 
-class ConfigurationCreateForm(forms.ModelForm):
+    button_prefix = "Update"
 
     class Meta:
         model = models.Configuration
@@ -51,46 +49,36 @@ class ConfigurationCreateForm(forms.ModelForm):
             'key',
             'value',
             'prompt_me_for_input',
+            'sensitive_value',
         ]
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'key',
+            'value',
+            'prompt_me_for_input',
+            'sensitive_value',
+            ButtonHolder(
+                Submit('submit', '%s Configuration' % self.button_prefix, css_class='button')
+            )
+        )
+
+        super(ConfigurationUpdateForm, self).__init__(*args, **kwargs)
+
+
+class ConfigurationCreateForm(ConfigurationUpdateForm):
+
+    button_prefix = "Create"
 
     def __init__(self, *args, **kwargs):
         super(ConfigurationCreateForm, self).__init__(*args, **kwargs)
 
         self.fields['key'].validators.append(RegexValidator(r'^[a-zA-Z_]+[0-9a-zA-Z_]*$')) # valid python variable name
 
-    helper = FormHelper()
-    helper.layout = Layout(
-        'key',
-        'value',
-        'prompt_me_for_input',
-        ButtonHolder(
-            Submit('submit', 'Create Configuration', css_class='button')
-        )
-    )
-
-
-class ConfigurationUpdateForm(ConfigurationCreateForm):
-
-    class Meta:
-        model = models.Configuration
-        fields = [
-            'key',
-            'value',
-            'prompt_me_for_input',
-        ]
-
-    helper = FormHelper()
-    helper.layout = Layout(
-        'key',
-        'value',
-        'prompt_me_for_input',
-        ButtonHolder(
-            Submit('submit', 'Update Configuration', css_class='button')
-        )
-    )
-
 
 class DeploymentForm(forms.ModelForm):
+
     class Meta:
         fields = ['comments']
         model = models.Deployment
@@ -109,6 +97,7 @@ class DeploymentForm(forms.ModelForm):
 
 
 class StageCreateForm(forms.ModelForm):
+    button_prefix = "Create"
 
     class Meta:
         model = models.Stage
@@ -116,27 +105,23 @@ class StageCreateForm(forms.ModelForm):
             'name',
         ]
 
-    helper = FormHelper()
-    helper.layout = Layout(
-        'name',
-        ButtonHolder(
-            Submit('submit', 'Create Stage', css_class='button')
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'name',
+            ButtonHolder(
+                Submit('submit', '%s Stage' % self.button_prefix, css_class='button')
+            )
         )
-    )
+
+        super(StageCreateForm, self).__init__(*args, **kwargs)
 
 
 class StageUpdateForm(StageCreateForm):
+    button_prefix = "Update"
 
     class Meta:
         model = models.Stage
         fields = [
             'name',
         ]
-
-    helper = FormHelper()
-    helper.layout = Layout(
-        'name',
-        ButtonHolder(
-            Submit('submit', 'Update Stage', css_class='button')
-        )
-    )
