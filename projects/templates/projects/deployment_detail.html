@@ -26,19 +26,25 @@
                     <dd>{{ object.stage.project.name }}</dd>
                     <dt>Stage</dt>
                     <dd>{{ object.stage.name }}</dd>
+                    <dt>Task</dt>
+                    <dd>{{ object.task.name }}</dd>
+                    <dt>Task Description</dt>
+                    <dd>{{ object.task.description }}</dd>
                 </dl>
             </div>
         </div>
         <div class="col-md-6">
             <div class="well">
-                <fieldset>
-                    <legend>Status</legend>
+                <fieldset style="text-align: center;margin-bottom:10px;" id="status_section">
                     {% if object.status == object.PENDING %}
-                        <i class="glyphicon glyphicon-time"></i> Working
+                        <legend>Status: Working</legend>
+                        <i class="glyphicon glyphicon-time text-info" style="font-size:90px;"></i>
                     {% elif object.status == object.SUCCESS %}
-                        <i class="glyphicon glyphicon-ok"></i> Success!
+                        <legend>Status: Success!</legend>
+                        <i class="glyphicon glyphicon-ok text-success" style="font-size:90px;"></i>
                     {% else %}
-                        <i class="glyphicon glyphicon-warning-sign"></i> Failed!
+                        <legend>Status: Failed!</legend>
+                        <i class="glyphicon glyphicon-warning-sign text-danger" style="font-size:90px;"></i>
                     {% endif %}
                 </fieldset>
             </div>
@@ -58,8 +64,18 @@
                 $(function(){
                     var scroll_iframe_ticker = setInterval(function(){
                         var $contents = $('#deployment_output').contents();
+
                         $contents.scrollTop($contents.height());
                         if($contents.find('#finished').length > 0){
+                            status = $contents.find('#finished').html();
+                            if(status == 'failed'){
+                                $('#status_section legend').html('Status: Failed!');
+                                $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-warning-sign').addClass('text-danger');
+                            }else if(status == 'success') {
+                                $('#status_section legend').html('Status: Success!');
+                                $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-ok').addClass('text-success');
+                            }
+
                             clearInterval(scroll_iframe_ticker);
                         }
                     }, 100);
