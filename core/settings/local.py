@@ -1,6 +1,6 @@
 # Local settings for core project.
 LOCAL_SETTINGS = True
-from .base import *
+from base import *
 
 DEBUG = True
 TEMPLATE_DEBUG = True

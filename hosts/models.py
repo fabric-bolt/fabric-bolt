@@ -15,9 +15,9 @@ class SchemelessURLValidator(URLValidator):
 
 
 class Host(models.Model):
-    '''Defines a Host'''
+    """Defines a Host that deployments can be made to"""
 
     name = models.CharField(max_length=255, help_text='DNS name or IP address', validators=[SchemelessURLValidator()])
 
     def __unicode__(self):
-        return self.name
+        return '{}'.format(self.name)

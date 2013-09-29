@@ -1,5 +1,5 @@
 # staging server settings for core project.
-from core.settings import *
+from base import *
 
 DEBUG = True
 
