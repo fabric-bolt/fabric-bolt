@@ -5,11 +5,12 @@ Deployment User Views
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import password_change
 
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
-from django.views.generic import UpdateView, CreateView, ListView, DeleteView, DetailView
+from django.views.generic import FormView, UpdateView, CreateView, ListView, DeleteView, DetailView
 
 from django_tables2 import RequestConfig
 from braces.views import GroupRequiredMixin
@@ -120,8 +121,8 @@ class UserAdd(CreateView):  # GroupRequiredMixin
         response = super(UserAdd, self).form_valid(form)
 
         # Send a password recover email
-        #form = PasswordResetForm({'email': form.cleaned_data['email']})
-        #form.save(email_template_name='accounts/welcome_email.html')
+        form = PasswordResetForm({'email': form.cleaned_data['email']})
+        form.save(email_template_name='accounts/welcome_email.html')
 
         return response
 
@@ -139,3 +140,18 @@ class UserDelete(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'User {} Successfully Deleted'.format(self.get_object()))
         return super(UserDelete, self).delete(self, request, *args, **kwargs)
+
+
+class PasswordChange(FormView):
+
+    template_name = 'accounts/password_change.html'
+
+    def get_success_url(self):
+        return reverse('accounts_user_view', args=(self.request.user.id,))
+
+    def get_form(self, form_class):
+        return forms.UserPasswordChangeForm(self.request.user, self.request.POST or None)
+
+    def form_valid(self, form):
+        form.save()
+        return super(PasswordChange, self).form_valid(form)
