@@ -47,7 +47,7 @@ class ConfigurationTable(PaginateTable):
     ], delimiter='&#160;&#160;&#160;')
 
     key = tables.LinkColumn('projects_configuration_update', kwargs={'pk': tables.A('pk')})
-    value = tables.Column(accessor='get_value', orderable=False)
+    value = tables.Column(accessor='get_display_value', orderable=False)
 
     # Clean up the labels a little
     prompt_me_for_input = tables.BooleanColumn(verbose_name="Prompt?",)
