@@ -26,6 +26,6 @@ urlpatterns = patterns('',
     url(r'^(?P<project_id>\w+)/stage/view/(?P<pk>\w+)/$', views.ProjectStageView.as_view(), name='projects_stage_view'),
     url(r'^(?P<project_id>\w+)/stage/delete/(?P<pk>\w+)/$', views.ProjectStageDelete.as_view(), name='projects_stage_delete'),
     url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/host/(?P<host_id>\w+)/$', views.ProjectStageMapHost.as_view(), name='projects_stage_maphost'),
-    url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/host/(?P<host_id>\w+)/$', views.ProjectStageUnmapHost.as_view(), name='projects_stage_unmaphost'),
+    url(r'^stage/(?P<pk>\w+)/host/(?P<host_id>\w+)/$', views.ProjectStageUnmapHost.as_view(), name='projects_stage_unmaphost'),
 
 )

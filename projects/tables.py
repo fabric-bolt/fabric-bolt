@@ -103,13 +103,19 @@ class DeploymentTable(PaginateTable):
 class StageHostTable(tables.Table):
 
     actions = ActionsColumn([
-        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('pk')],
+        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('host_id')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_unmaphost', 'args': [tables.A('pk'),], #tables.A('stage_set.pk'),
+        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_unmaphost', 'args': [tables.A('stage_id'), tables.A('pk'),],
          'attrs':{'data-toggle': 'tooltip', 'title': 'Remove Host from Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ], delimiter='&#160;&#160;&#160;')
+
+    host = tables.Column(accessor='host.name', verbose_name='Name')
 
     class Meta:
         model = Host
         attrs = {"class": "table table-striped"}
         exclude = ('id',)
+        sequence = fields = (
+            'host',
+            'actions'
+        )

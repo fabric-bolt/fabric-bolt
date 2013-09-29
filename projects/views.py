@@ -351,7 +351,7 @@ class ProjectStageView(DetailView):
         # Hosts Table
         stage_hosts = [host.pk for host in self.object.hosts.all()]
 
-        host_table = tables.StageHostTable(Host.objects.filter(pk__in=stage_hosts))
+        host_table = tables.StageHostTable(self.object.hosts.through.objects.select_related('host').all())
         RequestConfig(self.request).configure(host_table)
         context['hosts'] = host_table
 
@@ -405,12 +405,11 @@ class ProjectStageUnmapHost(RedirectView):
     permanent = False
 
     def get(self, request, *args, **kwargs):
-        self.project_id = kwargs.get('project_id')
         self.stage_id = kwargs.get('pk')
         host_id = kwargs.get('host_id')
 
         self.stage = models.Stage.objects.get(pk=self.stage_id)
-        self.stage.hosts.remove(Host.objects.get(pk=host_id))
+        self.stage.hosts.through.objects.get(pk=host_id).delete()
 
         return super(ProjectStageUnmapHost, self).get(request, *args, **kwargs)
 
