@@ -178,6 +178,7 @@ LOGIN_URL = '/login/'
 STRONGHOLD_PUBLIC_URLS = (
     '^/login/',
     '^/logout/',
+    '^/reset/.+/$',
 )
 ########## END STRONGHOLD CONFIGURATION
 
