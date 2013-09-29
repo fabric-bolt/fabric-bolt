@@ -393,3 +393,21 @@ class ProjectStageMapHost(RedirectView):
 
     def get_redirect_url(self, **kwargs):
         return reverse('projects_stage_view', args=(self.project_id, self.stage_id,))
+
+
+class ProjectStageUnmapHost(RedirectView):
+
+    permanent = False
+
+    def get(self, request, *args, **kwargs):
+        self.project_id = kwargs.get('project_id')
+        self.stage_id = kwargs.get('pk')
+        host_id = kwargs.get('host_id')
+
+        stage = models.Stage.objects.get(pk=self.stage_id)
+        stage.hosts.remove(Host.objects.get(pk=host_id))
+
+        return super(ProjectStageUnmapHost, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('projects_stage_view', args=(self.project_id, self.stage_id,))
