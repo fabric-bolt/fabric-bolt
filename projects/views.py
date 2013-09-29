@@ -350,11 +350,13 @@ class ProjectStageView(DetailView):
         context = super(ProjectStageView, self).get_context_data(**kwargs)
 
         # Hosts Table
-        host_table = HostTable(self.object.stage_configurations())
+        stage_hosts = [host.pk for host in self.object.hosts.all()]
+
+        host_table = HostTable(Host.objects.filter(pk__in=stage_hosts))
         RequestConfig(self.request).configure(host_table)
         context['hosts'] = host_table
 
-        context['available_hosts'] = Host.objects.exclude(id__in=[host.pk for host in self.object.hosts.all()]).all()
+        context['available_hosts'] = Host.objects.exclude(id__in=stage_hosts).all()
 
         # Configuration Table
         configuration_table = tables.ConfigurationTable(self.object.stage_configurations())
