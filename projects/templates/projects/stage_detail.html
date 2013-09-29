@@ -126,6 +126,25 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4>
+                        Recent Deployments
+                        <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{ 'show': 300, 'hide': 0 }"
+                           data-original-title="See what was shipped out when, and the status of each attempt."></i>
+                    </h4>
+                </div>
+
+                <div class="panel-body">
+                    {% render_table deployment_table %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     {% addtoblock "js" %}
         <script>
             (function($){
