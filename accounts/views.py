@@ -118,13 +118,22 @@ class UserAdd(CreateView):  # GroupRequiredMixin
     form_class = forms.UserCreationForm
     template_name = 'accounts/deployuser_create.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(UserAdd, self).get_form_kwargs()
+        kwargs['user_is_admin'] = self.request.user.user_is_admin()
+
+        return kwargs
+
     def form_valid(self, form):
+        # Save form
         response = super(UserAdd, self).form_valid(form)
 
         # Send a password recover email
-        form = PasswordResetForm({'email': form.cleaned_data['email']})
-        form.save(email_template_name='accounts/welcome_email.html')
+        email_form = PasswordResetForm({'email': form.cleaned_data['email']})
+        email_form.is_valid()
+        email_form.save(email_template_name='accounts/welcome_email.html')
 
+        # send response
         return response
 
 
