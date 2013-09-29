@@ -36,7 +36,7 @@
                 <dl class="dl-horizontal">
                     {% for config in configs %}
                         <dt>{{ config.key }}</dt>
-                        <dd>{{ config.value }}</dd>
+                        <dd>{% if config.sensitive_value %}******{% else %}{{ config.value }}{% endif %}</dd>
                     {% empty %}
                         <dt>Configs</dt>
                         <dd>None Set</dd>
