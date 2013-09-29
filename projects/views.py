@@ -75,7 +75,7 @@ class ProjectDetail(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
-        stages = self.object.stage_set.annotate(deployment_count=Count('deployment'))
+        stages = self.object.get_stages().annotate(deployment_count=Count('deployment'))
         context['stages'] = stages
 
         stage_table = tables.StageTable(stages, prefix='stage_')
@@ -322,3 +322,15 @@ class ProjectStageView(DetailView):
         context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')[:3]
 
         return context
+
+
+class ProjectStageDelete(DeleteView):
+    model = models.Stage
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.date_deleted = datetime.datetime.now()
+        self.object.save()
+
+        messages.add_message(request, messages.WARNING, 'Stage {} Successfully Deleted'.format(self.object))
+        return HttpResponseRedirect(reverse('projects_project_view', args=(self.object.project.pk,)))
