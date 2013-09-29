@@ -7,8 +7,11 @@ from hosts.models import Host
 from . import models
 
 
-
 class ProjectTable(PaginateTable):
+    """Table used to display the projects
+
+    Also provides actions to edit, view, and delete"""
+
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_project_view', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Project', 'data-delay': '{ "show": 300, "hide": 0 }'}},
@@ -31,6 +34,9 @@ class ProjectTable(PaginateTable):
 
 
 class ConfigurationTable(PaginateTable):
+    """Table used to show the configurations
+
+    Also provides actions to edit and delete"""
 
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_configuration_update', 'args': [tables.A('pk')],
@@ -41,6 +47,8 @@ class ConfigurationTable(PaginateTable):
 
     key = tables.LinkColumn('projects_configuration_update', kwargs={'pk': tables.A('pk')})
     value = tables.Column(accessor='get_value', orderable=False)
+
+    # Clean up the labels a little
     prompt_me_for_input = tables.BooleanColumn(verbose_name="Prompt?",)
     sensitive_value = tables.BooleanColumn(verbose_name="Sensitive?",)
 
@@ -56,6 +64,10 @@ class ConfigurationTable(PaginateTable):
 
 
 class StageTable(PaginateTable):
+    """Table used to show the stages
+
+    Also provides actions for view, edit, and delete"""
+
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_stage_view', 'args': [tables.A('project.pk'), tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Stage Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
@@ -80,12 +92,18 @@ class StageTable(PaginateTable):
 
 
 class DeploymentTable(PaginateTable):
+    """Table used to show the deployments
+
+    Also provides actions to view individual deployment"""
+
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_deployment_detail', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Deployment Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ], delimiter='&#160;&#160;&#160;')
 
     task_name = tables.Column(accessor='task.name', verbose_name='Task')
+
+    #Prettify the status
     status = tables.TemplateColumn('<span class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}">{{ record.get_status_display }}</span>')
 
     class Meta:
@@ -101,8 +119,9 @@ class DeploymentTable(PaginateTable):
 
 
 class StageHostTable(tables.Table):
-    """
-    This table lists the Stage->Host through table records
+    """This table lists the Stage->Host through table records
+
+    Also provides actions to view and un-map the host to the stage
     """
 
     def __init__(self, *args, **kwargs):
