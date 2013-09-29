@@ -71,7 +71,7 @@ class DeployUser(AbstractEmailUser):
     def user_is_historian(self):
         if not self.pk:
             return False
-        
+
         for group in self.groups.all():
             if group.name == "Historian":
                 return True
