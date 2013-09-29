@@ -195,6 +195,12 @@ class Configuration(TrackingFields):
         else:
             return self.value
 
+    def get_display_value(self):
+        if self.sensitive_value:
+            return "******"
+
+        return self.get_value()
+
 
 class Deployment(TrackingFields):
     """Archival record of an actual deployment, tracks:
