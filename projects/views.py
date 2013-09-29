@@ -18,6 +18,9 @@ from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
 from fabric.main import find_fabfile, load_fabfile, _task_names
 
+from hosts.tables import HostTable
+from hosts.models import Host
+
 import models
 import forms
 import tables
@@ -322,6 +325,14 @@ class ProjectStageView(DetailView):
 
         context = super(ProjectStageView, self).get_context_data(**kwargs)
 
+        # Hosts Table
+        host_table = HostTable(self.object.stage_configurations())
+        RequestConfig(self.request).configure(host_table)
+        context['hosts'] = host_table
+
+        #context['available_hosts'] = Host.objects.exclude(id__in=self.object.hosts).all()
+        
+        # Configuration Table
         configuration_table = tables.ConfigurationTable(self.object.stage_configurations())
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table

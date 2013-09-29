@@ -36,8 +36,9 @@ class ConfigurationTable(PaginateTable):
     ], delimiter='&#160;&#160;&#160;')
 
     key = tables.LinkColumn('projects_configuration_update', kwargs={'pk': tables.A('pk')})
-    sensitive_value = tables.BooleanColumn(verbose_name="Sensitive",)
     value = tables.Column(accessor='get_value', orderable=False)
+    prompt_me_for_input = tables.BooleanColumn(verbose_name="Prompt?",)
+    sensitive_value = tables.BooleanColumn(verbose_name="Sensitive?",)
 
     class Meta:
         model = models.Configuration
@@ -52,11 +53,11 @@ class ConfigurationTable(PaginateTable):
 
 class StageTable(PaginateTable):
     actions = ActionsColumn([
-        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_stage_view', 'args': [tables.A('pk')],
+        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_stage_view', 'args': [tables.A('project.pk'), tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Stage Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-        {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_stage_update', 'args': [tables.A('pk')],
+        {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_stage_update', 'args': [tables.A('project.pk'), tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'Edit Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_delete', 'args': [tables.A('pk')],
+        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_stage_delete', 'args': [tables.A('project.pk'), tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'Delete Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ], delimiter='&#160;&#160;&#160;')
 
