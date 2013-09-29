@@ -16,7 +16,7 @@ from crispy_forms.layout import Field
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
-from fabric.main import find_fabfile, load_fabfile, _task_names
+from fabric.main import find_fabfile, load_fabfile, _task_names, _normal_list, state
 
 from hosts.models import Host
 
@@ -32,11 +32,12 @@ fabric_special_options = ['no_agent', 'forward-agent', 'abort-on-prompts', 'conf
 def get_fabric_tasks(request):
     try:
         docstring, callables, default = load_fabfile(find_fabfile(None))
-        all_tasks = sorted(_task_names(callables))
+        all_tasks = _task_names(callables)
+        dict_with_docs = {task: callables[task].__doc__ for task in all_tasks}
     except Exception as e:
         messages.error(request, 'Error loading fabfile: ' + e.message)
-        all_tasks = []
-    return all_tasks
+        dict_with_docs = {}
+    return dict_with_docs
 
 
 class BaseGetProjectCreateView(CreateView):
@@ -232,7 +233,8 @@ class DeploymentCreate(CreateView):
         self.object = form.save(commit=False)
         self.object.stage = self.stage
 
-        self.object.task, created = models.Task.objects.get_or_create(name=self.kwargs['task_name'])
+        task_name = self.kwargs['task_name']
+        self.object.task, created = models.Task.objects.get_or_create(name=task_name, defaults={'description': get_fabric_tasks(self.request).get(task_name, None) or None})
         if not created:
             self.object.task.times_used += 1
             self.object.task.save()
@@ -364,8 +366,8 @@ class ProjectStageView(DetailView):
 
         all_tasks = get_fabric_tasks(self.request)
 
-        context['all_tasks'] = all_tasks
-        context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks).order_by('-times_used')[:3]
+        context['all_tasks'] = all_tasks.keys()
+        context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks.keys()).order_by('-times_used')[:3]
 
         return context
 
