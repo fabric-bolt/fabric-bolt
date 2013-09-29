@@ -50,6 +50,9 @@ class DeployUser(AbstractEmailUser):
 
     objects = UserManager()
 
+    def __unicode__(self):
+        return '{} {}'.format(self.first_name, self.last_name)
+
     def user_is_admin(self):
         if not self.pk:
             return False
