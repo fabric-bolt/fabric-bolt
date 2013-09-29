@@ -183,7 +183,16 @@ class Configuration(TrackingFields):
 
 
 class Deployment(TrackingFields):
-    """Archival record of an actual deployment"""
+    """Archival record of an actual deployment, tracks:
+
+    - Which user ran it
+    - Stage it was on
+    - Status
+    - Fabric task that was run
+    - The configuration used
+
+    - Among other miscellaneous things
+    """
 
     PENDING = 'pending'
     FAILED = 'failed'
