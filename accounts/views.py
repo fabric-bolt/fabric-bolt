@@ -119,12 +119,15 @@ class UserAdd(CreateView):  # GroupRequiredMixin
     template_name = 'accounts/deployuser_create.html'
 
     def form_valid(self, form):
+        # Save form
         response = super(UserAdd, self).form_valid(form)
 
         # Send a password recover email
-        form = PasswordResetForm({'email': form.cleaned_data['email']})
-        form.save(email_template_name='accounts/welcome_email.html')
+        email_form = PasswordResetForm({'email': form.cleaned_data['email']})
+        email_form.is_valid()
+        email_form.save(email_template_name='accounts/welcome_email.html')
 
+        # send response
         return response
 
 
