@@ -191,6 +191,7 @@ class SimpleTest(TestCase):
 
         configurations = self.stage.get_configurations()
 
+        # The stage configs take the cake over project configs
         self.assertEqual(configurations['number1'], '100')
         self.assertEqual(configurations['number2'], '5')
         self.assertEqual(configurations['number3'], '4')
