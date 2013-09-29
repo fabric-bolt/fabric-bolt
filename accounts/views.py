@@ -18,15 +18,16 @@ from . import forms, tables
 
 
 class Login(TemplateView):
-    """
-    Login view handles generating the login form, login authentication, and redirect after auth
-    """
+    """ Login view handles generating the login form, login authentication, and redirect after auth """
+
     template_name = 'accounts/login.html'
 
     def get_context_data(self, **kwargs):
         return {'form': forms.LoginForm}
 
     def get(self, request, *args, **kwargs):
+        """If the user is authenticated take them to the homepage"""
+
         if request.user.is_authenticated():
             return HttpResponseRedirect(reverse('index'))
 
@@ -34,11 +35,14 @@ class Login(TemplateView):
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
+        """Verify the correct username and password have been set and let them in if so"""
+
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
 
         user = auth.authenticate(email=email, password=password)
 
+        # Log the user in and send them on their merry way
         if user is not None and user.is_active:
             auth.login(request, user)
             goto = request.GET.get('next', reverse('index'))
@@ -50,9 +54,7 @@ class Login(TemplateView):
 
 
 class Logout(TemplateView):
-    """
-    Logout view calls logout() on the request and redirects to the login screen
-    """
+    """ Logout view calls logout() on the request and redirects to the login screen """
     template_name = 'accounts/login.html'
 
     def get(self, request, *args, **kwargs):
@@ -67,9 +69,8 @@ class Logout(TemplateView):
 
 # Admin: List Users
 class UserList(ListView):  # GroupRequiredMixin
-    """
-    List of users. Uses UserFilter and UserTable.
-    """
+    """ List of users. Uses UserFilter and UserTable. """
+    
     group_required = 'Admin'
     template_name = 'accounts/user_list.html'
     table_class = tables.UserListTable

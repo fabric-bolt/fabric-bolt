@@ -1,6 +1,4 @@
-from django.conf.urls import patterns, include, url
-from django.contrib import admin
-from django.views.generic import TemplateView
+from django.conf.urls import patterns, url
 
 import views
 
@@ -27,5 +25,4 @@ urlpatterns = patterns('',
     url(r'^(?P<project_id>\w+)/stage/delete/(?P<pk>\w+)/$', views.ProjectStageDelete.as_view(), name='projects_stage_delete'),
     url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/host/(?P<host_id>\w+)/$', views.ProjectStageMapHost.as_view(), name='projects_stage_maphost'),
     url(r'^stage/(?P<pk>\w+)/host/(?P<host_id>\w+)/$', views.ProjectStageUnmapHost.as_view(), name='projects_stage_unmaphost'),
-
 )
