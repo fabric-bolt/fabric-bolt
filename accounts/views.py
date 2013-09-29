@@ -5,7 +5,7 @@ Deployment User Views
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.views import password_change
+from django.contrib.auth.views import password_reset_confirm
 
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
@@ -19,7 +19,9 @@ from . import forms, tables
 
 
 class Login(TemplateView):
-    """ Login view handles generating the login form, login authentication, and redirect after auth """
+    """
+    Login view handles generating the login form, login authentication, and redirect after auth
+    """
 
     template_name = 'accounts/login.html'
 
@@ -36,7 +38,9 @@ class Login(TemplateView):
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        """Verify the correct username and password have been set and let them in if so"""
+        """
+        Verify the correct username and password have been set and let them in if so
+        """
 
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
@@ -55,7 +59,10 @@ class Login(TemplateView):
 
 
 class Logout(TemplateView):
-    """ Logout view calls logout() on the request and redirects to the login screen """
+    """
+    Logout view calls logout() on the request and redirects to the login screen
+    """
+
     template_name = 'accounts/login.html'
 
     def get(self, request, *args, **kwargs):
@@ -165,3 +172,17 @@ class PasswordChange(FormView):
     def form_valid(self, form):
         form.save()
         return super(PasswordChange, self).form_valid(form)
+
+
+class PasswordCreate(FormView):
+
+    template_name = 'accounts/password_create.html'
+
+    def get_success_url(self):
+        return reverse('accounts_user_view', args=(self.request.user.id,))
+
+    def get_form(self, form_class):
+        return forms.UserPasswordCreateForm(self.request.user, self.request.POST or None)
+
+    def post(self, request, *args, **kwargs):
+        return password_reset_confirm(request, **kwargs)
