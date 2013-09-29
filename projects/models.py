@@ -227,6 +227,9 @@ class Deployment(TrackingFields):
     active_records = ActiveManager()
     # End Managers
 
+    class Meta:
+        ordering = ['-date_created']
+
     def __unicode__(self):
         return "Deployment at {} for stage {} on project {}".format(self.date_created, self.stage.name, self.stage.project.name)
 
