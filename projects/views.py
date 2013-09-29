@@ -330,8 +330,8 @@ class ProjectStageView(DetailView):
         RequestConfig(self.request).configure(host_table)
         context['hosts'] = host_table
 
-        context['available_hosts'] = Host.objects.exclude(id__in=self.object.hosts).all()
-        
+        context['available_hosts'] = Host.objects.exclude(id__in=[host.pk for host in self.object.hosts.all()]).all()
+
         # Configuration Table
         configuration_table = tables.ConfigurationTable(self.object.stage_configurations())
         RequestConfig(self.request).configure(configuration_table)
