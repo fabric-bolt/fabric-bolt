@@ -75,18 +75,23 @@
                 </div>
 
                 <div class="panel-footer">
-                    <a class="btn btn-default btn-sm js-add-host" href="{% url 'projects_stage_maphost' object.project.pk object.pk 'host_id' %}">
-                        <i class="glyphicon glyphicon-plus-sign"></i>
-                        Add Stage Host
-                    </a>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <a class="btn btn-default btn-sm js-add-host" href="{% url 'projects_stage_maphost' object.project.pk object.pk 'host_id' %}">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                Add Stage Host
+                            </a>
 
-                    <select name="stage_host" id="stage_host">
-                        <option value="">Select Host</option>
-                        {% for host in available_hosts %}
-                            <option value="{{ host.pk }}">{{ host.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <span id="select_host_msg" style="display: none;">Please Select Host</span>
+                            <select name="stage_host" id="stage_host" class="form-control input-sm" style="width: 50%; display: inline-block;">
+                                <option value="">Select Host</option>
+                                {% for host in available_hosts %}
+                                    <option value="{{ host.pk }}">{{ host.name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <span id="select_host_msg" class="text-danger" style="display: none;">Please Select Host</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
