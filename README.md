@@ -1,11 +1,11 @@
-Django Dash 2013 (Web For Good)
+Fabric Bolt
 ================
 
 [![Build Status](https://travis-ci.org/worthwhile/django_dash_2013.png?branch=master)](https://travis-ci.org/worthwhile/django_dash_2013)
 
-## Kitsune (kit·su·ne)
+## Fabric Bolt (previously Kitsune)
 
-Get your magical code magically deployed with the help of our nine tailed friend: Kitsune. 
+A web interface for fabric deployments.
 
 ## Examples Screens
 
