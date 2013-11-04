@@ -9,6 +9,6 @@ install:
     - pip install -r requirements/local.txt --use-mirrors
 
 script:
-    - python manage.py syncdb
-    - python manage.py migrate
-    - python manage.py test projects hosts accounts
+    - python manage.py syncdb --settings=core.settings.test
+    - python manage.py migrate --settings=core.settings.test
+    - python manage.py test projects hosts accounts --settings=core.settings.test
