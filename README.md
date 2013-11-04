@@ -1,7 +1,7 @@
 Fabric Bolt
 ================
 
-[![Build Status](https://travis-ci.org/worthwhile/django_dash_2013.png?branch=master)](https://travis-ci.org/worthwhile/django_dash_2013)
+[![Build Status](https://travis-ci.org/worthwhile/fabric-bolt.png?branch=master)](https://travis-ci.org/worthwhile/fabric-bolt)
 
 ## Fabric Bolt (previously Kitsune)
 
