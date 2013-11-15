@@ -1,4 +1,4 @@
-django>=1.5
+django>=1.5,<1.6
 django-compressor>=1.2
 django-grappelli
 south
