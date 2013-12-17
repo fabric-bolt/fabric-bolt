@@ -90,7 +90,7 @@ class UserList(ListView):  # GroupRequiredMixin
 
     def get_context_data(self, **kwargs):
         context = super(UserList, self).get_context_data(**kwargs)
-        table = self.table_class(kwargs['object_list'])
+        table = self.table_class(context['object_list'])
         RequestConfig(self.request, paginate={"per_page": 20}).configure(table)
         context['table'] = table
         return context
