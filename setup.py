@@ -55,7 +55,7 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'fabric-bolt = utils.runner:main',
+            'fabric-bolt = fabric_bolt.utils.runner:main',
         ],
     },
     classifiers=[

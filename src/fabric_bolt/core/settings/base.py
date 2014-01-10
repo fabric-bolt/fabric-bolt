@@ -6,7 +6,7 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))
 PUBLIC_DIR = os.path.join(PROJECT_DIR, 'public')
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'core.wsgi.application'
+WSGI_APPLICATION = 'fabric_bolt.core.wsgi.application'
 ########## END PATH CONFIGURATION
 
 
@@ -26,7 +26,7 @@ MANAGERS = ADMINS
 
 
 ########## URL CONFIGURATION
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = 'fabric_bolt.core.urls'
 ########## END URL CONFIGURATION
 
 

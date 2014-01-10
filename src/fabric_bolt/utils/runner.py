@@ -8,7 +8,9 @@ KEY_LENGTH = 40
 
 CONFIG_TEMPLATE = """
 
-from core.settings.base import *
+from fabric_bolt.core.settings.base import *
+
+DEBUG = True
 
 CONF_ROOT = os.path.dirname(__file__)
 
@@ -41,7 +43,7 @@ def main():
     run_app(
         project='fabric-bolt',
         default_config_path='~/.fabric-bolt/settings.py',
-        default_settings='core.settings.base',
+        default_settings='fabric_bolt.core.settings.base',
         settings_initializer=generate_settings,
         settings_envvar='FABRIC_BOLT_CONF',
     )

@@ -1,6 +1,6 @@
 import django_tables2 as tables
 from fabric_bolt.hosts import models
-from src.fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable
+from fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable
 
 
 class HostTable(PaginateTable):

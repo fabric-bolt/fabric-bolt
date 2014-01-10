@@ -3,7 +3,7 @@ from django.db.models import Count, Sum
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from src.fabric_bolt.core.mixins.models import TrackingFields
+from fabric_bolt.core.mixins.models import TrackingFields
 
 from fabric_bolt.projects.model_managers import ActiveManager
 
