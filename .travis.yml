@@ -6,9 +6,9 @@ notifications:
     email: false
 
 install:
-    - pip install -r requirements/local.txt --use-mirrors
+    - pip install -r src/fabric_bolt/requirements/local.txt --use-mirrors
 
 script:
-    - python manage.py syncdb --settings=core.settings.test
-    - python manage.py migrate --settings=core.settings.test
-    - python manage.py test projects hosts accounts --settings=core.settings.test
+    - python src/fabric_bolt/manage.py syncdb --settings=core.settings.test
+    - python src/fabric_bolt/manage.py migrate --settings=core.settings.test
+    - python src/fabric_bolt/manage.py test projects hosts accounts --settings=core.settings.test
