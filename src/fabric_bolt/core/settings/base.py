@@ -164,9 +164,9 @@ INSTALLED_APPS = (
     'crispy_forms',
     'stronghold',
     'django_tables2',
-    'accounts',
-    'hosts',
-    'projects',
+    'fabric_bolt.accounts',
+    'fabric_bolt.hosts',
+    'fabric_bolt.projects',
 )
 ########## END APP CONFIGURATION
 

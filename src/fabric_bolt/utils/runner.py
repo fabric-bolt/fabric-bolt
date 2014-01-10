@@ -10,6 +10,8 @@ CONFIG_TEMPLATE = """
 
 from core.settings.base import *
 
+CONF_ROOT = os.path.dirname(__file__)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -38,7 +40,7 @@ def generate_settings():
 def main():
     run_app(
         project='fabric-bolt',
-        default_config_path='~/.fabric-bolt/',
+        default_config_path='~/.fabric-bolt/settings.py',
         default_settings='core.settings.base',
         settings_initializer=generate_settings,
         settings_envvar='FABRIC_BOLT_CONF',

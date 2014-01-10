@@ -42,8 +42,8 @@ setup(
     url='http://www.worthwhile.com',
     description='A web interface to fabric deployments.',
     long_description=open('README.md').read(),
-    package_dir={'': 'fabric_bolt'},
-    packages=find_packages('fabric_bolt'),
+    package_dir={'': 'src'},
+    packages=find_packages('src'),
     zip_safe=False,
     install_requires=install_requires,
     extras_require={

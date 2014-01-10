@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 import django_tables2 as tables
 
-from fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable
+from src.fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable
 
 
 class UserListTable(PaginateTable):

@@ -1,6 +1,6 @@
 # Local settings for core project.
 LOCAL_SETTINGS = True
-from fabric_bolt.core.settings.base import *
+from src.fabric_bolt.core.settings.base import *
 
 DEBUG = True
 TEMPLATE_DEBUG = True

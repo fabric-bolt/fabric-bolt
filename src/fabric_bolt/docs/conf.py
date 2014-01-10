@@ -16,7 +16,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.abspath('..'))
-from fabric_bolt.core.settings import local
+from src.fabric_bolt.core.settings import local
 from django.core.management import setup_environ
 setup_environ(settings)
 

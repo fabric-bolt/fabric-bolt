@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
-from fabric_bolt.core import views
+from src.fabric_bolt.core import views
 
 admin.autodiscover()
 
