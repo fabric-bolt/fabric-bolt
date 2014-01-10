@@ -60,3 +60,4 @@ atlassian-ide-plugin.xml
 production.py
 scripts
 worthwhile_fabfile.py
+core.db

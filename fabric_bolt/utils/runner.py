@@ -1,0 +1,48 @@
+from logan.runner import run_app
+
+import base64
+import os
+
+KEY_LENGTH = 40
+
+
+CONFIG_TEMPLATE = """
+
+from core.settings.base import *
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+
+        'NAME': os.path.join(CONF_ROOT, 'fabric-bolt.db'),
+        'USER': 'sqlite3',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+SECRET_KEY = %(default_key)r
+
+"""
+
+
+def generate_settings():
+    output = CONFIG_TEMPLATE % dict(
+        default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
+    )
+
+    return output
+
+
+def main():
+    run_app(
+        project='fabric-bolt',
+        default_config_path='~/.fabric-bolt/',
+        default_settings='core.settings.base',
+        settings_initializer=generate_settings,
+        settings_envvar='FABRIC_BOLT_CONF',
+    )
+
+if __name__ == '__main__':
+    main()

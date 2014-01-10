@@ -1,6 +1,0 @@
-{% extends 'base_list.html' %}
-{% load render_table from django_tables2 %}
-
-{% block breadcrumb.items %}<li class="active">Users</li>{% endblock %}
-
-{% block page_title %}All Users <a href="{% url 'accounts_user_add' %}" class="btn btn-default btn-sm pull-right"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>{% endblock %}

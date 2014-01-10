@@ -1,0 +1,10 @@
+{% extends '../../../core/templates/base_form.html' %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'accounts_user_list' %}">Users</a></li>
+        <li class="active">Add User</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block title %}Create User{% endblock %}
