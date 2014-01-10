@@ -225,7 +225,7 @@ class Deployment(TrackingFields):
     comments = models.TextField()
     status = models.CharField(choices=STATUS, max_length=10, default=PENDING)
     output = models.TextField(null=True, blank=True)
-    task = models.ForeignKey('fabric_bolt.projects.Task')
+    task = models.ForeignKey('projects.Task')
     configuration = models.TextField(null=True, blank=True)
 
     # Managers

@@ -26,7 +26,7 @@ MANAGERS = ADMINS
 
 
 ########## URL CONFIGURATION
-ROOT_URLCONF = 'fabric_bolt.core.urls'
+ROOT_URLCONF = 'core.urls'
 ########## END URL CONFIGURATION
 
 
@@ -164,9 +164,9 @@ INSTALLED_APPS = (
     'crispy_forms',
     'stronghold',
     'django_tables2',
-    'fabric_bolt.accounts',
-    'fabric_bolt.hosts',
-    'fabric_bolt.projects',
+    'accounts',
+    'hosts',
+    'projects',
 )
 ########## END APP CONFIGURATION
 

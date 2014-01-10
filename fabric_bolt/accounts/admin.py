@@ -3,8 +3,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
-from .fabric_bolt.accounts.models import DeployUser
-from .fabric_bolt.accounts.forms import UserChangeForm, UserCreationForm
+from fabric_bolt.accounts.models import DeployUser
+from fabric_bolt.accounts.forms import UserChangeForm, UserCreationForm
 
 
 class UserChangeAdminFrom(UserChangeForm):
