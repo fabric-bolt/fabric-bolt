@@ -16,7 +16,7 @@ class Migration(DataMigration):
 
         project = orm.Project()
         project.project_type = project_type
-        project.name = 'Django Dash 2013'
+        project.name = 'Fabric Bolt'
         project.description = 'Some awesome info on this project'
         project.save()
 
