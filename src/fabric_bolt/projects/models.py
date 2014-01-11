@@ -12,7 +12,7 @@ class ProjectType(TrackingFields):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return '{}'.format(self.name)
+        return self.name
 
 
 
@@ -36,7 +36,7 @@ class Project(TrackingFields):
         return Configuration.objects.filter(project_id=self.pk, stage__isnull=True)
 
     def __unicode__(self):
-        return '{}'.format(self.name)
+        return self.name
 
     def get_stages(self):
         """Utility function that returns the stages on a specific project"""
@@ -66,7 +66,7 @@ class Stage(TrackingFields):
     # End Managers
 
     def __unicode__(self):
-        return '{}'.format(self.name)
+        return self.name
 
     def stage_configurations(self):
         """Helper function that returns the stage specific configurations"""
@@ -170,7 +170,7 @@ class Configuration(TrackingFields):
     # End Managers
 
     def __unicode__(self):
-        return '{}: {}'.format(self.key, self.value)
+        return u'{}: {}'.format(self.key, self.value)
 
     def get_absolute_url(self):
         """Determine where I am coming from and where I am going"""
@@ -237,7 +237,7 @@ class Deployment(TrackingFields):
         ordering = ['-date_created']
 
     def __unicode__(self):
-        return "Deployment at {} status: {}".format(self.date_created, self.get_status_display())
+        return u'Deployment at {} status: {}'.format(self.date_created, self.get_status_display())
 
 
 class Task(models.Model):
@@ -246,4 +246,4 @@ class Task(models.Model):
     description = models.CharField(max_length=1000, null=True, blank=True)
 
     def __unicode__(self):
-        return '{} ({})'.format(self.name, self.times_used)
+        return u'{} ({})'.format(self.name, self.times_used)

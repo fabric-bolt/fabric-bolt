@@ -170,6 +170,7 @@ INSTALLED_APPS = (
 )
 ########## END APP CONFIGURATION
 
+FABFILE_PATH = os.path.join(os.path.dirname(PROJECT_DIR), 'fabfile.py')
 
 ########## STRONGHOLD CONFIGURATION
 LOGIN_URL = '/login/'

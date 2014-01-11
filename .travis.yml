@@ -6,7 +6,7 @@ notifications:
     email: false
 
 install:
-    - pip install -r src/fabric_bolt/requirements/local.txt --use-mirrors
+    - pip install -r requirements/local.txt --use-mirrors
 
 script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
