@@ -17,7 +17,7 @@ Quickstart
 
 1. Install::
 
-    pip install git+https://github.com/worthwhile/fabric-bolt.git
+    pip install fabric-bolt
 
 2. Initialize settings file::
 
