@@ -30,7 +30,7 @@ postgres_requires = [
 ]
 
 mysql_requires = [
-    'MySQL-python>=1.2.5,1.3',
+    'MySQL-python>=1.2.5,<1.3',
 ]
 
 
