@@ -41,7 +41,7 @@ setup(
     author='Dan Dietz, Nathaniel Pardington, Jared Proffitt',
     url='http://www.worthwhile.com',
     description='A web interface to fabric deployments.',
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     package_dir={'': 'src'},
     packages=find_packages('src'),
     zip_safe=False,

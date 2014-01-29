@@ -13,23 +13,23 @@ Build Status
         :target: https://travis-ci.org/worthwhile/fabric-bolt
 
 Quickstart
-------------
+----------
 
-1. Install:
+1. Install::
 
     pip install git+https://github.com/worthwhile/fabric-bolt.git
 
-2. Initialize settings file:
+2. Initialize settings file::
 
     fabric-bolt init [--conf=~/.fabric-bolt/settings.py]
 
 3. Modify generated settings file to enter database settings.
 
-4. Migrate db:
+4. Migrate db::
 
     fabric-bolt syncdb --migrate
 
-5. Run:
+5. Run::
 
     fabric-bolt runserver
 
