@@ -5,33 +5,32 @@ from setuptools import setup, find_packages
 setup_requires = []
 
 install_requires = [
-    'django>=1.5,<1.6',
-    'django-compressor',
-    'django-grappelli',
-    'south',
-    'PIL',
-    'django-stronghold',
-    'django-crispy-forms',
-    'django-custom-user',
-    'django-tables2',
-    'django-braces',
-    'django-sekizai',
-    'fabric',
-    'logan',
+    'django>=1.6,<1.7',
+    'south>=0.8.4,<0.9',
+    'pillow>=2.3.0,<2.4',
+    'django-stronghold>=0.2.4,<0.3',
+    'django-crispy-forms>=1.4.0,<1.5',
+    'django-custom-user>=0.3,<0.4',
+    'django-tables2>=0.14.0,<0.15',
+    'django-braces>=1.3.1,<1.4',
+    'django-sekizai>=0.7,<0.8',
+    'fabric>=1.8.1,<1.9',
+    'logan>=0.5.9,<0.6',
 ]
 
 dev_requires = [
-    'django_debug_toolbar',
-    'django-debug-toolbar-template-timings',
-    'mock',
+    'django_debug_toolbar>=1.0.1,<1.1',
+    'django-grappelli>=2.5.1,<2.6',
+    'django-debug-toolbar-template-timings>=0.5.5,<0.6',
+    'mock>=1.0.1,<1.1',
 ]
 
 postgres_requires = [
-    'psycopg2',
+    'psycopg2>=2.5.2,<2.6',
 ]
 
 mysql_requires = [
-    'MySQL-python',
+    'MySQL-python>=1.2.5,1.3',
 ]
 
 
