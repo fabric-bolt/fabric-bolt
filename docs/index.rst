@@ -6,17 +6,32 @@
 Welcome to Fabric Bolt's documentation!
 =======================================
 
-Previously Kitsune
-
 Build Status
+------------
 
 .. image:: https://travis-ci.org/worthwhile/fabric-bolt.png?branch=develop   
         :target: https://travis-ci.org/worthwhile/fabric-bolt
 
-Quick start::
+Quickstart
+----------
 
-    python manage.py runserver
+1. Install::
 
+    pip install fabric-bolt
+
+2. Initialize settings file::
+
+    fabric-bolt init [--conf=~/.fabric-bolt/settings.py]
+
+3. Modify generated settings file to enter database settings.
+
+4. Migrate db::
+
+    fabric-bolt syncdb --migrate
+
+5. Run::
+
+    fabric-bolt runserver
 
 Indices and tables
 ==================

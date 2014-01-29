@@ -1,0 +1,6 @@
+-r base.txt
+django_debug_toolbar>=1.0.1,<1.1
+django-debug-toolbar-template-timings>=0.5.5,<0.6
+mock>=1.0.1,<1.1
+django-grappelli>=2.5.1,<2.6
+psycopg2>=2.5.2,<2.6

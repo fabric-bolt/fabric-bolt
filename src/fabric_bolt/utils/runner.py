@@ -1,5 +1,6 @@
 from logan.runner import run_app
 
+import sys
 import base64
 import os
 
@@ -39,7 +40,7 @@ def generate_settings():
     return output
 
 
-def main():
+def main(progname=sys.argv[0]):
     run_app(
         project='fabric-bolt',
         default_config_path='~/.fabric-bolt/settings.py',

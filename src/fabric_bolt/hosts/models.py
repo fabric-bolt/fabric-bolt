@@ -20,4 +20,4 @@ class Host(models.Model):
     name = models.CharField(max_length=255, help_text='DNS name or IP address', validators=[SchemelessURLValidator()])
 
     def __unicode__(self):
-        return '{}'.format(self.name)
+        return self.name

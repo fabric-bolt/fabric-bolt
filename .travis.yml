@@ -9,6 +9,7 @@ install:
     - pip install -r requirements/local.txt --use-mirrors
 
 script:
-    - python manage.py syncdb --settings=core.settings.test
-    - python manage.py migrate --settings=core.settings.test
-    - python manage.py test projects hosts accounts --settings=core.settings.test
+    - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+    - python src/fabric_bolt/manage.py syncdb --settings=fabric_bolt.core.settings.test
+    - python src/fabric_bolt/manage.py migrate --settings=fabric_bolt.core.settings.test
+    - python src/fabric_bolt/manage.py test projects hosts accounts --settings=fabric_bolt.core.settings.test

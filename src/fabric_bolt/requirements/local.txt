@@ -1,5 +1,0 @@
--r base.txt
-django_debug_toolbar
-django-debug-toolbar-template-timings
-jinja2
-mock

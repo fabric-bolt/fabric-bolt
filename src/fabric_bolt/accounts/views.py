@@ -12,7 +12,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic import FormView, UpdateView, CreateView, ListView, DeleteView, DetailView
 
-from django_tables2 import RequestConfig
+from django_tables2 import RequestConfig, SingleTableView
 
 from fabric_bolt.accounts import forms, tables
 
@@ -75,10 +75,10 @@ class Logout(TemplateView):
 
 
 # Admin: List Users
-class UserList(ListView):  # GroupRequiredMixin
+class UserList(SingleTableView):  # GroupRequiredMixin
     """ List of users. Uses UserFilter and UserTable. """
 
-    group_required = 'Admin'
+    #group_required = 'Admin'
     template_name = 'accounts/user_list.html'
     table_class = tables.UserListTable
     model = auth.get_user_model()
@@ -87,12 +87,12 @@ class UserList(ListView):  # GroupRequiredMixin
     #    users = auth.get_user_model()
     #    return users.objects.filter(is_staff=False)
 
-    def get_context_data(self, **kwargs):
-        context = super(UserList, self).get_context_data(**kwargs)
-        table = self.table_class(context['object_list'])
-        RequestConfig(self.request, paginate={"per_page": 20}).configure(table)
-        context['table'] = table
-        return context
+    #def get_context_data(self, **kwargs):
+    #    context = super(UserList, self).get_context_data(**kwargs)
+    #    table = self.table_class(kwargs['object_list'])
+    #    RequestConfig(self.request, paginate={"per_page": 20}).configure(table)
+    #    context['table'] = table
+    #    return context
 
 
 # Admin Change/Edit User (modal)

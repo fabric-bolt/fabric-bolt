@@ -13,6 +13,7 @@ from django.views.generic import CreateView, UpdateView, DetailView, View, Delet
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.forms import CharField, PasswordInput, Select, FloatField, BooleanField
+from django.conf import settings
 
 from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
@@ -32,7 +33,8 @@ def get_fabric_tasks(request):
     Generate a list of fabric tasks that are available
     """
     try:
-        docstring, callables, default = load_fabfile(find_fabfile(None))
+
+        docstring, callables, default = load_fabfile(settings.FABFILE_PATH)
         all_tasks = _task_names(callables)
         dict_with_docs = {task: callables[task].__doc__ for task in all_tasks}
     except Exception as e:
