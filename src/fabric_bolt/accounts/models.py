@@ -25,28 +25,38 @@ class DeployUser(AbstractEmailUser):
     """
     Custom user class for deployments. Email as username using django-custom-user.
     """
-    SLATE = 'slate.min.css'
+
     AMELIA = 'amelia.min.css'
     CERULEAN = 'cerulean.min.css'
-    SIMPLEX = 'simplex.min.css'
+    COSMO = 'cosmo.min.css'
+    CYBORG = 'cyborg.min.css'
     FLATLY = 'flatly.min.css'
-    READABLE = 'readable.min.css'
     JOURNAL = 'journal.min.css'
-    DEFAULT = FLATLY
+    READABLE = 'readable.min.css'
+    SIMPLEX = 'simplex.min.css'
+    SLATE = 'slate.min.css'
+    SPACELAB = 'spacelab.min.css'
+    UNITED = 'united.min.css'
+    YETI = 'yeti.min.css'
 
     TEMPLATES = (
-        (SLATE, 'Slate'),
         (AMELIA, 'Amelia'),
         (CERULEAN, 'Cerulean'),
-        (SIMPLEX, 'Simplex'),
+        (COSMO, 'Cosmo'),
+        (CYBORG, 'Cyborg'),
         (FLATLY, 'Flatly'),
-        (READABLE, 'Readable'),
         (JOURNAL, 'Journal'),
+        (READABLE, 'Readable'),
+        (SIMPLEX, 'Simplex'),
+        (SLATE, 'Slate'),
+        (SPACELAB, 'Spacelab'),
+        (UNITED, 'United'),
+        (YETI, 'Yeti'),
     )
 
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    template = models.CharField(max_length=255, blank=True, choices=TEMPLATES, default=DEFAULT)
+    template = models.CharField(max_length=255, blank=True, choices=TEMPLATES, default=YETI)
 
     objects = UserManager()
 
