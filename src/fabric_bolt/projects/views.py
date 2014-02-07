@@ -38,7 +38,7 @@ def get_fabric_tasks(request):
         all_tasks = _task_names(callables)
         dict_with_docs = {task: callables[task].__doc__ for task in all_tasks}
     except Exception as e:
-        messages.error(request, 'Error loading fabfile: ' + e.message)
+        messages.error(request, 'Error loading fabfile: ' + str(e))
         dict_with_docs = {}
     return dict_with_docs
 

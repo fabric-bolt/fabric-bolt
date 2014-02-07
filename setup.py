@@ -14,6 +14,7 @@ install_requires = [
     'django-tables2>=0.14.0,<0.15',
     'django-braces>=1.3.1,<1.4',
     'django-sekizai>=0.7,<0.8',
+    'django-grappelli>=2.5.1,<2.6',
     'fabric>=1.8.1,<1.9',
     'logan>=0.5.9,<0.6',
 ]
@@ -36,7 +37,7 @@ mysql_requires = [
 
 setup(
     name='fabric-bolt',
-    version='0.0.2',
+    version='0.0.3',
     author='Dan Dietz, Nathaniel Pardington, Jared Proffitt',
     url='https://github.com/worthwhile/fabric-bolt',
     description='A web interface to fabric deployments.',
