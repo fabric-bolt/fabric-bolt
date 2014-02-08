@@ -194,15 +194,7 @@ class UserPasswordChangeForm(PasswordChangeForm):
 
 class UserPasswordCreateForm(SetPasswordForm):
 
-    # Form Layout
-    helper = FormHelper()
-    helper.form_class = 'form-horizontal'
-    helper.label_class = 'col-md-4'
-    helper.field_class = 'col-md-8'
-    helper.layout = Layout(
-        Field('new_password1'),
-        Field('new_password2'),
-        FormActions(
-            Submit('btnSubmit', 'Submit', css_class="button btn-primary pull-right"),
-        ),
-    )
+    class Meta:
+        fields = ('new_password1', 'new_password2')
+        labels = {'new_password1': 'Password', 'new_password2': 'Confirm'}
+        help_texts = {'new_password1': 'Create a password for you account.'}

@@ -150,6 +150,7 @@ MIDDLEWARE_CLASSES = (
 
 ########## APP CONFIGURATION
 INSTALLED_APPS = (
+    # Django Core
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -157,6 +158,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+
+    # 3rd Party
     'grappelli',
     'django.contrib.admin',
     'south',
@@ -164,6 +167,9 @@ INSTALLED_APPS = (
     'crispy_forms',
     'stronghold',
     'django_tables2',
+    'bootstrapform',
+
+    # Project
     'fabric_bolt.accounts',
     'fabric_bolt.hosts',
     'fabric_bolt.projects',
@@ -177,7 +183,7 @@ LOGIN_URL = '/login/'
 STRONGHOLD_PUBLIC_URLS = (
     '^/login/',
     '^/logout/',
-    '^/reset/.+/$',
+    '^/register/.+/$',
 )
 ########## END STRONGHOLD CONFIGURATION
 

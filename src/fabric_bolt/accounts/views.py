@@ -5,16 +5,21 @@ Deployment User Views
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.views import password_reset_confirm
-
+from django.contrib.auth.views import password_reset_confirm, redirect_to_login
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
-from django.views.generic import FormView, UpdateView, CreateView, ListView, DeleteView, DetailView
+from django.views.generic import FormView, UpdateView, CreateView, DeleteView, DetailView
 
-from django_tables2 import RequestConfig, SingleTableView
+from django_tables2 import SingleTableView
+from braces.views import GroupRequiredMixin
 
 from fabric_bolt.accounts import forms, tables
+
+
+class UserPermissions(TemplateView):
+    template_name = 'accounts/permissions.html'
 
 
 class Login(TemplateView):
@@ -75,36 +80,36 @@ class Logout(TemplateView):
 
 
 # Admin: List Users
-class UserList(SingleTableView):  # GroupRequiredMixin
-    """ List of users. Uses UserFilter and UserTable. """
-
-    #group_required = 'Admin'
+class UserList(GroupRequiredMixin, SingleTableView):
+    """
+    List of users. Uses UserFilter and UserTable.
+    """
+    group_required = 'Admin'
     template_name = 'accounts/user_list.html'
     table_class = tables.UserListTable
     model = auth.get_user_model()
 
-    #def get_queryset(self):
-    #    users = auth.get_user_model()
-    #    return users.objects.filter(is_staff=False)
-
-    #def get_context_data(self, **kwargs):
-    #    context = super(UserList, self).get_context_data(**kwargs)
-    #    table = self.table_class(kwargs['object_list'])
-    #    RequestConfig(self.request, paginate={"per_page": 20}).configure(table)
-    #    context['table'] = table
-    #    return context
-
 
 # Admin Change/Edit User (modal)
-class UserChange(UpdateView):  # GroupRequiredMixin
+class UserChange(UpdateView):
     """
     Change/Edit User view. Used in a modal window.
     """
-    group_required = 'Admin'
     model = auth.get_user_model()
     success_url = reverse_lazy('accounts_user_list', args=())
     form_class = forms.UserChangeForm
     template_name = 'accounts/deployuser_change.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Edit your profile or you're an admin, load the view
+        if self.request.user.pk == int(kwargs.get('pk')) or self.request.user.user_is_admin():
+            return super(UserChange, self).dispatch(request, *args, **kwargs)
+
+        # Redirect to index or login for other users
+        if request.user.is_authenticated():
+            return redirect('index')
+        else:
+            return redirect_to_login(request.get_full_path())
 
     def get_form_kwargs(self):
         kwargs = super(UserChange, self).get_form_kwargs()
@@ -114,7 +119,7 @@ class UserChange(UpdateView):  # GroupRequiredMixin
 
 
 # Admin Add Users (modal)
-class UserAdd(CreateView):  # GroupRequiredMixin
+class UserAdd(GroupRequiredMixin, CreateView):
     """
     Create User view. Used in a modal window.
     """
@@ -149,7 +154,8 @@ class UserDetail(DetailView):
 
 
 # Admin Delete User
-class UserDelete(DeleteView):
+class UserDelete(GroupRequiredMixin, DeleteView):
+    group_required = 'Admin'
     model = auth.get_user_model()
     success_url = reverse_lazy('accounts_user_list')
 

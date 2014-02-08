@@ -63,35 +63,27 @@ class DeployUser(AbstractEmailUser):
     def __unicode__(self):
         return u'{} {}'.format(self.first_name, self.last_name)
 
+    @property
+    def role(self):
+        """
+        Assumes the user is only assigned to one role and return it
+        """
+        return self.group_strigify()
+
     def user_is_admin(self):
         if not self.pk:
             return False
-
-        for group in self.groups.all():
-            if group.name == "Admin":
-                return True
-
-        return False
+        return "Admin" in self.groups.values_list("name", flat=True)
 
     def user_is_deployer(self):
         if not self.pk:
             return False
-
-        for group in self.groups.all():
-            if group.name == "Deployer":
-                return True
-
-        return False
+        return "Deployer" in self.groups.values_list("name", flat=True)
 
     def user_is_historian(self):
         if not self.pk:
             return False
-
-        for group in self.groups.all():
-            if group.name == "Historian":
-                return True
-
-        return False
+        return "Historian" in self.groups.values_list("name", flat=True)
 
     def group_strigify(self):
         """
