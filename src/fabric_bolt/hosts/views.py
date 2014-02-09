@@ -4,12 +4,25 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib import messages
 
 from django_tables2.views import SingleTableView
+
+from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts import models, tables, forms
 
 
-class HostCreate(CreateView):
-    """View for creating a host. Hosts let us know where we can shovel code to."""
+class HostList(MultipleGroupRequiredMixin, SingleTableView):
+    group_required = ['Admin', 'Deployer', ]
+    table_class = tables.HostTable
+    model = models.Host
 
+
+class HostDetail(MultipleGroupRequiredMixin, DetailView):
+    group_required = ['Admin', 'Deployer', ]
+    model = models.Host
+
+
+class HostCreate(MultipleGroupRequiredMixin, CreateView):
+    """View for creating a host. Hosts let us know where we can shovel code to."""
+    group_required = ['Admin', 'Deployer', ]
     model = models.Host
     form_class = forms.HostCreateForm
     template_name_suffix = '_create'
@@ -28,11 +41,8 @@ class HostCreate(CreateView):
         return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
 
 
-class HostDetail(DetailView):
-    model = models.Host
-
-
-class HostUpdate(UpdateView):
+class HostUpdate(MultipleGroupRequiredMixin, UpdateView):
+    role_required = 'Admin'
     model = models.Host
     form_class = forms.HostUpdateForm
     template_name_suffix = '_update'
@@ -50,17 +60,11 @@ class HostUpdate(UpdateView):
         return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
 
 
-class HostDelete(DeleteView):
+class HostDelete(MultipleGroupRequiredMixin, DeleteView):
+    group_required = 'Admin'
     model = models.Host
     success_url = reverse_lazy('hosts_host_list')
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Host {} Successfully Deleted'.format(self.get_object()))
         return super(HostDelete, self).delete(self, request, *args, **kwargs)
-
-
-class HostList(SingleTableView):
-    table_class = tables.HostTable
-    model = models.Host
-
-

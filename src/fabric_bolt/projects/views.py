@@ -19,6 +19,7 @@ from django_tables2 import RequestConfig
 from django_tables2.views import SingleTableView
 from fabric.main import find_fabfile, load_fabfile, _task_names
 
+from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
 
@@ -67,11 +68,11 @@ class ProjectList(SingleTableView):
     queryset = models.Project.active_records.all()
 
 
-class ProjectCreate(CreateView):
+class ProjectCreate(MultipleGroupRequiredMixin, CreateView):
     """
     Create a new project
     """
-
+    group_required = ['Admin', 'Deployer', ]
     model = models.Project
     form_class = forms.ProjectCreateForm
     template_name_suffix = '_create'
@@ -115,21 +116,22 @@ class ProjectDetail(DetailView):
         return context
 
 
-class ProjectUpdate(UpdateView):
+class ProjectUpdate(MultipleGroupRequiredMixin, UpdateView):
     """
     Update a project
     """
-
+    group_required = ['Admin', 'Deployer', ]
     model = models.Project
     form_class = forms.ProjectUpdateForm
     template_name_suffix = '_update'
     success_url = reverse_lazy('projects_project_list')
 
 
-class ProjectDelete(DeleteView):
+class ProjectDelete(MultipleGroupRequiredMixin, DeleteView):
     """
     Deletes a project by setting the Project's date_deleted. We save projects for historical tracking.
     """
+    group_required = ['Admin', ]
     model = models.Project
 
     def delete(self, request, *args, **kwargs):
@@ -141,11 +143,11 @@ class ProjectDelete(DeleteView):
         return HttpResponseRedirect(reverse('projects_project_list'))
 
 
-class ProjectConfigurationCreate(BaseGetProjectCreateView):
+class ProjectConfigurationCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
     """
     Create a Project Configuration. These are used to set the Fabric env object for a task.
     """
-
+    group_required = ['Admin', ]
     model = models.Configuration
     template_name_suffix = '_create'
     form_class = forms.ConfigurationCreateForm
@@ -176,21 +178,21 @@ class ProjectConfigurationCreate(BaseGetProjectCreateView):
         return success_url
 
 
-class ProjectConfigurationUpdate(UpdateView):
+class ProjectConfigurationUpdate(MultipleGroupRequiredMixin, UpdateView):
     """
     Update a Project Configuration
     """
-
+    group_required = ['Admin', ]
     model = models.Configuration
     template_name_suffix = '_update'
     form_class = forms.ConfigurationUpdateForm
 
 
-class ProjectConfigurationDelete(DeleteView):
+class ProjectConfigurationDelete(MultipleGroupRequiredMixin, DeleteView):
     """
     Delete a project configuration from a project
     """
-
+    group_required = ['Admin', ]
     model = models.Configuration
 
     def dispatch(self, request, *args, **kwargs):
@@ -219,11 +221,11 @@ class ProjectConfigurationDelete(DeleteView):
         return super(ProjectConfigurationDelete, self).delete(self, request, *args, **kwargs)
 
 
-class DeploymentCreate(CreateView):
+class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
     """
     Form to create a new Deployment for a Project Stage. POST will kick off the DeploymentOutputStream view.
     """
-
+    group_required = ['Admin', 'Deployer', ]
     model = models.Deployment
     form_class = forms.DeploymentForm
 
@@ -384,11 +386,11 @@ class DeploymentOutputStream(View):
         return resp
 
 
-class ProjectStageCreate(BaseGetProjectCreateView):
+class ProjectStageCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
     """
     Create/Add a Stage to a Project
     """
-
+    group_required = ['Admin', ]
     model = models.Stage
     template_name_suffix = '_create'
     form_class = forms.StageCreateForm
@@ -406,10 +408,11 @@ class ProjectStageCreate(BaseGetProjectCreateView):
         return super(ProjectStageCreate, self).form_valid(form)
 
 
-class ProjectStageUpdate(UpdateView):
+class ProjectStageUpdate(MultipleGroupRequiredMixin, UpdateView):
     """
     Project Stage Update form
     """
+    group_required = ['Admin', 'Deployer', ]
     model = models.Stage
     template_name_suffix = '_update'
     form_class = forms.StageUpdateForm
@@ -453,11 +456,11 @@ class ProjectStageView(DetailView):
         return context
 
 
-class ProjectStageDelete(DeleteView):
+class ProjectStageDelete(MultipleGroupRequiredMixin, DeleteView):
     """
     Delete a project stage
     """
-
+    group_required = ['Admin', ]
     model = models.Stage
 
     def delete(self, request, *args, **kwargs):
@@ -469,11 +472,11 @@ class ProjectStageDelete(DeleteView):
         return HttpResponseRedirect(reverse('projects_project_view', args=(self.object.project.pk,)))
 
 
-class ProjectStageMapHost(RedirectView):
+class ProjectStageMapHost(MultipleGroupRequiredMixin, RedirectView):
     """
     Map a Project Stage to a Host
     """
-
+    group_required = ['Admin',]
     permanent = False
 
     def get(self, request, *args, **kwargs):
@@ -490,11 +493,11 @@ class ProjectStageMapHost(RedirectView):
         return reverse('projects_stage_view', args=(self.project_id, self.stage_id,))
 
 
-class ProjectStageUnmapHost(RedirectView):
+class ProjectStageUnmapHost(MultipleGroupRequiredMixin, RedirectView):
     """
     Unmap a Project Stage from a Host (deletes the Stage->Host through table record)
     """
-
+    group_required = ['Admin', ]
     permanent = False
 
     def get(self, request, *args, **kwargs):

@@ -9,6 +9,7 @@
 
             {% block sidebar %}
                 <div class="col-md-3">
+
                     <div class="panel panel-default">
                         <div class="panel-heading"><a href="{% url 'projects_project_list' %}">Projects</a></div>
                         <div class="panel-body">
@@ -20,28 +21,35 @@
                             <br/><a href="{% url 'projects_project_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Project</a>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading"><a href="{% url 'hosts_host_list' %}">Hosts</a></div>
-                        <div class="panel-body">
-                            {% for host in sidebar_hosts %}
-                                <a href="{% url 'hosts_host_detail' host.pk %}">{{ host }}</a><br/>
-                            {% empty %}
-                                No Hosts<br/>
-                            {% endfor %}
-                            <br/><a href="{% url 'hosts_host_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Host</a>
+
+                    {% if not user.user_is_historian %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><a href="{% url 'hosts_host_list' %}">Hosts</a></div>
+                            <div class="panel-body">
+                                {% for host in sidebar_hosts %}
+                                    <a href="{% url 'hosts_host_detail' host.pk %}">{{ host }}</a><br/>
+                                {% empty %}
+                                    No Hosts<br/>
+                                {% endfor %}
+                                <br/><a href="{% url 'hosts_host_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Host</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading"><a href="{% url 'accounts_user_list' %}">Users</a></div>
-                        <div class="panel-body">
-                            {% for user in sidebar_users %}
-                                <a href="{% url 'accounts_user_view' user.pk %}">{{ user }}</a><br/>
-                            {% empty %}
-                                No Users<br/>
-                            {% endfor %}
-                            <br/><a href="{% url 'accounts_user_add' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
-                        </div>
-                    </div>
+
+                        {% if user.user_is_admin %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><a href="{% url 'accounts_user_list' %}">Users</a></div>
+                                <div class="panel-body">
+                                    {% for user in sidebar_users %}
+                                        <a href="{% url 'accounts_user_view' user.pk %}">{{ user }}</a><br/>
+                                    {% empty %}
+                                        No Users<br/>
+                                    {% endfor %}
+                                    <br/><a href="{% url 'accounts_user_add' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    {% endif %}
                 </div>
             {% endblock sidebar %}
 

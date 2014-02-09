@@ -1,10 +1,18 @@
-from datetime import timedelta
+
 import json
+from datetime import timedelta
 
 from django.db import connection
-from django.views.generic import TemplateView
 from django.db.models.aggregates import Count
+from django.contrib import messages
+from django.utils.timezone import now
+from django.views.generic import TemplateView
+from django.template.defaultfilters import date as format_date
+from django.template.defaultfilters import time as format_time
 
+from croniter import croniter
+
+from fabric_bolt.launch_window.models import LaunchWindow
 from fabric_bolt.projects.models import Project, Deployment
 
 
@@ -14,6 +22,20 @@ class Dashboard(TemplateView):
     def get_context_data(self, **kwargs):
 
         context = super(Dashboard, self).get_context_data(**kwargs)
+
+        # Warn the user if we don't have an available Launch Window
+        has_one_window = False
+        next_window = None
+        for window in LaunchWindow.objects.all():  # put this back once the migrations are created
+            current_date = now()
+            next_window = croniter(window.cron_format, current_date).get_next(current_date)
+            if (next_window - current_date).seconds < 61:
+                has_one_window = True
+                continue
+
+        if not has_one_window:
+            messages.add_message(self.request, messages.ERROR,
+                'No available Launch Windows! Next window on %s @ %s' % (format_date(next_window), format_time(next_window)))
 
         # Get the deployments and projects and bail if we don't have any
         deploys = Deployment.objects.order_by('date_created')

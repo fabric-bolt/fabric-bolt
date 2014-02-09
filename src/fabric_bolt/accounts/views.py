@@ -13,8 +13,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic import FormView, UpdateView, CreateView, DeleteView, DetailView
 
 from django_tables2 import SingleTableView
-from braces.views import GroupRequiredMixin
 
+from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.accounts import forms, tables
 
 
@@ -80,7 +80,7 @@ class Logout(TemplateView):
 
 
 # Admin: List Users
-class UserList(GroupRequiredMixin, SingleTableView):
+class UserList(MultipleGroupRequiredMixin, SingleTableView):
     """
     List of users. Uses UserFilter and UserTable.
     """
@@ -119,7 +119,7 @@ class UserChange(UpdateView):
 
 
 # Admin Add Users (modal)
-class UserAdd(GroupRequiredMixin, CreateView):
+class UserAdd(MultipleGroupRequiredMixin, CreateView):
     """
     Create User view. Used in a modal window.
     """
@@ -154,7 +154,7 @@ class UserDetail(DetailView):
 
 
 # Admin Delete User
-class UserDelete(GroupRequiredMixin, DeleteView):
+class UserDelete(MultipleGroupRequiredMixin, DeleteView):
     group_required = 'Admin'
     model = auth.get_user_model()
     success_url = reverse_lazy('accounts_user_list')

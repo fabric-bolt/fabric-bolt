@@ -89,7 +89,7 @@ class DeployUser(AbstractEmailUser):
         """
         Converts this user's group(s) to a string and returns it.
         """
-        return "".join([group.name for group in self.groups.all()])
+        return "/".join([group.name for group in self.groups.all()])
 
     def gravatar(self, size=20):
         """
