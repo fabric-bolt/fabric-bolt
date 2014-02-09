@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'hosts_host_list' %}">Hosts</a></li>
+        <li class="active">Add Host</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <h1>Add New Host</h1>
+    {% crispy form %}
+{% endblock %}

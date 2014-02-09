@@ -172,6 +172,7 @@ INSTALLED_APPS = (
     # Project
     'fabric_bolt.accounts',
     'fabric_bolt.hosts',
+    'fabric_bolt.launch_window',
     'fabric_bolt.projects',
 )
 ########## END APP CONFIGURATION
