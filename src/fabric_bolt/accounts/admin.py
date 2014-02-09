@@ -13,11 +13,6 @@ class UserChangeAdminFrom(UserChangeForm):
                     "this user's password, but you can change the password "
                     "using <a href=\"password/\">this form</a>."))
 
-    def __init__(self, *args, **kwargs):
-        super(UserChangeAdminFrom, self).__init__(*args, **kwargs)
-        self.fields['user_level'].required = False
-
-
 class DeployUserAdmin(UserAdmin):
 
     # The forms to add and change user instances
@@ -32,7 +27,7 @@ class DeployUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'template')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+        (_('Permissions'), {'fields': ( 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined', )}),
     )

@@ -38,12 +38,12 @@ class Dashboard(TemplateView):
                 'No available Launch Windows! Next window on %s @ %s' % (format_date(next_window), format_time(next_window)))
 
         # Get the deployments and projects and bail if we don't have any
-        deploys = Deployment.objects.order_by('date_created')
-        if not deploys.exists():
+        deploys = list(Deployment.objects.order_by('date_created'))
+        if len(deploys) == 0:
             return context
 
-        projects = Project.objects.all()
-        if not projects.exists():
+        projects = list(Project.objects.all())
+        if len(projects) == 0:
             return context
 
         # Deployment Stats Data
@@ -115,7 +115,7 @@ class Dashboard(TemplateView):
         else:
             # Get the date range for all the deployments ever done
             start_date = deploys[0].date_created
-            end_date = deploys[deploys.count()-1].date_created
+            end_date = deploys[len(deploys)-1].date_created
 
             # Step through each day and create an array of deployment counts from each project
             for day in range(-1, (end_date.date() - start_date.date()).days + 1):

@@ -58,7 +58,8 @@ class DeployUser(AbstractEmailUser):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     template = models.CharField(max_length=255, blank=True, choices=TEMPLATES, default=YETI)
 
-    objects = UserManager()
+    #objects = UserManager() # I don't think its a good idea to always prefetch the groups. T
+                             # hat's an extra query every single time. We don't always need the groups.
 
     def __unicode__(self):
         return u'{} {}'.format(self.first_name, self.last_name)
@@ -70,20 +71,25 @@ class DeployUser(AbstractEmailUser):
         """
         return self.group_strigify()
 
+    def _get_groups(self):
+        if not hasattr(self, '_cached_groups'):
+            self._cached_groups = self.groups.values_list("name", flat=True)
+        return self._cached_groups
+
     def user_is_admin(self):
         if not self.pk:
             return False
-        return "Admin" in self.groups.values_list("name", flat=True)
+        return "Admin" in self._get_groups()
 
     def user_is_deployer(self):
         if not self.pk:
             return False
-        return "Deployer" in self.groups.values_list("name", flat=True)
+        return "Deployer" in self._get_groups()
 
     def user_is_historian(self):
         if not self.pk:
             return False
-        return "Historian" in self.groups.values_list("name", flat=True)
+        return "Historian" in self._get_groups()
 
     def group_strigify(self):
         """
