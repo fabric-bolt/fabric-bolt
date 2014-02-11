@@ -21,6 +21,7 @@ urlpatterns = patterns('',
 
     url(r'^(?P<project_id>\w+)/stage/create/$', views.ProjectStageCreate.as_view(), name='projects_stage_create'),
     url(r'^(?P<project_id>\w+)/stage/update/(?P<pk>\w+)/$', views.ProjectStageUpdate.as_view(), name='projects_stage_update'),
+    url(r'^(?P<project_id>\w+)/stage/get_tasks_ajax/(?P<pk>\w+)/$', views.ProjectStageTasksAjax.as_view(), name='projects_stage_tasks_ajax'),
     url(r'^(?P<project_id>\w+)/stage/view/(?P<pk>\w+)/$', views.ProjectStageView.as_view(), name='projects_stage_view'),
     url(r'^(?P<project_id>\w+)/stage/delete/(?P<pk>\w+)/$', views.ProjectStageDelete.as_view(), name='projects_stage_delete'),
     url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/host/(?P<host_id>\w+)/$', views.ProjectStageMapHost.as_view(), name='projects_stage_maphost'),

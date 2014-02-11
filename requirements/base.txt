@@ -11,3 +11,4 @@ fabric>=1.8.1,<1.9
 logan>=0.5.9,<0.6
 django-bootstrap-form==3.1
 croniter==0.3.4
+GitPython>=0.3.1,<0.4

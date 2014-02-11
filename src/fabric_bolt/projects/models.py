@@ -15,17 +15,20 @@ class ProjectType(TrackingFields):
         return self.name
 
 
-
 class Project(TrackingFields):
     """Model for a project (pretty obvious)
 
     Keeps track of the stages and general configurations for deployments"""
 
     name = models.CharField(max_length=255)
-
     type = models.ForeignKey(ProjectType, blank=True, null=True)
-
     description = models.TextField(blank=True, null=True)
+
+    use_repo_fabfile = models.BooleanField(default=False, verbose_name='Use repo\'s fabfile?',
+                                           help_text='If no, use the default fabfile.')
+    repo_url = models.CharField(max_length=200, null=True, blank=True, help_text='Currently only git repos are supported.')
+    fabfile_requirements = models.TextField(null=True, blank=True, help_text='Pip requirements to install for fabfile. '
+                                                                             'Enter one requirement per line.')
 
     # Managers
     objects = models.Manager()

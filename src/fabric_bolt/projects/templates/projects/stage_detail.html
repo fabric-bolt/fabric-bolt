@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load render_table from django_tables2 %}
-{% load sekizai_tags %}
+{% load sekizai_tags staticfiles %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -30,35 +30,10 @@
         </div>
 
         <div class="col-md-5">
-            <div class="well well-sm">
-
-                <div class="list-group">
-                    {% for task in frequent_tasks_run %}
-                        <a href="{% url 'projects_deployment_create' object.pk task.name %}" class="list-group-item">
-                            <span class="badge">{{ task.times_used }}</span>
-                            {{ task.name }}
-                            {% if task.description %}
-                                <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{'show': 300, 'hide': 0 }"
-                                data-original-title="{{ task.description }}"></i>
-                            {% endif %}
-                        </a>
-                    {% empty %}
-                        <div class="list-group-item">
-                            <span class="badge">0</span>
-                            No frequent tasks yet
-                        </div>
-                    {% endfor %}
+            <div class="well well-sm" id="task_well">
+                <div class="text-center" style="padding:6px 0;">
+                    Finding tasks... &#160;&#160;<img src="{% static 'images/ajax-loader.gif' %}"/>
                 </div>
-
-                <div>
-                    <select class="form-control" id="all_tasks_dropdown">
-                        <option value="">All Tasks</option>
-                        {% for task_name in all_tasks %}
-                            <option value="{% url 'projects_deployment_create' object.pk task_name %}">{{ task_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
             </div>
         </div>
     </div>
@@ -149,9 +124,14 @@
         <script>
             (function($){
                 $(function(){
-                    $('#all_tasks_dropdown').change(function(){
-                        document.location = $(this).val();
-                    });
+                    $('#task_well').load("{% url 'projects_stage_tasks_ajax' object.project_id object.id %}",
+                        function(){
+                            $('[data-toggle=tooltip]').tooltip();
+                            $('#all_tasks_dropdown').change(function(){
+                                document.location = $(this).val();
+                            });
+                        }
+                    );
 
                     $('.js-add-host').click(function(event){
                         event.preventDefault();

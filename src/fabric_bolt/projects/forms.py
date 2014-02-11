@@ -17,6 +17,9 @@ class ProjectCreateForm(forms.ModelForm):
             'name',
             'type',
             'description',
+            'use_repo_fabfile',
+            'repo_url',
+            'fabfile_requirements',
         ]
 
     def __init__(self, *args, **kwargs):
@@ -25,6 +28,9 @@ class ProjectCreateForm(forms.ModelForm):
             'name',
             'type',
             'description',
+            'use_repo_fabfile',
+            'repo_url',
+            'fabfile_requirements',
             ButtonHolder(
                 Submit('submit', '%s Project' % self.button_prefix, css_class='button')
             )
