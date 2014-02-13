@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% load sekizai_tags %}
+{% load staticfiles %}
+
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -52,7 +54,8 @@
     </div>
     <div class="well">
         {% if object.status == object.PENDING %}
-            <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
+            <div id="deployment_output"><pre class="prettyprint"></pre></div>
+            <input type="text" class="form-control" id="deployment_input">
         {% else %}
             <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
         {% endif %}
@@ -61,33 +64,12 @@
 
     {% addtoblock "js" %}
         <script>
-            {% if object.status == object.PENDING %}
-                $(function(){
-                    var scroll_iframe_ticker = setInterval(function(){
-                        var $contents = $('#deployment_output').contents();
-
-                        $contents.scrollTop($contents.height());
-                        if($contents.find('#finished').length > 0){
-                            status = $contents.find('#finished').html();
-                            if(status == 'failed'){
-                                $('#status_section legend').html('Status: Failed!');
-                                $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-warning-sign').addClass('text-danger');
-                            }else if(status == 'success') {
-                                $('#status_section legend').html('Status: Success!');
-                                $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-ok').addClass('text-success');
-                            }
-
-                            clearInterval(scroll_iframe_ticker);
-                        }
-                    }, 100);
-
-                });
-            {% else %}
-                $(function(){
-                    $('#deployment_output pre').scrollTop($('#deployment_output pre')[0].scrollHeight);
-                });
-            {% endif %}
+            var deployment_pending = {% if object.status == object.PENDING %}true{% else %}false{% endif %};
+            var deployment_id = {{ object.pk }};
          </script>
+        <script src="{% static 'projects/js/socket.io.js' %}"></script>
+        <script>WEB_SOCKET_SWF_LOCATION="{% static 'projects/js/WebSocketMain.swf' %}";</script>
+        <script src="{% static 'projects/js/deployment.js' %}"></script>
     {% endaddtoblock %}
 
 {% endblock content %}

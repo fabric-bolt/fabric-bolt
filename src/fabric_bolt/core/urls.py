@@ -3,6 +3,10 @@ from django.contrib import admin
 from django.conf import settings
 from fabric_bolt.core import views
 
+import socketio.sdjango
+
+socketio.sdjango.autodiscover()
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -13,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^hosts/', include('fabric_bolt.hosts.urls')),
     url(r'^launch-window/', include('fabric_bolt.launch_window.urls')),
     url(r'^projects/', include('fabric_bolt.projects.urls')),
+    url("^socket\.io", include(socketio.sdjango.urls)),
 )
 
 #Serve the static files from django

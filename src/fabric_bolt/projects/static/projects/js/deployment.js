@@ -1,0 +1,43 @@
+
+
+
+$(function(){
+    if(deployment_pending){
+
+        var socket = io.connect("/chat");
+
+        socket.on('connect', function () {
+            socket.emit('join', deployment_id);
+        });
+
+        socket.on('announcement', function (data) {
+            if(data.status == 'pending'){
+                $('#deployment_output pre').append(data.lines).scrollTop($('#deployment_output pre')[0].scrollHeight);
+            }else{
+                socket.disconnect();
+                console.log('disconnect');
+                if(data.status == 'failed'){
+                    $('#status_section legend').html('Status: Failed!');
+                    $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-warning-sign').addClass('text-danger');
+                }else if(data.status == 'success') {
+                    $('#status_section legend').html('Status: Success!');
+                    $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-ok').addClass('text-success');
+                }
+            }
+
+        });
+
+        $('#deployment_input').keyup(function(e){
+            if(e.which == 13){
+                var text = $(this).val();
+                $(this).val('');
+                console.log(text);
+                socket.emit('input', text);
+            }
+        });
+
+
+    }else{
+        $('#deployment_output pre').scrollTop($('#deployment_output pre')[0].scrollHeight);
+    }
+});
