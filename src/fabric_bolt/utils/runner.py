@@ -1,4 +1,4 @@
-from logan.runner import run_app
+from logan.runner import run_app, configure_app
 
 import sys
 import base64
@@ -10,8 +10,6 @@ KEY_LENGTH = 40
 CONFIG_TEMPLATE = """
 
 from fabric_bolt.core.settings.base import *
-
-DEBUG = True
 
 CONF_ROOT = os.path.dirname(__file__)
 
@@ -38,6 +36,16 @@ def generate_settings():
     )
 
     return output
+
+
+def configure():
+    configure_app(
+        project='fabric-bolt',
+        default_config_path='~/.fabric-bolt/settings.py',
+        default_settings='fabric_bolt.core.settings.base',
+        settings_initializer=generate_settings,
+        settings_envvar='FABRIC_BOLT_CONF',
+    )
 
 
 def main(progname=sys.argv[0]):
