@@ -18,6 +18,9 @@ install_requires = [
     'fabric>=1.8.1,<1.9',
     'logan>=0.5.9,<0.6',
     'GitPython>=0.3.1,<0.4',
+    'django-bootstrap-form==3.1',
+    'croniter==0.3.4',
+    'gevent-socketio',
 ]
 
 dev_requires = [
