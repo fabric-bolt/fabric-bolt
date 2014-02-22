@@ -15,6 +15,7 @@ class HostCreateForm(forms.ModelForm):
     helper.field_class = 'col-lg-8'
     helper.layout = Layout(
         'name',
+        'alias',
         ButtonHolder(
             Submit('submit', 'Create Host', css_class='button')
         )
@@ -29,6 +30,7 @@ class HostUpdateForm(HostCreateForm):
     helper.field_class = 'col-lg-8'
     helper.layout = Layout(
         'name',
+        'alias',
         ButtonHolder(
             Submit('submit', 'Update Host', css_class='button')
         )

@@ -13,7 +13,7 @@
             <div class="well">
                 <dl class="dl-horizontal">
                     <dt>Name</dt>
-                    <dd>{{ object.name }}</dd>
+                    <dd>{% if object.alias %}{{ object.alias }}{% else %}{{ object.name }}{% endif %}</dd>
                     <dt>Number of Stages</dt>
                     <dd>{{ object.stage_set.count }}</dd>
                 </dl>

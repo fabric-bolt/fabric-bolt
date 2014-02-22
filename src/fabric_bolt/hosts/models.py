@@ -19,5 +19,13 @@ class Host(models.Model):
 
     name = models.CharField(max_length=255, help_text='DNS name or IP address', validators=[SchemelessURLValidator()])
 
+    alias = models.CharField(
+        blank=True,
+        null=True,
+        max_length=255,
+        help_text='Human readable value (optional)',
+        validators=[SchemelessURLValidator()]
+    )
+
     def __unicode__(self):
-        return self.name
+        return self.alias or self.name
