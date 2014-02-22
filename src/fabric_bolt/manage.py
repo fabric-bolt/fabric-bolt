@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import os, sys
 
+# Adds the fabric_bolt package from the working copy instead of site_packages
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fabric_bolt.core.settings.local')
 
