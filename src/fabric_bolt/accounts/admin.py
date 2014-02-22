@@ -14,6 +14,7 @@ class UserChangeAdminFrom(UserChangeForm):
                     "using <a href=\"password/\">this form</a>."))
 
     def __init__(self, *args, **kwargs):
+        kwargs.update(user_is_admin=True)
         super(UserChangeAdminFrom, self).__init__(*args, **kwargs)
         self.fields['user_level'].required = False
 
