@@ -14,11 +14,11 @@ from views import get_fabfile_path, fabric_special_options
 from fabric_bolt.projects.models import Deployment
 
 
-@namespace('/chat')
+@namespace('/deployment')
 class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     def initialize(self):
-        self.logger = logging.getLogger("socketio.chat")
+        self.logger = logging.getLogger("socketio.deployment")
         self.log("Socketio session started")
         
     def log(self, message):
@@ -95,7 +95,7 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         all_output = ''
         while True:
             try:
-                nextline = self.process.stdout.readline()
+                nextline = self.process.stdout.read()
             except IOError:
                 nextline = ''
 
@@ -103,7 +103,9 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
                 break
 
             all_output += nextline
-            self.broadcast_event('announcement', {'status': 'pending', 'lines': str(nextline)})
+
+            if nextline:
+                self.broadcast_event('output', {'status': 'pending', 'lines': str(nextline)})
             time.sleep(0.00001)
 
             sys.stdout.flush()
@@ -114,6 +116,6 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.deployment.output = all_output
         self.deployment.save()
 
-        self.broadcast_event('announcement', {'status': self.deployment.status})
+        self.broadcast_event('output', {'status': self.deployment.status})
 
         self.disconnect()
