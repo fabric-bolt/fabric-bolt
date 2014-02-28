@@ -1,0 +1,17 @@
+{% extends 'projects/deployment_detail.html' %}
+{% load staticfiles %}
+
+{% block output %}
+    {% if object.status == object.PENDING %}
+        <div id="deployment_output"><pre class="prettyprint"></pre></div>
+        <input type="text" class="form-control" id="deployment_input">
+    {% else %}
+        <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
+    {% endif %}
+{% endblock %}
+
+{% block deployment_scripts %}
+    <script src="{% static 'projects/js/socket.io.js' %}"></script>
+    <script>WEB_SOCKET_SWF_LOCATION="{% static 'projects/js/WebSocketMain.swf' %}";</script>
+    <script src="{% static 'projects/js/deployment_socketio.js' %}"></script>
+{% endblock %}

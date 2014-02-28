@@ -6,11 +6,12 @@ import datetime
 import subprocess
 import os
 import re
+import sys
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, StreamingHttpResponse
 from django.db.models.aggregates import Count
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, RedirectView
+from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, RedirectView, View
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.forms import CharField, PasswordInput, Select, FloatField, BooleanField
@@ -348,88 +349,91 @@ class DeploymentDetail(DetailView):
     """
     model = models.Deployment
 
+    def get_template_names(self):
+        if getattr(settings, 'SOCKETIO_ENABLED', False):
+            return ['projects/deployment_detail_socketio.html']
+        else:
+            return ['projects/deployment_detail.html']
 
-# class DeploymentOutputStream(View):
-#     """
-#     Deployment view does the heavy lifting of calling Fabric Task for a Project Stage
-#     """
-#
-#     def build_command(self):
-#         command = ['fab', self.object.task.name, '--abort-on-prompts']
-#
-#         hosts = self.object.stage.hosts.values_list('name', flat=True)
-#         if hosts:
-#             command.append('--hosts=' + ','.join(hosts))
-#
-#         # Get the dictionary of configurations for this stage
-#         config = self.object.stage.get_configurations()
-#
-#         config.update(self.request.session.get('configuration_values', {}))
-#
-#         command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
-#
-#         # Take the special env variables out
-#         normal_options = list(set(config.keys()) - set(command_to_config.keys()))
-#
-#         # Special ones get set a different way
-#         special_options = list(set(config.keys()) & set(command_to_config.keys()))
-#
-#         def get_key_value_string(key, value):
-#             if isinstance(value, bool):
-#                 return key + ('' if value else '=')
-#             elif isinstance(value, float):
-#                 return key + '=' + str(value)
-#             else:
-#                 return '{}="{}"'.format(key, value.replace('"', '\\"'))
-#
-#         if normal_options:
-#             command.append('--set ' + ','.join(get_key_value_string(key, config[key]) for key in normal_options))
-#
-#         if special_options:
-#             for key in special_options:
-#                 command.append('--' + get_key_value_string(command_to_config[key], config[key]))
-#
-#         command.append('--fabfile={}'.format(get_fabfile_path(self.object.stage.project)))
-#
-#         return command
-#
-#     def output_stream_generator(self):
-#         if self.object.task.name not in get_fabric_tasks(self.request, self.object.stage.project):
-#             return
-#
-#         try:
-#             process = subprocess.Popen(self.build_command(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-#
-#             all_output = ''
-#             while True:
-#                 nextline = process.stdout.readline()
-#                 if nextline == '' and process.poll() != None:
-#                     break
-#
-#                 all_output += nextline
-#                 try:
-#                     broadcast_channel(nextline, channel="deployment_{}".format(self.object.pk))
-#                 except:
-#                     pass
-#                 yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(nextline, ' '*1024)
-#                 sys.stdout.flush()
-#
-#             self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
-#
-#             yield '<span id="finished" style="display:none;">{}</span> {}'.format(self.object.status, ' '*1024)
-#
-#             self.object.output = all_output
-#             #self.object.save()
-#
-#         except Exception as e:
-#             message = "An error occurred: " + e.message
-#             yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(message, ' '*1024)
-#             yield '<span id="finished" style="display:none;">failed</span> {}'.format('*1024')
-#
-#     def get(self, request, *args, **kwargs):
-#         self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']), status=models.Deployment.PENDING)
-#         resp = StreamingHttpResponse(self.output_stream_generator())
-#         return resp
+
+class DeploymentOutputStream(View):
+    """
+    Deployment view does the heavy lifting of calling Fabric Task for a Project Stage
+    """
+
+    def build_command(self):
+        command = ['fab', self.object.task.name, '--abort-on-prompts']
+
+        hosts = self.object.stage.hosts.values_list('name', flat=True)
+        if hosts:
+            command.append('--hosts=' + ','.join(hosts))
+
+        # Get the dictionary of configurations for this stage
+        config = self.object.stage.get_configurations()
+
+        config.update(self.request.session.get('configuration_values', {}))
+
+        command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
+
+        # Take the special env variables out
+        normal_options = list(set(config.keys()) - set(command_to_config.keys()))
+
+        # Special ones get set a different way
+        special_options = list(set(config.keys()) & set(command_to_config.keys()))
+
+        def get_key_value_string(key, value):
+            if isinstance(value, bool):
+                return key + ('' if value else '=')
+            elif isinstance(value, float):
+                return key + '=' + str(value)
+            else:
+                return '{}="{}"'.format(key, value.replace('"', '\\"'))
+
+        if normal_options:
+            command.append('--set ' + ','.join(get_key_value_string(key, config[key]) for key in normal_options))
+
+        if special_options:
+            for key in special_options:
+                command.append('--' + get_key_value_string(command_to_config[key], config[key]))
+
+        command.append('--fabfile={}'.format(get_fabfile_path(self.object.stage.project)))
+
+        return command
+
+    def output_stream_generator(self):
+        if self.object.task.name not in get_fabric_tasks(self.request, self.object.stage.project):
+            return
+
+        try:
+            process = subprocess.Popen(self.build_command(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            all_output = ''
+            while True:
+                nextline = process.stdout.readline()
+                if nextline == '' and process.poll() != None:
+                    break
+
+                all_output += nextline
+
+                yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(nextline, ' '*1024)
+                sys.stdout.flush()
+
+            self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
+
+            yield '<span id="finished" style="display:none;">{}</span> {}'.format(self.object.status, ' '*1024)
+
+            self.object.output = all_output
+            self.object.save()
+
+        except Exception as e:
+            message = "An error occurred: " + e.message
+            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(message, ' '*1024)
+            yield '<span id="finished" style="display:none;">failed</span> {}'.format('*1024')
+
+    def get(self, request, *args, **kwargs):
+        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']), status=models.Deployment.PENDING)
+        resp = StreamingHttpResponse(self.output_stream_generator())
+        return resp
 
 
 class ProjectStageCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
