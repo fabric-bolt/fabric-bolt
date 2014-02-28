@@ -128,6 +128,12 @@ class ProjectDetail(DetailView):
 
     model = models.Project
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.user_is_historian:
+            self.template_name = "projects/historian_detail.html"
+
+        return super(ProjectDetail, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(ProjectDetail, self).get_context_data(**kwargs)
 
