@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 
-import views
+from fabric_bolt.projects import views
+
 
 urlpatterns = patterns('',
     url(r'^$', views.ProjectList.as_view(), name='projects_project_list'),

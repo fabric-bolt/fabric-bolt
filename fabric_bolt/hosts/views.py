@@ -2,7 +2,6 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib import messages
-
 from django_tables2.views import SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin

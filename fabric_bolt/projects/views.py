@@ -4,26 +4,28 @@ Views for the Projects App
 
 import datetime
 import subprocess
-import sys
 import os
 import re
 
-from django.http import StreamingHttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.db.models.aggregates import Count
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView, DetailView, View, DeleteView, RedirectView
+from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, RedirectView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.forms import CharField, PasswordInput, Select, FloatField, BooleanField
 from django.conf import settings
 from django.utils.text import slugify
-
 from git import Repo
 from django_tables2 import RequestConfig, SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
+
+
+
+
 
 # These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
 fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',

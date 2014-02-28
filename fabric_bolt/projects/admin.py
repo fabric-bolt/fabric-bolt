@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from fabric_bolt.projects import models
 
 

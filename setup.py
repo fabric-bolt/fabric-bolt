@@ -46,8 +46,7 @@ setup(
     url='https://github.com/worthwhile/fabric-bolt',
     description='A web interface to fabric deployments.',
     long_description=open('README.rst').read(),
-    package_dir={'': 'src'},
-    packages=find_packages('src'),
+    packages=find_packages(exclude=['docs',]),
     zip_safe=False,
     install_requires=install_requires,
     extras_require={

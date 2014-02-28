@@ -11,7 +11,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 from django.views.generic import FormView, UpdateView, CreateView, DeleteView, DetailView
-
 from django_tables2 import SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin

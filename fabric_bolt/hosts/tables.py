@@ -1,9 +1,10 @@
 import django_tables2 as tables
+
 from fabric_bolt.hosts import models
 from fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable
 
 
-class LaunchWindowTable(PaginateTable):
+class HostTable(PaginateTable):
     actions = ActionsColumn([
         {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'hosts_host_detail', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'View Host', 'data-delay': '{ "show": 300, "hide": 0 }'}},

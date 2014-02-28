@@ -10,9 +10,8 @@ from socketio.namespace import BaseNamespace
 from socketio.mixins import RoomsMixin, BroadcastMixin
 from socketio.sdjango import namespace
 
-from views import get_fabfile_path, get_fabric_tasks, fabric_special_options
-from models import Deployment
-
+from views import get_fabfile_path, fabric_special_options
+from fabric_bolt.projects.models import Deployment
 
 
 @namespace('/chat')

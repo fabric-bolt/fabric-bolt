@@ -10,6 +10,6 @@ install:
 
 script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
-    - python src/fabric_bolt/manage.py syncdb --settings=fabric_bolt.core.settings.test
-    - python src/fabric_bolt/manage.py migrate --settings=fabric_bolt.core.settings.test
-    - python src/fabric_bolt/manage.py test projects hosts accounts --settings=fabric_bolt.core.settings.test
+    - python fabric_bolt/manage.py syncdb --settings=fabric_bolt.core.settings.test
+    - python fabric_bolt/manage.py migrate --settings=fabric_bolt.core.settings.test
+    - python fabric_bolt/manage.py test projects hosts accounts --settings=fabric_bolt.core.settings.test

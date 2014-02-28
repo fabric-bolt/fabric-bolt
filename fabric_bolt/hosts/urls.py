@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, url
+
 from fabric_bolt.hosts import views
+
 
 urlpatterns = patterns('',
     url(r'^$', views.HostList.as_view(), name='hosts_host_list'),

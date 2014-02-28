@@ -1,4 +1,3 @@
-
 from django import forms
 
 from fabric_bolt.launch_window import models

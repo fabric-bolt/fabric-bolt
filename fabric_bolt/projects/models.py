@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from fabric_bolt.core.mixins.models import TrackingFields
-
 from fabric_bolt.projects.model_managers import ActiveManager
 
 

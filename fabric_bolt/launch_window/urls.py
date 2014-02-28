@@ -1,4 +1,3 @@
-
 from django.conf.urls import patterns, url
 
 from fabric_bolt.launch_window import views

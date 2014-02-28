@@ -1,4 +1,3 @@
-
 import json
 from datetime import timedelta
 
@@ -9,7 +8,6 @@ from django.utils.timezone import now
 from django.views.generic import TemplateView
 from django.template.defaultfilters import date as format_date
 from django.template.defaultfilters import time as format_time
-
 from croniter import croniter
 
 from fabric_bolt.launch_window.models import LaunchWindow
