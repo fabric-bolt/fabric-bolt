@@ -131,8 +131,8 @@ class SimpleTest(TestCase):
         result = c.get(reverse('projects_deployment_detail', args=(self.deployment.pk,)))
         self.assertIn(result.status_code, [200, 302])
 
-        result = c.get(reverse('projects_deployment_output', args=(self.deployment.pk,)))
-        self.assertIn(result.status_code, [200, 302])
+        # result = c.get(reverse('projects_deployment_output', args=(self.deployment.pk,)))
+        # self.assertIn(result.status_code, [200, 302])
 
     def test_project_stage_urls(self):
         """
