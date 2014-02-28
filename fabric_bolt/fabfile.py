@@ -42,3 +42,16 @@ def publish_changes():
     migrate()
     collect_static()
     restart_web_server()
+
+import time
+
+def do_nothing():
+    for x in range(0, 20):
+        print 'nothing {}'.format(x)
+        time.sleep(0.2)
+
+    input = prompt('Enter something:')
+
+    for x in range(0, 20):
+        print 'nothing {} - {}'.format(x, input)
+        time.sleep(0.2)

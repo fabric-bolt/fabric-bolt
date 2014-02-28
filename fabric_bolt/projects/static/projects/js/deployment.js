@@ -4,13 +4,13 @@
 $(function(){
     if(deployment_pending){
 
-        var socket = io.connect("/chat");
+        var socket = io.connect("/deployment");
 
         socket.on('connect', function () {
             socket.emit('join', deployment_id);
         });
 
-        socket.on('announcement', function (data) {
+        socket.on('output', function (data) {
             if(data.status == 'pending'){
                 $('#deployment_output pre').append(data.lines).scrollTop($('#deployment_output pre')[0].scrollHeight);
             }else{
@@ -31,8 +31,8 @@ $(function(){
             if(e.which == 13){
                 var text = $(this).val();
                 $(this).val('');
-                console.log(text);
                 socket.emit('input', text);
+                $('#deployment_output pre').append('\n');
             }
         });
 
