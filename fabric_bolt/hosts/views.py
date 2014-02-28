@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib import messages
 from django_tables2.views import SingleTableView
 
-from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
+from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin, GroupRequiredMixin
 from fabric_bolt.hosts import models, tables, forms
 
 
@@ -40,7 +40,7 @@ class HostCreate(MultipleGroupRequiredMixin, CreateView):
         return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
 
 
-class HostUpdate(MultipleGroupRequiredMixin, UpdateView):
+class HostUpdate(GroupRequiredMixin, UpdateView):
     role_required = 'Admin'
     model = models.Host
     form_class = forms.HostUpdateForm
@@ -59,7 +59,7 @@ class HostUpdate(MultipleGroupRequiredMixin, UpdateView):
         return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
 
 
-class HostDelete(MultipleGroupRequiredMixin, DeleteView):
+class HostDelete(GroupRequiredMixin, DeleteView):
     group_required = 'Admin'
     model = models.Host
     success_url = reverse_lazy('hosts_host_list')

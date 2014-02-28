@@ -4,37 +4,23 @@
 $(function(){
     if(deployment_pending){
 
-        var socket = io.connect("/chat");
+        var scroll_iframe_ticker = setInterval(function(){
+            var $contents = $('#deployment_output').contents();
 
-        socket.on('connect', function () {
-            socket.emit('join', deployment_id);
-        });
-
-        socket.on('announcement', function (data) {
-            if(data.status == 'pending'){
-                $('#deployment_output pre').append(data.lines).scrollTop($('#deployment_output pre')[0].scrollHeight);
-            }else{
-                socket.disconnect();
-                console.log('disconnect');
-                if(data.status == 'failed'){
+            $contents.scrollTop($contents.height());
+            if($contents.find('#finished').length > 0){
+                status = $contents.find('#finished').html();
+                if(status == 'failed'){
                     $('#status_section legend').html('Status: Failed!');
                     $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-warning-sign').addClass('text-danger');
-                }else if(data.status == 'success') {
+                }else if(status == 'success') {
                     $('#status_section legend').html('Status: Success!');
                     $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-ok').addClass('text-success');
                 }
-            }
 
-        });
-
-        $('#deployment_input').keyup(function(e){
-            if(e.which == 13){
-                var text = $(this).val();
-                $(this).val('');
-                console.log(text);
-                socket.emit('input', text);
+                clearInterval(scroll_iframe_ticker);
             }
-        });
+        }, 100);
 
 
     }else{
