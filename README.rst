@@ -9,6 +9,9 @@ Build Status
 .. image:: https://travis-ci.org/worthwhile/fabric-bolt.png?branch=develop
         :target: https://travis-ci.org/worthwhile/fabric-bolt
 
+.. image:: https://coveralls.io/repos/worthwhile/fabric-bolt/badge.png?branch=develop
+        :target: https://coveralls.io/r/worthwhile/fabric-bolt?branch=develop
+
 Quickstart
 ----------
 
