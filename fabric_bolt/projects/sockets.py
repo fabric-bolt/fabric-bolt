@@ -72,10 +72,11 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             elif isinstance(value, float):
                 return key + '=' + str(value)
             else:
-                return '{}="{}"'.format(key, value.replace('"', '\\"'))
+                return '{}={}'.format(key, value.replace('"', '\\"'))
 
         if normal_options:
-            command.append('--set ' + ','.join(get_key_value_string(key, config[key]) for key in normal_options))
+            command.append('--set')
+            command.append(','.join(get_key_value_string(key, config[key]) for key in normal_options))
 
         if special_options:
             for key in special_options:

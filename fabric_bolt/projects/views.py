@@ -130,7 +130,7 @@ class ProjectDetail(DetailView):
     model = models.Project
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.user_is_historian:
+        if request.user.user_is_historian():
             self.template_name = "projects/historian_detail.html"
 
         return super(ProjectDetail, self).dispatch(request, *args, **kwargs)
@@ -387,16 +387,19 @@ class DeploymentOutputStream(View):
             elif isinstance(value, float):
                 return key + '=' + str(value)
             else:
-                return '{}="{}"'.format(key, value.replace('"', '\\"'))
+                return '{}={}'.format(key, value.replace('"', '\\"'))
 
         if normal_options:
-            command.append('--set ' + ','.join(get_key_value_string(key, config[key]) for key in normal_options))
+            command.append('--set')
+            command.append(','.join(get_key_value_string(key, config[key]) for key in normal_options))
 
         if special_options:
             for key in special_options:
                 command.append('--' + get_key_value_string(command_to_config[key], config[key]))
 
         command.append('--fabfile={}'.format(get_fabfile_path(self.object.stage.project)))
+
+        print command
 
         return command
 

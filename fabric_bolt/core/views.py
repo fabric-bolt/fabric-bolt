@@ -40,7 +40,7 @@ class Dashboard(TemplateView):
         if len(deploys) == 0:
             return context
 
-        projects = list(Project.objects.all())
+        projects = list(Project.active_records.all())
         if len(projects) == 0:
             return context
 
