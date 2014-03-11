@@ -1,0 +1,32 @@
+{% load staticfiles %}
+
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Fabric Bolt</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        {% if request.user.is_authenticated %}
+
+            <div class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{% url 'index' %}">Dashboard</a></li>
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#"><img class="gravatar" src="{{ request.user.gravatar }}"/> &nbsp;{{ request.user.email }} <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'accounts_user_change' user.pk %}">Update Profile</a></li>
+                            <li><a href="{% url 'accounts_password_change' %}">Reset Password</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'accounts_user_logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>

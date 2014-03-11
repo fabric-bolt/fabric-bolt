@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 style="margin-bottom:30px;">Host {{ object }}
+        <span class="pull-right">
+            <a class="btn btn-primary" href="{% url 'hosts_host_update' object.pk %}">Edit Host</a>
+            <a class="btn btn-danger" href="{% url 'hosts_host_delete' object.pk %}">Delete Host</a>
+        </span>
+    </h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well">
+                <dl class="dl-horizontal">
+                    <dt>Name</dt>
+                    <dd>{% if object.alias %}{{ object.alias }}{% else %}{{ object.name }}{% endif %}</dd>
+                    <dt>Number of Stages</dt>
+                    <dd>{{ object.stage_set.count }}</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="well">
+                <fieldset>
+                    <legend>Stages</legend>
+                    <p>No deployments for this host.</p>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% load staticfiles %}
+{% load sekizai_tags %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}Fabric Bolt{% endblock title %}</title>
+        {% if user.is_authenticated and user.template %}
+            <link rel="stylesheet" type="text/css" href="{% static 'css/'|add:user.template %}"/>
+        {% else %}
+            <link rel="stylesheet" type="text/css" href="{% static 'css/flatly.min.css' %}"/>
+        {% endif %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
+    </head>
+    <body>
+        {% block body %}
+        {% endblock body %}
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script>
+            $(function(){
+               $('[data-toggle=tooltip]').tooltip();
+            });
+        </script>
+        {% render_block "js" %}
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-38129455-2', 'worthwhiledeployment.com');
+          ga('send', 'pageview');
+
+        </script>
+    </body>
+</html>
