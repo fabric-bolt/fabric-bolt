@@ -362,9 +362,9 @@ class DeploymentOutputStream(View):
     """
 
     def build_command(self):
-        command = getattr(settings, 'VENV_PATH', '') + 'fab ' + '-f {} '.format(
+        command = [getattr(settings, 'VENV_PATH', '') + 'fab ' + '-f {} '.format(
             settings.FABFILE_PATH
-        ) + self.object.task.name + ' --abort-on-prompts'
+        ) + self.object.task.name + ' --abort-on-prompts']
 
         hosts = self.object.stage.hosts.values_list('name', flat=True)
         if hosts:
