@@ -1,5 +1,5 @@
 import json
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.db import connection
 from django.db.models.aggregates import Count
@@ -24,14 +24,17 @@ class Dashboard(TemplateView):
         # Warn the user if we don't have an available Launch Window
         has_one_window = False
         next_window = None
-        for window in LaunchWindow.objects.all():  # put this back once the migrations are created
-            current_date = now()
-            next_window = croniter(window.cron_format, current_date).get_next(current_date)
-            if (next_window - current_date).seconds < 61:
-                has_one_window = True
-                continue
+        launch_windows = LaunchWindow.objects.all()
 
-        if not has_one_window:
+        for window in launch_windows:
+            current_date = datetime.now()
+
+            next_window = croniter(window.cron_format, current_date).get_next(datetime)
+            if (next_window - datetime.now()).seconds < 61:
+                has_one_window = True
+                break
+
+        if not has_one_window and launch_windows.exists():
             messages.add_message(self.request, messages.ERROR,
                 'No available Launch Windows! Next window on %s @ %s' % (format_date(next_window), format_time(next_window)))
 

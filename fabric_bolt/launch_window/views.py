@@ -41,7 +41,7 @@ class LaunchWindowCreate(MultipleGroupRequiredMixin, CreateView):
 
 
 class LaunchWindowUpdate(MultipleGroupRequiredMixin, UpdateView):
-    role_required = 'Admin'
+    group_required = ['Admin', ]
     model = models.LaunchWindow
     form_class = forms.LaunchWindowUpdateForm
     template_name_suffix = '_update'
