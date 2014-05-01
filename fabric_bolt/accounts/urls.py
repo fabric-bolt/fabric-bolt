@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', views.Logout.as_view(), name='accounts_user_logout'),
 
     url(r'^user/permissions/$', views.UserPermissions.as_view(), name='accounts_user_permissions'),
+
     url(r'^users/$', views.UserList.as_view(), name='accounts_user_list'),
     url(r'^user/add/$', views.UserAdd.as_view(), name='accounts_user_add'),
     url(r'^user/change/(?P<pk>.+)/$', views.UserChange.as_view(), name='accounts_user_change'),
