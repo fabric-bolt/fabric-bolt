@@ -20,7 +20,7 @@ class LaunchWindowDetail(MultipleGroupRequiredMixin, DetailView):
 
 
 class LaunchWindowCreate(MultipleGroupRequiredMixin, CreateView):
-    """View for creating a host. Hosts let us know where we can shovel code to."""
+    """View for creating a launch window."""
     group_required = ['Admin', 'Deployer', ]
     model = models.LaunchWindow
     form_class = forms.LaunchWindowCreateForm
@@ -35,9 +35,9 @@ class LaunchWindowCreate(MultipleGroupRequiredMixin, CreateView):
         return form_valid_from_parent
 
     def get_success_url(self):
-        """Send them back to the detail view for that host"""
+        """Send them back to the detail view for that launch window"""
 
-        return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
+        return reverse('launch_window_launchwindow_detail', kwargs={'pk': self.object.pk})
 
 
 class LaunchWindowUpdate(MultipleGroupRequiredMixin, UpdateView):
@@ -56,13 +56,13 @@ class LaunchWindowUpdate(MultipleGroupRequiredMixin, UpdateView):
 
     def get_success_url(self):
         """"""
-        return reverse('hosts_host_detail', kwargs={'pk': self.object.pk})
+        return reverse('launch_window_launchwindow_detail', kwargs={'pk': self.object.pk})
 
 
 class LaunchWindowDelete(MultipleGroupRequiredMixin, DeleteView):
     group_required = 'Admin'
     model = models.LaunchWindow
-    success_url = reverse_lazy('hosts_host_list')
+    success_url = reverse_lazy('launch_window_launchwindow_list')
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Launch Window {} Successfully Deleted'.format(self.get_object()))

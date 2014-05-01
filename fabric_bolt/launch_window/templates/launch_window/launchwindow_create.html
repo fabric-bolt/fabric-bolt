@@ -3,12 +3,12 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{% url 'hosts_host_list' %}">Hosts</a></li>
-        <li class="active">Add Host</li>
+        <li><a href="{% url 'hosts_host_list' %}">Launch Window</a></li>
+        <li class="active">Add Launch Window</li>
     </ol>
 {% endblock breadcrumb %}
 
 {% block content %}
-    <h1>Add New Host</h1>
+    <h1>Add New Launch Window</h1>
     {% crispy form %}
 {% endblock %}
