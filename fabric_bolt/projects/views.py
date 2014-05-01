@@ -24,10 +24,6 @@ from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
 
-
-
-
-
 # These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
 fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',
                           'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
