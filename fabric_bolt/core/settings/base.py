@@ -179,6 +179,9 @@ INSTALLED_APPS = (
 ########## END APP CONFIGURATION
 
 FABFILE_PATH = os.path.join(os.path.dirname(PROJECT_DIR), 'fabfile.py')
+#FABFILE_PATH = os.path.join('/Users/subramaniank/Work/paywith-deploy/commons/fabfile')
+
+#FABRIC_CWD = '/Users/subramaniank/Work/paywith-deploy/commons/'
 
 ########## STRONGHOLD CONFIGURATION
 LOGIN_URL = '/login/'
