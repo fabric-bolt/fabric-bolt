@@ -26,7 +26,18 @@
                 </dl>
             </div>
         </div>
-
+        <div class="col-md-6">
+            <div class="well">
+                <fieldset>
+                    <legend>Recent Deployments</legend>
+                    {% for deployement in object.deployment_set.all %}
+                        <p>{{ deployement.stage.project }} - {{ deployement.stage }}</p>
+                    {% empty %}
+                        <p>No deployments.</p>
+                    {% endfor %}
+                </fieldset>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-12">
