@@ -114,6 +114,7 @@ class DeploymentTable(PaginateTable):
             'date_created',
             'stage',
             'task_name',
+            'user',
             'status',
             'actions'
         )
