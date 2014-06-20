@@ -15,7 +15,6 @@ class ProjectType(TrackingFields):
         return self.name
 
 
-
 class Project(TrackingFields):
     """Model for a project (pretty obvious)
 
@@ -53,6 +52,20 @@ class Project(TrackingFields):
 
         ret = self.stage_set.annotate(num_deployments=Count('deployment')).aggregate(total_deployments=Sum('num_deployments'))
         return ret['total_deployments']
+
+
+class UserProject(TrackingFields):
+    """Model for link between users and projects"""
+
+    user = models.ForeignKey(get_user_model())
+    project = models.ForeignKey(Project)
+
+    # Managers
+    objects = models.Manager()
+    active_records = ActiveManager()
+    # End Managers
+    def __unicode__(self):
+        return u'User {} has {}'.format(self.user, self.project)
 
 
 class Stage(TrackingFields):

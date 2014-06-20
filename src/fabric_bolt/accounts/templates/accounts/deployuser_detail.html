@@ -26,16 +26,16 @@
                 </dl>
             </div>
         </div>
-        <div class="col-md-6">
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="well">
-                <fieldset>
-                    <legend>Recent Deployments</legend>
-                    {% for deployement in object.deployment_set.all %}
-                        <p>{{ deployement.stage.project }} - {{ deployement.stage }}</p>
-                    {% empty %}
-                        <p>No deployments.</p>
-                    {% endfor %}
-                </fieldset>
+                {% for userproject in object.userproject_set.all %}
+                        <p>{{userproject.project.name}}</p>
+                {% empty %}
+                        <p>no projects</p>
+                {% endfor %}
             </div>
         </div>
     </div>
