@@ -6,11 +6,11 @@ A web interface for fabric deployments.
 Build Status
 ------------
 
-.. image:: https://travis-ci.org/worthwhile/fabric-bolt.png?branch=develop
+.. image:: https://travis-ci.org/worthwhile/fabric-bolt.png?branch=master
         :target: https://travis-ci.org/worthwhile/fabric-bolt
 
-.. image:: https://coveralls.io/repos/worthwhile/fabric-bolt/badge.png?branch=develop
-        :target: https://coveralls.io/r/worthwhile/fabric-bolt?branch=develop
+.. image:: https://coveralls.io/repos/worthwhile/fabric-bolt/badge.png?branch=master
+        :target: https://coveralls.io/r/worthwhile/fabric-bolt?branch=master
 
 Quickstart
 ----------
