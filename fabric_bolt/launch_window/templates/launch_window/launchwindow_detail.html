@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 style="margin-bottom:30px;">Launch Window<br> {{ object }}
+        <span class="pull-right">
+            <a class="btn btn-primary" href="{% url 'launch_window_launchwindow_update' object.pk %}">Edit Launch Window</a>
+            <a class="btn btn-danger" href="{% url 'launch_window_launchwindow_delete' object.pk %}">Delete Launch Window</a>
+        </span>
+    </h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well">
+                <dl class="dl-horizontal">
+                    <dt>Name</dt>
+                    <dd>{{ object.name }}</dd>
+                    <dt>Cron</dt>
+                    <dd>{{ object.cron_format }}</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="well">
+                <fieldset>
+                    <legend>Description</legend>
+                    <p>{{ object.description }}</p>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

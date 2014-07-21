@@ -1,7 +1,0 @@
-{% load i18n %}
-
-{% blocktrans %}Welcome! Your account has been created. Please setup a password at {{ site_name }}{% endblocktrans %}:
-
-{% block reset_link %}
-{{ protocol }}://{{ domain }}{% url 'auth_password_reset_confirm' uidb36=uid token=token %}
-{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li class="active">Launch Windows</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+    <h1>
+        All Launch Windows
+        <a href="{% url 'launch_window_launchwindow_create' %}" class="btn btn-default btn-sm pull-right">
+            <i class="glyphicon glyphicon-plus-sign"></i> Add Window</a>
+    </h1>
+    {% render_table table %}
+
+{% endblock content %}

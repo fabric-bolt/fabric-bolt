@@ -17,6 +17,10 @@ install_requires = [
     'django-grappelli>=2.5.1,<2.6',
     'fabric>=1.8.1,<1.9',
     'logan>=0.5.9,<0.6',
+    'GitPython>=0.3.1,<0.4',
+    'django-bootstrap-form==3.1',
+    'croniter==0.3.4',
+    'gevent-socketio',
 ]
 
 dev_requires = [
@@ -42,8 +46,7 @@ setup(
     url='https://github.com/worthwhile/fabric-bolt',
     description='A web interface to fabric deployments.',
     long_description=open('README.rst').read(),
-    package_dir={'': 'src'},
-    packages=find_packages('src'),
+    packages=find_packages(exclude=['docs',]),
     zip_safe=False,
     install_requires=install_requires,
     extras_require={

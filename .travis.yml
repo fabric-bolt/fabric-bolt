@@ -6,10 +6,15 @@ notifications:
     email: false
 
 install:
-    - pip install -r requirements/local.txt --use-mirrors
+    - pip install -r requirements/local.txt
+    - pip install coveralls
 
 script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
-    - python src/fabric_bolt/manage.py syncdb --settings=fabric_bolt.core.settings.test
-    - python src/fabric_bolt/manage.py migrate --settings=fabric_bolt.core.settings.test
-    - python src/fabric_bolt/manage.py test projects hosts accounts --settings=fabric_bolt.core.settings.test
+    - python fabric_bolt/manage.py syncdb --settings=fabric_bolt.core.settings.test
+    - python fabric_bolt/manage.py migrate --settings=fabric_bolt.core.settings.test
+    - python fabric_bolt/manage.py test projects hosts accounts --settings=fabric_bolt.core.settings.test
+    - coverage run --source=. --omit=*/migrations/* fabric_bolt/manage.py test --settings=fabric_bolt.core.settings.test
+
+after_success:
+    - coveralls

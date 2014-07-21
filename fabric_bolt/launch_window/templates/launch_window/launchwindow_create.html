@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'launch_window_launchwindow_list' %}">Launch Window</a></li>
+        <li class="active">Add Launch Window</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <h1>Add New Launch Window</h1>
+    {% crispy form %}
+{% endblock %}

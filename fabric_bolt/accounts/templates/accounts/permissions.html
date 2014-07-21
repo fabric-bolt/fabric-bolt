@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 style="margin-bottom:30px;">User Permissions</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Historian</th>
+                    <th>Deployer</th>
+                    <th>Admin</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>View Deployment History</td>
+                    <td class="permission-x">✓</td>
+                    <td class="permission-x">✓</td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Edit Stage</td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Edit project</td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Deploy Stage</td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Create host</td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>View Hosts</td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Update and Delete Hosts</td>
+                    <td></td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Add new team members</td>
+                    <td></td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Create Project Stage</td>
+                    <td></td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Remove Project Stage</td>
+                    <td></td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Create Project</td>
+                    <td></td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                </tr>
+                <tr>
+                    <td>Remove project</td>
+                    <td></td>
+                    <td></td>
+                    <td class="permission-x">✓</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <style>
+        table td.permission-x {
+            background: none repeat scroll 0 0 #D9EDF7 !important;
+            text-align: center;
+        }
+    </style>
+{% endblock content %}
