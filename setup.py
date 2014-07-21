@@ -28,6 +28,7 @@ dev_requires = [
     'django-grappelli>=2.5.3,<2.6',
     'django-debug-toolbar-template-timings>=0.6.4,<0.7',
     'mock>=1.0.1,<1.1',
+    'model_mommy>=1.2.1,<1.3'
 ]
 
 postgres_requires = [

@@ -2,23 +2,13 @@
 Custom user model for deployments.
 """
 
-import os
 import urllib
 import hashlib
 
 from django.db import models
-from django.conf import settings
-from django.templatetags.static import static
 from django.utils.translation import ugettext_lazy as _
 
 from custom_user.models import AbstractEmailUser
-from custom_user.models import EmailUserManager
-
-
-class UserManager(EmailUserManager):
-    def get_query_set(self):
-        qs = super(UserManager, self).get_query_set()
-        return qs.prefetch_related('groups')
 
 
 class DeployUser(AbstractEmailUser):
@@ -64,8 +54,6 @@ class DeployUser(AbstractEmailUser):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     template = models.CharField(max_length=255, blank=True, choices=TEMPLATES, default=YETI)
 
-    #objects = UserManager() # I don't think its a good idea to always prefetch the groups. T
-                             # hat's an extra query every single time. We don't always need the groups.
 
     def __unicode__(self):
         return u'{} {}'.format(self.first_name, self.last_name)
@@ -79,7 +67,7 @@ class DeployUser(AbstractEmailUser):
 
     def _get_groups(self):
         if not hasattr(self, '_cached_groups'):
-            self._cached_groups = self.groups.values_list("name", flat=True)
+            self._cached_groups = list(self.groups.values_list("name", flat=True))
         return self._cached_groups
 
     def user_is_admin(self):
@@ -101,7 +89,7 @@ class DeployUser(AbstractEmailUser):
         """
         Converts this user's group(s) to a string and returns it.
         """
-        return "/".join([group.name for group in self.groups.all()])
+        return "/".join(self._get_groups())
 
     def gravatar(self, size=20):
         """

@@ -65,6 +65,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
+        fields = ['email', 'first_name', 'last_name', 'user_level', 'is_active', 'template']
 
     def __init__(self, *args, **kwargs):
         # form instance and initial values
@@ -85,9 +86,6 @@ class UserChangeForm(forms.ModelForm):
 
         super(UserChangeForm, self).__init__(*args, **kwargs)
 
-        self.fields['password'].required = False
-        self.fields['last_login'].required = False
-        self.fields['date_joined'].required = False
         self.fields['template'].required = False
 
         if not user_is_admin:

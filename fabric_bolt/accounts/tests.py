@@ -1,16 +1,98 @@
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
+Tests for accounts app
 """
 
 from django.test import TestCase
+from django.contrib.auth.models import Group
+
+from model_mommy import mommy
+
+from .models import DeployUser
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class ModelsTest(TestCase):
+    def test_user_get_groups(self):
+        group = mommy.make(Group, name=u'test-group')
+        user = mommy.make(DeployUser, groups=[group])
+
+        self.assertListEqual(user._get_groups(), [u'test-group'])
+
+        # do it again to test the cached version
+        self.assertListEqual(user._get_groups(), [u'test-group'])
+
+    def test_user_is_admin(self):
+        user = mommy.prepare(DeployUser)
+
+        self.assertFalse(user.user_is_admin())
+
+        user.save()
+
+        self.assertFalse(user.user_is_admin())
+
+        user.groups.add(mommy.make(Group, name='junk-group'))
+        delattr(user, '_cached_groups')
+
+        self.assertFalse(user.user_is_admin())
+
+        user.groups.add(mommy.make(Group, name='Admin'))
+        delattr(user, '_cached_groups')
+
+        self.assertTrue(user.user_is_admin())
+
+    def test_user_is_deployer(self):
+        user = mommy.prepare(DeployUser)
+
+        self.assertFalse(user.user_is_deployer())
+
+        user.save()
+
+        self.assertFalse(user.user_is_deployer())
+
+        user.groups.add(mommy.make(Group, name='junk-group'))
+        delattr(user, '_cached_groups')
+
+        self.assertFalse(user.user_is_deployer())
+
+        user.groups.add(mommy.make(Group, name='Deployer'))
+        delattr(user, '_cached_groups')
+
+        self.assertTrue(user.user_is_deployer())
+
+    def test_user_is_historian(self):
+        user = mommy.prepare(DeployUser)
+
+        self.assertFalse(user.user_is_historian())
+
+        user.save()
+
+        self.assertFalse(user.user_is_historian())
+
+        user.groups.add(mommy.make(Group, name='junk-group'))
+        delattr(user, '_cached_groups')
+
+        self.assertFalse(user.user_is_historian())
+
+        user.groups.add(mommy.make(Group, name='Historian'))
+        delattr(user, '_cached_groups')
+
+        self.assertTrue(user.user_is_historian())
+
+    def test_user_group_strigify(self):
+        user = mommy.make(DeployUser)
+
+        self.assertEqual(user.group_strigify(), '')
+
+        user.groups.add(mommy.make(Group, name='junk-group'))
+        delattr(user, '_cached_groups')
+
+        self.assertEqual(user.group_strigify(), 'junk-group')
+
+        user.groups.add(mommy.make(Group, name='Admin'))
+        delattr(user, '_cached_groups')
+
+        self.assertEqual(user.group_strigify(), 'junk-group/Admin')
+
+    def test_user_gravatar(self):
+        user = mommy.make(DeployUser, email='email@example.com')
+
+        self.assertEqual(user.gravatar(30), 'http://www.gravatar.com/avatar/5658ffccee7f0ebfda2b226238b1eb6e?s=30&d=mm')
