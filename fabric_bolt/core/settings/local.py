@@ -7,7 +7,6 @@ TEMPLATE_DEBUG = True
 
 ########## Django Debug Toolbar Configuration
 INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
-DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
 INTERNAL_IPS = ('127.0.0.1',)
 
 # Add in the template timing toolbar
