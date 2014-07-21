@@ -29,7 +29,11 @@ Quickstart
 
     fabric-bolt syncdb --migrate
 
-5. Run::
+5. Create admin user, then follow the prompts to create an email and password::
+
+    fabric-bolt [--config=~/.fabric-bolt/settings.py] createsuperuser
+
+6. Run::
 
     fabric-bolt runserver
 

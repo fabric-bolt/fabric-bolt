@@ -360,6 +360,10 @@ class DeploymentOutputStream(View):
     def build_command(self):
         command = ['fab', self.object.task.name, '--abort-on-prompts']
 
+        # Use the FABFILE_PATH if it was provided in the settings
+        if settings.FABFILE_PATH:
+            command += ' --fabfile=' + settings.FABFILE_PATH
+
         hosts = self.object.stage.hosts.values_list('name', flat=True)
         if hosts:
             command.append('--hosts=' + ','.join(hosts))
