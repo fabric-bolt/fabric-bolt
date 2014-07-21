@@ -61,3 +61,4 @@ production.py
 scripts
 worthwhile_fabfile.py
 core.db
+.repo_caches
