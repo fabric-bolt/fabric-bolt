@@ -1,0 +1,8 @@
+v 0.1 (in development)
+  - Added support for using the fabfile in each project's repo
+  - Added "launch window" feature
+  - Added experimental socket.io support for deployment output. (use SOCKETIO_ENABLED setting)
+  - Fixed an issue where deleted projects showed up in graphs and sidebar (issue #67)
+  - Fixed an issue where admins could not set user's user level. (issue #64)
+  - Added alias to hosts model. (thanks Hedde!)
+  - Added note in README about creating a super user (thanks madazone!)
