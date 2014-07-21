@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from fabric_bolt.core.mixins.models import TrackingFields
-from fabric_bolt.projects.model_managers import ActiveManager
+from fabric_bolt.projects.model_managers import ActiveManager, ActiveDeploymentManager
 
 
 class ProjectType(TrackingFields):
@@ -232,7 +232,7 @@ class Deployment(TrackingFields):
 
     # Managers
     objects = models.Manager()
-    active_records = ActiveManager()
+    active_records = ActiveDeploymentManager()
     # End Managers
 
     class Meta:

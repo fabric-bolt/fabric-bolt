@@ -49,7 +49,10 @@ class Dashboard(TemplateView):
 
         # Deployment Stats Data
         # Build pie chart data to show % projects deployed successfully
-        items = [[item['status'], item['count']] for item in Deployment.objects.order_by('status').values('status').annotate(count=Count('id'))]
+        deployments = Deployment.active_records.order_by('status').values('status').annotate(count=Count('id'))
+        items = [
+            [item['status'], item['count']] for item in deployments
+        ]
         context['pie_chart_data'] = json.dumps(items)
 
         # Deployment History Data
