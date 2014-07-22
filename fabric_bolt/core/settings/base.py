@@ -182,10 +182,16 @@ FABFILE_PATH = os.path.join(os.path.dirname(PROJECT_DIR), 'fabfile.py')
 
 ########## STRONGHOLD CONFIGURATION
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+STRONGHOLD_PUBLIC_NAMED_URLS = (
+    'password_reset',
+    'password_reset_done',
+    'password_reset_complete',
+    'business_redirect_setup',
+)
 STRONGHOLD_PUBLIC_URLS = (
-    '^/login/',
-    '^/logout/',
-    '^/register/.+/$',
+    r'^/reset/[0-9A-Za-z_\-]+/[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/',
+    r'^/api/v1/.*'
 )
 ########## END STRONGHOLD CONFIGURATION
 

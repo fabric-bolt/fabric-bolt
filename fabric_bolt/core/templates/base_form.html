@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% load bootstrap %}
 
 {% block content %}
     <h1>{% block page_title %}{% endblock page_title %}</h1>
+    <br/>
+    <form class="form-horizontal" method="post">{% csrf_token %}
+        {{ form|bootstrap_horizontal }}
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary pull-right" value="{% block button_title %}Submit{% endblock %}"/>
+        </div>
+    </form>
 
-    {% crispy form %}
 
 {% endblock %}

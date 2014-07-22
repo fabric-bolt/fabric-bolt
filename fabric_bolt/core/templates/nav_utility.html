@@ -20,9 +20,9 @@
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#"><img class="gravatar" src="{{ request.user.gravatar }}"/> &nbsp;{{ request.user.email }} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="{% url 'accounts_user_change' user.pk %}">Update Profile</a></li>
-                            <li><a href="{% url 'accounts_password_change' %}">Reset Password</a></li>
+                            <li><a href="{% url 'password_change' %}">Change Password</a></li>
                             <li class="divider"></li>
-                            <li><a href="{% url 'accounts_user_logout' %}">Logout</a></li>
+                            <li><a href="{% url 'logout' %}">Logout</a></li>
                         </ul>
                     </li>
                 </ul>

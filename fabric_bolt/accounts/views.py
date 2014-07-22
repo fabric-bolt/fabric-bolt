@@ -2,15 +2,15 @@
 Deployment User Views
 """
 
-from django.contrib import auth
-from django.contrib import messages
+from django.contrib import auth, messages
 from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.views import password_reset_confirm, redirect_to_login
+from django.contrib.auth.views import redirect_to_login
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
-from django.views.generic import FormView, UpdateView, CreateView, DeleteView, DetailView
+from django.views.generic import UpdateView, CreateView, DeleteView, DetailView
+
+from authtools.views import PasswordChangeView
 from django_tables2 import SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
@@ -19,63 +19,6 @@ from fabric_bolt.accounts import forms, tables
 
 class UserPermissions(TemplateView):
     template_name = 'accounts/permissions.html'
-
-
-class Login(TemplateView):
-    """
-    Login view handles generating the login form, login authentication, and redirect after auth
-    """
-
-    template_name = 'accounts/login.html'
-
-    def get_context_data(self, **kwargs):
-        return {'form': forms.LoginForm}
-
-    def get(self, request, *args, **kwargs):
-        """If the user is authenticated take them to the homepage"""
-
-        if request.user.is_authenticated():
-            return HttpResponseRedirect(reverse('index'))
-
-        context = self.get_context_data(**kwargs)
-        return self.render_to_response(context)
-
-    def post(self, request, *args, **kwargs):
-        """
-        Verify the correct username and password have been set and let them in if so
-        """
-
-        email = request.POST.get('email', '')
-        password = request.POST.get('password', '')
-
-        user = auth.authenticate(email=email, password=password)
-
-        # Log the user in and send them on their merry way
-        if user is not None and user.is_active:
-            auth.login(request, user)
-            goto = request.GET.get('next', reverse('index'))
-            return HttpResponseRedirect(goto)
-
-        else:
-            messages.error(request, 'Invalid username or password. Please try again.')
-            return HttpResponseRedirect(reverse('accounts_user_login'))
-
-
-class Logout(TemplateView):
-    """
-    Logout view calls logout() on the request and redirects to the login screen
-    """
-
-    template_name = 'accounts/login.html'
-
-    def get(self, request, *args, **kwargs):
-
-        if not request.user.is_authenticated():
-            return HttpResponseRedirect(reverse('accounts_user_login'))
-
-        auth.logout(request)
-
-        return HttpResponseRedirect(reverse('accounts_user_login'))
 
 
 # Admin: List Users
@@ -163,30 +106,12 @@ class UserDelete(MultipleGroupRequiredMixin, DeleteView):
         return super(UserDelete, self).delete(self, request, *args, **kwargs)
 
 
-class PasswordChange(FormView):
-
+class PasswordChange(PasswordChangeView):
     template_name = 'accounts/password_change.html'
 
     def get_success_url(self):
         return reverse('accounts_user_view', args=(self.request.user.id,))
 
-    def get_form(self, form_class):
-        return forms.UserPasswordChangeForm(self.request.user, self.request.POST or None)
-
     def form_valid(self, form):
-        form.save()
+        messages.success(self.request, 'Password changed successfully')
         return super(PasswordChange, self).form_valid(form)
-
-
-class PasswordCreate(FormView):
-
-    template_name = 'accounts/password_create.html'
-
-    def get_success_url(self):
-        return reverse('accounts_user_view', args=(self.request.user.id,))
-
-    def get_form(self, form_class):
-        return forms.UserPasswordCreateForm(self.request.user, self.request.POST or None)
-
-    def post(self, request, *args, **kwargs):
-        return password_reset_confirm(request, **kwargs)

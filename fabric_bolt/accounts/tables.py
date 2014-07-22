@@ -30,7 +30,3 @@ class UserListTable(PaginateTable):
         model = get_user_model()
         sequence = fields = ('first_name', 'last_name', 'is_active', 'email', 'user_level', )
         attrs = {'class': 'table table-striped table-bordered table-hover'}
-
-    def __init__(self, *args, **kwargs):
-        super(UserListTable, self).__init__(*args, **kwargs)
-

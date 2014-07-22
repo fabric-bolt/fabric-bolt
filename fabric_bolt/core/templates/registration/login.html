@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap %}
+
+{% block sidebar %}{% endblock sidebar %}
+
+{% block wrapper %}
+    {% block messages %}
+        {{ block.super }}
+    {% endblock %}
+
+    <div class="col-md-12">
+        {% block content %}
+            <div class="row">
+
+                <div class="col-md-4">
+                    {% block left_content %}
+                        <form class="form-horizontal" method="post">{% csrf_token %}
+                            {% block form %}
+                                <fieldset>
+                                    <legend>Please Login</legend>
+                                    {{ form|bootstrap_horizontal:'col-md-4' }}
+                                </fieldset>
+                                <div class="form-actions">
+                                    <input type="submit" name="login" value="Login" class="btn btn-primary button pull-right" id="submit-id-login"> <br>
+                                    <a href="{% url 'password_reset' %}">Recover Password</a>
+                                </div>
+                            {% endblock form %}
+                        </form>
+                    {% endblock %}
+                </div>
+
+                <div class="well col-md-7 col-md-offset-1">
+                    <div>
+                        <h1>Fabric Bolt</h1>
+                        <h3>Fabric Deployments</h3>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .container{
+                    text-align: center;
+                }
+            </style>
+        {% endblock %}
+    </div>
+{% endblock %}
