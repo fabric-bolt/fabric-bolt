@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
+
+from authtools.admin import UserAdmin
 
 from fabric_bolt.accounts.models import DeployUser
 from fabric_bolt.accounts.forms import UserChangeForm, UserCreationForm
@@ -18,6 +19,12 @@ class UserChangeAdminFrom(UserChangeForm):
         super(UserChangeAdminFrom, self).__init__(*args, **kwargs)
         self.fields['user_level'].required = False
 
+    def clean_password(self):
+        # Regardless of what the user provides, return the initial value.
+        # This is done here, rather than on the field, because the
+        # field does not have access to the initial value
+        return self.initial["password"]
+
 
 class DeployUserAdmin(UserAdmin):
 
@@ -33,14 +40,13 @@ class DeployUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'template')}),
-        (_('Permissions'), {'fields': ( 'is_staff', 'is_superuser',
-                                       'groups', 'user_permissions')}),
+        (_('Permissions'), {'fields': ( 'is_staff', 'is_superuser','user_level', 'is_active' )}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined', )}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')
+            'fields': ('email', )
         }),
     )
     search_fields = ('email', 'first_name', 'last_name', )

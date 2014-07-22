@@ -3,7 +3,6 @@ Deployment User Views
 """
 
 from django.contrib import auth, messages
-from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.views import redirect_to_login
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import redirect
@@ -76,19 +75,6 @@ class UserAdd(MultipleGroupRequiredMixin, CreateView):
         kwargs['user_is_admin'] = self.request.user.user_is_admin()
 
         return kwargs
-
-    def form_valid(self, form):
-        # Save form
-        response = super(UserAdd, self).form_valid(form)
-
-        # Send a password recover email
-        email_form = PasswordResetForm({'email': form.cleaned_data['email']})
-        email_form.is_valid()
-        email_form.save(email_template_name='accounts/welcome_email.html')
-
-        # send response
-        return response
-
 
 # Admin User Detail
 class UserDetail(DetailView):

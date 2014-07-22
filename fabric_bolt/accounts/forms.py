@@ -4,6 +4,7 @@ import random
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, AuthenticationForm
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -42,8 +43,6 @@ class UserChangeForm(forms.ModelForm):
         kwargs['initial'] = initial
 
         super(UserChangeForm, self).__init__(*args, **kwargs)
-
-        self.fields['template'].required = False
 
         if not user_is_admin:
             self.fields.pop('user_level', None)
@@ -101,5 +100,9 @@ class UserCreationForm(UserChangeForm):
         random_password = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
         instance.set_password(random_password)
         instance.save()
+
+        email_form = PasswordResetForm({'email': self.cleaned_data['email']})
+        email_form.is_valid()
+        email_form.save(email_template_name='accounts/welcome_email.html')
 
         return instance
