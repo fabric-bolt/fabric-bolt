@@ -6,3 +6,5 @@ v 0.1 (in development)
   - Fixed an issue where admins could not set user's user level. (issue #64)
   - Added alias to hosts model. (thanks Hedde!)
   - Added note in README about creating a super user (thanks madazone!)
+  - Fixed injection security bug in fab command
+  - Using virtualenv to run project fabfiles
