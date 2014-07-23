@@ -17,7 +17,7 @@ install_requires = [
     'django-grappelli>=2.5.1,<2.6',
     'fabric>=1.9,<1.10',
     'logan>=0.5.10,<0.6',
-    'GitPython>=0.3.1,<0.4',
+    'GitPython',
     'django-bootstrap-form>=3.1,<3.2',
     'croniter==0.3.4',
     'gevent-socketio>=0.3.6,<0.4',

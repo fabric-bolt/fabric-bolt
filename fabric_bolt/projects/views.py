@@ -4,8 +4,6 @@ Views for the Projects App
 
 import datetime
 import subprocess
-import os
-import re
 import sys
 
 from django.http import HttpResponseRedirect, StreamingHttpResponse
@@ -16,62 +14,13 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.forms import CharField, PasswordInput, Select, FloatField, BooleanField
 from django.conf import settings
-from django.utils.text import slugify
-from git import Repo
+
 from django_tables2 import RequestConfig, SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
-
-# These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
-fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',
-                          'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
-                          'command-timeout', 'user', 'warn-only', 'pool-size']
-
-
-def get_fabfile_path(project):
-    if project.use_repo_fabfile:
-        repo_dir = os.path.join(settings.PUBLIC_DIR, '.repo_caches', slugify(project.name))
-        if not os.path.exists(repo_dir):
-            os.makedirs(repo_dir)
-            Repo.clone_from(project.repo_url, repo_dir) # we may want to do a git pull if it already exists?
-
-        pip_installs = ' '.join(project.fabfile_requirements.splitlines())
-        subprocess.call(['pip install {}'.format(pip_installs), '--target {}'.format(repo_dir)], shell=True)
-
-        fabfile_path = os.path.join(repo_dir, 'fabfile.py')
-    else:
-        fabfile_path = settings.FABFILE_PATH
-
-    return fabfile_path
-
-
-def get_fabric_tasks(request, project):
-    """
-    Generate a list of fabric tasks that are available
-    """
-    try:
-        fabfile_path = get_fabfile_path(project)
-
-        output = subprocess.check_output(['fab', '--list', '--fabfile={}'.format(fabfile_path)])
-        lines = output.splitlines()[2:]
-        dict_with_docs = {}
-        for line in lines:
-            match = re.match(r'^\s*([^\s]+)\s*(.*)$', line)
-            if match:
-                name, desc = match.group(1), match.group(2)
-                if desc.endswith('...'):
-                    o = subprocess.check_output(['fab', '--display={}'.format(name), '--fabfile={}'.format(fabfile_path)])
-                    try:
-                        desc = o.splitlines()[2].strip()
-                    except:
-                        pass # just stick with the original truncated description
-                dict_with_docs[name] = desc
-    except Exception as e:
-        messages.error(request, 'Error loading fabfile: ' + str(e))
-        dict_with_docs = {}
-    return dict_with_docs
+from fabric_bolt.projects.util import get_fabric_tasks, build_command
 
 
 class BaseGetProjectCreateView(CreateView):
@@ -357,58 +306,17 @@ class DeploymentOutputStream(View):
     Deployment view does the heavy lifting of calling Fabric Task for a Project Stage
     """
 
-    def build_command(self):
-        command = ['fab', self.object.task.name, '--abort-on-prompts']
-
-        # Use the FABFILE_PATH if it was provided in the settings
-        if settings.FABFILE_PATH:
-            command += ' --fabfile=' + settings.FABFILE_PATH
-
-        hosts = self.object.stage.hosts.values_list('name', flat=True)
-        if hosts:
-            command.append('--hosts=' + ','.join(hosts))
-
-        # Get the dictionary of configurations for this stage
-        config = self.object.stage.get_configurations()
-
-        config.update(self.request.session.get('configuration_values', {}))
-
-        command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
-
-        # Take the special env variables out
-        normal_options = list(set(config.keys()) - set(command_to_config.keys()))
-
-        # Special ones get set a different way
-        special_options = list(set(config.keys()) & set(command_to_config.keys()))
-
-        def get_key_value_string(key, value):
-            if isinstance(value, bool):
-                return key + ('' if value else '=')
-            elif isinstance(value, float):
-                return key + '=' + str(value)
-            else:
-                return '{}={}'.format(key, value.replace('"', '\\"'))
-
-        if normal_options:
-            command.append('--set')
-            command.append(','.join(get_key_value_string(key, config[key]) for key in normal_options))
-
-        if special_options:
-            for key in special_options:
-                command.append('--' + get_key_value_string(command_to_config[key], config[key]))
-
-        command.append('--fabfile={}'.format(get_fabfile_path(self.object.stage.project)))
-
-        print command
-
-        return command
-
     def output_stream_generator(self):
         if self.object.task.name not in get_fabric_tasks(self.request, self.object.stage.project):
             return
 
         try:
-            process = subprocess.Popen(self.build_command(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            process = subprocess.Popen(
+                build_command(self.object, self.request.session),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                shell=True
+            )
 
             all_output = ''
             while True:

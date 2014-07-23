@@ -8,12 +8,15 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from model_mommy import mommy
+
 from fabric_bolt.projects import models
+from fabric_bolt.projects.util import get_fabfile_path, build_command
 
 User = get_user_model()
 
 
-class SimpleTest(TestCase):
+class BasicTests(TestCase):
 
     project_type = None
     project = None
@@ -196,4 +199,40 @@ class SimpleTest(TestCase):
         self.assertEqual(configurations['number4'], '3')
 
 
+class UtilTests(TestCase):
+    def test_build_command_injection(self):
+        deployment = mommy.make(models.Deployment, task__name='test_env')
 
+        configuration = mommy.make(models.Configuration, key='foo=bar -i /path/to/keyfile --set foo2', value='bar')
+        deployment.stage.configuration_set.add(configuration)
+
+        command = build_command(deployment, {})
+
+        self.assertEqual(
+            command,
+            'fab test_env --abort-on-prompts --set "foobar -i /path/to/keyfile --set foo2=bar" '
+            '--fabfile=/Users/jproffitt/Documents/personal_workspace/fabric_bolt/fabric_bolt/fabfile.py'
+        )
+
+        configuration = mommy.make(models.Configuration, key='dummy_key', value='dummy_value')
+        deployment.stage.configuration_set.add(configuration)
+
+        command = build_command(deployment, {})
+
+        self.assertEqual(
+            command,
+            'fab test_env --abort-on-prompts --set "foobar -i /path/to/keyfile --set foo2=bar,dummy_key=dummy_value" '
+            '--fabfile=/Users/jproffitt/Documents/personal_workspace/fabric_bolt/fabric_bolt/fabfile.py'
+        )
+
+        deployment.stage.configuration_set.clear()
+        configuration = mommy.make(models.Configuration, key='dummy_key=test" | ls #', value='dummy_value')
+        deployment.stage.configuration_set.add(configuration)
+
+        command = build_command(deployment, {})
+
+        self.assertEqual(
+            command,
+            'fab test_env --abort-on-prompts --set "dummy_keytest\\" | ls #=dummy_value" '
+            '--fabfile=/Users/jproffitt/Documents/personal_workspace/fabric_bolt/fabric_bolt/fabfile.py'
+        )

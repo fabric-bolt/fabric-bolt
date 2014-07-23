@@ -10,7 +10,7 @@ from socketio.namespace import BaseNamespace
 from socketio.mixins import RoomsMixin, BroadcastMixin
 from socketio.sdjango import namespace
 
-from views import get_fabfile_path, fabric_special_options
+from .util import build_command
 from fabric_bolt.projects.models import Deployment
 
 
@@ -46,48 +46,13 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.disconnect(silent=True)
         return True
 
-    def build_command(self):
-        command = ['fab', self.deployment.task.name]
-
-        hosts = self.deployment.stage.hosts.values_list('name', flat=True)
-        if hosts:
-            command.append('--hosts=' + ','.join(hosts))
-
-        # Get the dictionary of configurations for this stage
-        config = self.deployment.stage.get_configurations()
-
-        config.update(self.request.session.get('configuration_values', {}))
-
-        command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
-
-        # Take the special env variables out
-        normal_options = list(set(config.keys()) - set(command_to_config.keys()))
-
-        # Special ones get set a different way
-        special_options = list(set(config.keys()) & set(command_to_config.keys()))
-
-        def get_key_value_string(key, value):
-            if isinstance(value, bool):
-                return key + ('' if value else '=')
-            elif isinstance(value, float):
-                return key + '=' + str(value)
-            else:
-                return '{}={}'.format(key, value.replace('"', '\\"'))
-
-        if normal_options:
-            command.append('--set')
-            command.append(','.join(get_key_value_string(key, config[key]) for key in normal_options))
-
-        if special_options:
-            for key in special_options:
-                command.append('--' + get_key_value_string(command_to_config[key], config[key]))
-
-        command.append('--fabfile={}'.format(get_fabfile_path(self.deployment.stage.project)))
-
-        return command
-
     def output_stream_generator(self, *args, **kwargs):
-        self.process = subprocess.Popen(self.build_command(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+        self.process = subprocess.Popen(
+            build_command(self.deployment, self.request.session, False),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            stdin=subprocess.PIPE
+        )
 
         fd = self.process.stdout.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)

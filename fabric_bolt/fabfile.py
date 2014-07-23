@@ -45,6 +45,7 @@ def publish_changes():
 
 import time
 
+
 def do_nothing():
     for x in range(0, 20):
         print 'nothing {}'.format(x)
@@ -55,3 +56,8 @@ def do_nothing():
     for x in range(0, 20):
         print 'nothing {} - {}'.format(x, input)
         time.sleep(0.2)
+
+
+def test_env():
+    for x, y in env.iteritems():
+        print '{}: {}'.format(x, y)
