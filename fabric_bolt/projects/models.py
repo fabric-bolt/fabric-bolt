@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.conf import settings
 
 from fabric_bolt.core.mixins.models import TrackingFields
 from fabric_bolt.projects.model_managers import ActiveManager, ActiveDeploymentManager
@@ -222,7 +222,7 @@ class Deployment(TrackingFields):
 
     STATUS = [(PENDING, 'Pending'), (FAILED, 'Failed'), (SUCCESS, 'Success')]
 
-    user = models.ForeignKey(get_user_model())
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     stage = models.ForeignKey(Stage)
     comments = models.TextField()
     status = models.CharField(choices=STATUS, max_length=10, default=PENDING)

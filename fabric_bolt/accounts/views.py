@@ -14,6 +14,7 @@ from django_tables2 import SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.accounts import forms, tables
+from fabric_bolt.accounts.models import DeployUser
 
 
 class UserPermissions(TemplateView):
@@ -28,7 +29,7 @@ class UserList(MultipleGroupRequiredMixin, SingleTableView):
     group_required = 'Admin'
     template_name = 'accounts/user_list.html'
     table_class = tables.UserListTable
-    model = auth.get_user_model()
+    model = DeployUser
 
 
 # Admin Change/Edit User (modal)
@@ -36,7 +37,7 @@ class UserChange(UpdateView):
     """
     Change/Edit User view. Used in a modal window.
     """
-    model = auth.get_user_model()
+    model = DeployUser
     success_url = reverse_lazy('accounts_user_list', args=())
     form_class = forms.UserChangeForm
     template_name = 'accounts/deployuser_change.html'
@@ -65,7 +66,7 @@ class UserAdd(MultipleGroupRequiredMixin, CreateView):
     Create User view. Used in a modal window.
     """
     group_required = 'Admin'
-    model = auth.get_user_model()
+    model = DeployUser
     success_url = reverse_lazy('accounts_user_list', args=())
     form_class = forms.UserCreationForm
     template_name = 'accounts/deployuser_create.html'
@@ -76,15 +77,16 @@ class UserAdd(MultipleGroupRequiredMixin, CreateView):
 
         return kwargs
 
+
 # Admin User Detail
 class UserDetail(DetailView):
-    model = auth.get_user_model()
+    model = DeployUser
 
 
 # Admin Delete User
 class UserDelete(MultipleGroupRequiredMixin, DeleteView):
     group_required = 'Admin'
-    model = auth.get_user_model()
+    model = DeployUser
     success_url = reverse_lazy('accounts_user_list')
 
     def delete(self, request, *args, **kwargs):

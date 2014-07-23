@@ -5,13 +5,9 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, AuthenticationForm
-from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, HTML, Div
-from crispy_forms.bootstrap import FormActions
+from .models import DeployUser
 
 
 class UserChangeForm(forms.ModelForm):
@@ -22,7 +18,7 @@ class UserChangeForm(forms.ModelForm):
     is_active = forms.ChoiceField(choices=((True, 'Active'), (False, 'Disabled')), label='Status')
 
     class Meta:
-        model = get_user_model()
+        model = DeployUser
         fields = ['email', 'first_name', 'last_name', 'user_level', 'is_active', 'template']
 
     def __init__(self, *args, **kwargs):

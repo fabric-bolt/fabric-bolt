@@ -1,10 +1,10 @@
 """
 Tables for the account app
 """
-from django.contrib.auth import get_user_model
 import django_tables2 as tables
 
 from fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable
+from .models import DeployUser
 
 
 class UserListTable(PaginateTable):
@@ -27,6 +27,6 @@ class UserListTable(PaginateTable):
     user_level = tables.Column(verbose_name='User Level', accessor='group_strigify', order_by='groups')
 
     class Meta:
-        model = get_user_model()
+        model = DeployUser
         sequence = fields = ('first_name', 'last_name', 'is_active', 'email', 'user_level', )
         attrs = {'class': 'table table-striped table-bordered table-hover'}
