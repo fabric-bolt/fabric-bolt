@@ -207,11 +207,12 @@ class UtilTests(TestCase):
         deployment.stage.configuration_set.add(configuration)
 
         command = build_command(deployment, {})
+        fabfile_path, active_loc = get_fabfile_path(deployment.stage.project)
 
         self.assertEqual(
             command,
             'fab test_env --abort-on-prompts --set "foobar -i /path/to/keyfile --set foo2=bar" '
-            '--fabfile=/Users/jproffitt/Documents/personal_workspace/fabric_bolt/fabric_bolt/fabfile.py'
+            '--fabfile={}'.format(fabfile_path)
         )
 
         configuration = mommy.make(models.Configuration, key='dummy_key', value='dummy_value')
@@ -222,7 +223,7 @@ class UtilTests(TestCase):
         self.assertEqual(
             command,
             'fab test_env --abort-on-prompts --set "foobar -i /path/to/keyfile --set foo2=bar,dummy_key=dummy_value" '
-            '--fabfile=/Users/jproffitt/Documents/personal_workspace/fabric_bolt/fabric_bolt/fabfile.py'
+            '--fabfile={}'.format(fabfile_path)
         )
 
         deployment.stage.configuration_set.clear()
@@ -234,5 +235,5 @@ class UtilTests(TestCase):
         self.assertEqual(
             command,
             'fab test_env --abort-on-prompts --set "dummy_keytest\\" | ls #=dummy_value" '
-            '--fabfile=/Users/jproffitt/Documents/personal_workspace/fabric_bolt/fabric_bolt/fabfile.py'
+            '--fabfile={}'.format(fabfile_path)
         )
