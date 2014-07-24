@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from model_mommy import mommy
 
 from fabric_bolt.projects import models
-from fabric_bolt.projects.util import get_fabfile_path, build_command
+from fabric_bolt.projects.util import get_fabfile_path, build_command, parse_task_details
 
 User = get_user_model()
 
@@ -276,3 +276,50 @@ class UtilTests(TestCase):
             'fab test_env:arg="arg_value" '
             '--abort-on-prompts --fabfile={}'.format(fabfile_path)
         )
+
+    def test_parse_task_details(self):
+        output = """Displaying detailed information for task 'test_env':
+
+    No docstring provided
+    Arguments: arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30
+
+"""
+
+        details = parse_task_details('test_env', output)
+
+        self.assertEqual(len(details), 3)
+        self.assertEqual(details[0], 'test_env')
+        self.assertEqual(details[1], None)
+        self.assertListEqual(details[2], ['arg', 'arg2', 'arg3', 'arg4', 'arg5', 'arg6', 'arg7', 'arg8', 'arg9', 'arg10', 'arg11', 'arg12', 'arg13', 'arg14', 'arg15', 'arg16', 'arg17', 'arg18', 'arg19', 'arg20', 'arg21', 'arg22', 'arg23', 'arg24', 'arg25', 'arg26', 'arg27', 'arg28', 'arg29', 'arg30'])
+
+        output = """Displaying detailed information for task 'do_nothing':
+
+    Awesome docstring
+    Arguments: test='default'
+
+"""
+        details = parse_task_details('do_nothing', output)
+
+        self.assertEqual(len(details), 3)
+        self.assertEqual(details[0], 'do_nothing')
+        self.assertEqual(details[1], 'Awesome docstring')
+        self.assertEqual(len(details[2]), 1)
+        self.assertIsInstance(details[2][0], tuple)
+        self.assertTupleEqual(details[2][0], ('test', 'default'))
+
+        output = """Displaying detailed information for task 'do_nothing':
+
+    Awesome docstring
+    Arguments: test='default', test2
+
+"""
+        details = parse_task_details('do_nothing', output)
+
+        self.assertEqual(len(details), 3)
+        self.assertEqual(details[0], 'do_nothing')
+        self.assertEqual(details[1], 'Awesome docstring')
+        self.assertEqual(len(details[2]), 2)
+        self.assertIsInstance(details[2][0], tuple)
+        self.assertTupleEqual(details[2][0], ('test', 'default'))
+        self.assertIsInstance(details[2][1], str)
+        self.assertEqual(details[2][1], 'test2')

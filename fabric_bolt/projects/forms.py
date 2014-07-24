@@ -59,6 +59,7 @@ class ConfigurationUpdateForm(forms.ModelForm):
             'value_number',
             'value_boolean',
             'task_argument',
+            'task_name',
             'prompt_me_for_input',
             'sensitive_value',
         ]
@@ -76,6 +77,7 @@ class ConfigurationUpdateForm(forms.ModelForm):
             'value_number',
             'value_boolean',
             'task_argument',
+            'task_name',
             'prompt_me_for_input',
             'sensitive_value',
             ButtonHolder(
@@ -93,6 +95,7 @@ class ConfigurationUpdateForm(forms.ModelForm):
         key = self.cleaned_data.get('key', None)
         task_argument = self.cleaned_data.get('task_argument', None)
         data_type = self.cleaned_data.get('data_type', None)
+        task_name = self.cleaned_data.get('task_name', None)
 
         if task_argument:
             # valid python variable name. Since this will be a parameter name, we can be very strict.
@@ -109,6 +112,18 @@ class ConfigurationUpdateForm(forms.ModelForm):
                      'Unfortunately, fabric currently accepts only string data types as task arguments.']
                 )
                 del cleaned_data["data_type"]
+
+            if task_name is None or len(task_name.strip()) == 0:
+                self._errors["task_name"] = self.error_class(
+                    ['Since you have marked this as a task argument, you must specify the task name.']
+                )
+
+                try:
+                    del cleaned_data["task_name"]
+                except:
+                    pass  # doesnt matter
+        else:
+            self.cleaned_data["task_name"] = None
 
         return cleaned_data
 

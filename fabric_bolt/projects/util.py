@@ -75,7 +75,31 @@ def get_fabfile_path(project):
         return settings.FABFILE_PATH, None
 
 
-def get_fabric_tasks(request, project):
+def parse_task_details(name, task_output):
+    lines = task_output.splitlines()
+    docstring = lines[2].strip()
+    arguments_line = lines[3].strip()
+
+    if docstring == 'No docstring provided':
+        docstring = None
+
+    arguments_line = arguments_line[11:].strip()
+
+    arguments = []
+
+    if arguments_line:
+        for arg in arguments_line.split(', '):
+            m = re.match(r"^([^=]+)(='([^']*)')?$", arg)
+
+            if m.group(2):
+                arguments.append((m.group(1), m.group(3)))
+            else:
+                arguments.append(m.group(1))
+
+    return name, docstring, arguments
+
+
+def get_fabric_tasks(project):
     """
     Generate a list of fabric tasks that are available
     """
@@ -90,38 +114,39 @@ def get_fabric_tasks(request, project):
         fabfile_path, activate_loc = get_fabfile_path(project)
 
         if activate_loc:
-            output = subprocess.check_output('source {};fab --list --fabfile={}'.format(activate_loc, fabfile_path), shell=True)
+            output = subprocess.check_output('source {};fab --list --list-format=short --fabfile={}'.format(activate_loc, fabfile_path), shell=True)
         else:
-            output = subprocess.check_output(['fab', '--list', '--fabfile={}'.format(fabfile_path)])
+            output = subprocess.check_output(['fab', '--list', '--list-format=short', '--fabfile={}'.format(fabfile_path)])
 
-        lines = output.splitlines()[2:]
-        dict_with_docs = {}
+        lines = output.splitlines()
+        tasks = []
         for line in lines:
-            match = re.match(r'^\s*([^\s]+)\s*(.*)$', line)
-            if match:
-                name, desc = match.group(1), match.group(2)
-                if desc.endswith('...'):
-                    if activate_loc:
-                        o = subprocess.check_output(
-                            'source {};fab --display={} --fabfile={}'.format(activate_loc, name, fabfile_path),
-                            shell=True
-                        )
-                    else:
-                        o = subprocess.check_output(
-                            ['fab', '--display={}'.format(name), '--fabfile={}'.format(fabfile_path)]
-                        )
-                    try:
-                        desc = o.splitlines()[2].strip()
-                    except:
-                        pass # just stick with the original truncated description
-                dict_with_docs[name] = desc
+            name = line.strip()
+            if activate_loc:
+                o = subprocess.check_output(
+                    'source {};fab --display={} --fabfile={}'.format(activate_loc, name, fabfile_path),
+                    shell=True
+                )
+            else:
+                o = subprocess.check_output(
+                    ['fab', '--display={}'.format(name), '--fabfile={}'.format(fabfile_path)]
+                )
 
-        cache.set(cache_key, dict_with_docs, settings.FABRIC_TASK_CACHE_TIMEOUT)
+            tasks.append(parse_task_details(name, o))
+
+        cache.set(cache_key, tasks, settings.FABRIC_TASK_CACHE_TIMEOUT)
     except Exception as e:
-        messages.error(request, 'Error loading fabfile: ' + str(e))
-        dict_with_docs = {}
+        tasks = []
 
-    return dict_with_docs
+    return tasks
+
+
+def get_task_details(project, task_name):
+    for details in get_fabric_tasks(project):
+        if details[0] == task_name:
+            return details
+
+    return None
 
 
 def clean_key_string(key):
@@ -173,7 +198,7 @@ def build_command(deployment, session, abort_on_prompts=True):
     configs = deployment.stage.get_configurations()
     configs = update_config_values_from_session(configs, session)
 
-    task_args = [key for key, config in configs.iteritems() if config.task_argument]
+    task_args = [key for key, config in configs.iteritems() if config.task_argument and config.task_name == deployment.task.name]
     task_configs = [key for key, config in configs.iteritems() if not config.task_argument]
 
     command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
@@ -187,8 +212,14 @@ def build_command(deployment, session, abort_on_prompts=True):
     command = 'fab ' + deployment.task.name
 
     if task_args:
+        key_value_strings = []
+        for key in task_args:
+            cleaned_key = clean_arg_key_string(key)
+            value = clean_value_string(unicode(configs[key].get_value()))
+            key_value_strings.append('{}="{}"'.format(cleaned_key, value))
+
         command += ':'
-        command += ','.join('{}="{}"'.format(clean_arg_key_string(key), clean_value_string(unicode(configs[key].get_value()))) for key in task_args)
+        command += ','.join(key_value_strings)
 
     if normal_task_configs:
         command += ' --set '

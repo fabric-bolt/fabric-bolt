@@ -29,9 +29,22 @@
                     $('#div_id_value').show();
                 }
             }
+
+            function show_hide_task_name_field(){
+                var task_argument = $('#id_task_argument').is(':checked');
+                if(task_argument){
+                    $('#div_id_task_name').show();
+                }else{
+                    $('#div_id_task_name').hide();
+                }
+            }
+
             $(function(){
                 set_data_type_field();
                 $('#id_data_type').change(set_data_type_field);
+
+                show_hide_task_name_field();
+                $('#id_task_argument').change(show_hide_task_name_field);
             });
         </script>
     {% endaddtoblock %}

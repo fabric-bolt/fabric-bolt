@@ -163,6 +163,13 @@ class Configuration(TrackingFields):
     value_boolean = models.BooleanField(verbose_name='Value', default=False)
     data_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10, default=STRING_TYPE)
 
+    task_name = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text='The name of the task this argument should be used on.'
+    )
+
     prompt_me_for_input = models.BooleanField(
         default=False,
         help_text='When deploying you will be prompted for this value.'

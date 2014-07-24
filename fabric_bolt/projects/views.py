@@ -21,7 +21,7 @@ from django_tables2 import RequestConfig, SingleTableView
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
-from fabric_bolt.projects.util import get_fabric_tasks, build_command
+from fabric_bolt.projects.util import get_fabric_tasks, build_command, get_task_details
 
 
 class BaseGetProjectCreateView(CreateView):
@@ -219,13 +219,14 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
         #save the stage for later
         self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
 
-        all_tasks = get_fabric_tasks(self.request, self.stage.project)
-        if self.kwargs['task_name'] not in all_tasks:
+        task_details = get_task_details(self.stage.project, self.kwargs['task_name'])
+
+        if task_details is None:
             messages.error(self.request, '"{}" is not a valid task.'. format(self.kwargs['task_name']))
             return HttpResponseRedirect(reverse('projects_stage_view', kwargs={'project_id': self.stage.project_id, 'pk': self.stage.pk }))
 
-        self.task_name = self.kwargs['task_name']
-        self.task_description = all_tasks.get(self.task_name, None)
+        self.task_name = task_details[0]
+        self.task_description = task_details[1]
 
         return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
 
@@ -237,19 +238,26 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
 
         # We want to inject fields into the form for the configurations they've marked as prompt
         for config in stage_configurations:
+            if config.task_argument and config.task_name != self.task_name:
+                continue
+
             str_config_key = 'configuration_value_for_{}'.format(config.key)
 
             if config.data_type == config.BOOLEAN_TYPE:
-                form.fields[str_config_key] = BooleanField(widget=Select(choices=((False, 'False'), (True, 'True'))))
-                form.fields[str_config_key].coerce=lambda x: x == 'True',
+                field = BooleanField(widget=Select(choices=((False, 'False'), (True, 'True'))))
+                field.coerce=lambda x: x == 'True',
             elif config.data_type == config.NUMBER_TYPE:
-                form.fields[str_config_key] = FloatField()
+                field = FloatField()
             else:
-                if config.sensitive_value:
-                    form.fields[str_config_key] = CharField(widget=PasswordInput)
-                else:
-                    form.fields[str_config_key] = CharField()
+                field = CharField()
 
+                if config.sensitive_value:
+                    field.widget = PasswordInput
+
+                if config.task_argument:
+                    field.label = 'Argument value for ' + config.key
+
+            form.fields[str_config_key] = field
             form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
 
         return form
@@ -258,7 +266,11 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.stage = self.stage
 
-        self.object.task, created = models.Task.objects.get_or_create(name=self.task_name, defaults={'description': self.task_description})
+        self.object.task, created = models.Task.objects.get_or_create(
+            name=self.task_name,
+            defaults={'description': self.task_description}
+        )
+
         if not created:
             self.object.task.times_used += 1
             self.object.task.description = self.task_description
@@ -308,7 +320,7 @@ class DeploymentOutputStream(View):
     """
 
     def output_stream_generator(self):
-        if self.object.task.name not in get_fabric_tasks(self.request, self.object.stage.project):
+        if get_task_details(self.object.stage.project, self.object.task.name) is None:
             return
 
         try:
@@ -420,10 +432,13 @@ class ProjectStageTasksAjax(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectStageTasksAjax, self).get_context_data(**kwargs)
 
-        all_tasks = get_fabric_tasks(self.request, self.object.project)
+        all_tasks = get_fabric_tasks(self.object.project)
+        task_names = [x[0] for x in all_tasks]
 
-        context['all_tasks'] = all_tasks.keys()
-        context['frequent_tasks_run'] = models.Task.objects.filter(name__in=all_tasks.keys()).order_by('-times_used')[:3]
+        context['all_tasks'] = task_names
+        context['frequent_tasks_run'] = models.Task.objects.filter(
+            name__in=task_names
+        ).order_by('-times_used')[:3]
 
         return context
 
