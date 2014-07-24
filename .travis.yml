@@ -11,7 +11,6 @@ install:
 
 script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
-    - python fabric_bolt/manage.py test projects hosts accounts launch_window --settings=fabric_bolt.core.settings.test
     - coverage run --source=. --omit=*/migrations/* fabric_bolt/manage.py test --settings=fabric_bolt.core.settings.test
 
 after_success:
