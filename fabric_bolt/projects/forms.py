@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.core.validators import RegexValidator
 from crispy_forms.helper import FormHelper
@@ -56,6 +58,7 @@ class ConfigurationUpdateForm(forms.ModelForm):
             'value',
             'value_number',
             'value_boolean',
+            'task_argument',
             'prompt_me_for_input',
             'sensitive_value',
         ]
@@ -72,6 +75,7 @@ class ConfigurationUpdateForm(forms.ModelForm):
             'value',
             'value_number',
             'value_boolean',
+            'task_argument',
             'prompt_me_for_input',
             'sensitive_value',
             ButtonHolder(
@@ -83,6 +87,30 @@ class ConfigurationUpdateForm(forms.ModelForm):
 
         self.fields['data_type'].required = True
         self.fields['value_boolean'].coerce = lambda x: x == 'True'
+
+    def clean(self):
+        cleaned_data = super(ConfigurationUpdateForm, self).clean()
+        key = self.cleaned_data.get('key', None)
+        task_argument = self.cleaned_data.get('task_argument', None)
+        data_type = self.cleaned_data.get('data_type', None)
+
+        if task_argument:
+            # valid python variable name. Since this will be a parameter name, we can be very strict.
+
+            if key is not None and not re.match(r'^[a-zA-Z_]+[0-9a-zA-Z_]*$', key):
+                self._errors["key"] = self.error_class(
+                    ['Since you have marked this as a task argument, this must be a valid python variable name.']
+                )
+                del cleaned_data["key"]
+
+            if data_type is not None and data_type != models.Configuration.STRING_TYPE:
+                self._errors["data_type"] = self.error_class(
+                    ['Since you have marked this as a task argument, it must be a string data type. '
+                     'Unfortunately, fabric currently accepts only string data types as task arguments.']
+                )
+                del cleaned_data["data_type"]
+
+        return cleaned_data
 
 
 class ConfigurationCreateForm(ConfigurationUpdateForm):

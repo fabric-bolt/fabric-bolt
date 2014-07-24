@@ -48,6 +48,7 @@ class ConfigurationTable(PaginateTable):
     value = tables.Column(accessor='get_display_value', orderable=False)
 
     # Clean up the labels a little
+    task_argument = tables.BooleanColumn(verbose_name="Argument?",)
     prompt_me_for_input = tables.BooleanColumn(verbose_name="Prompt?",)
     sensitive_value = tables.BooleanColumn(verbose_name="Sensitive?",)
 
@@ -57,6 +58,7 @@ class ConfigurationTable(PaginateTable):
         sequence = fields = (
             'key',
             'value',
+            'task_argument',
             'prompt_me_for_input',
             'sensitive_value',
         )

@@ -170,10 +170,10 @@ class BasicTests(TestCase):
         configurations_round_one = self.stage.get_configurations()
 
         # These should be what we're expecting
-        self.assertEqual(configurations_round_one['number1'], '100')
-        self.assertEqual(configurations_round_one['number2'], '200')
-        self.assertEqual(configurations_round_one['number3'], '300')
-        self.assertEqual(configurations_round_one['number4'], '400')
+        self.assertEqual(configurations_round_one['number1'].get_value(), '100')
+        self.assertEqual(configurations_round_one['number2'].get_value(), '200')
+        self.assertEqual(configurations_round_one['number3'].get_value(), '300')
+        self.assertEqual(configurations_round_one['number4'].get_value(), '400')
 
         stage_configs = [
 
@@ -193,10 +193,10 @@ class BasicTests(TestCase):
         configurations = self.stage.get_configurations()
 
         # The stage configs take the cake over project configs
-        self.assertEqual(configurations['number1'], '100')
-        self.assertEqual(configurations['number2'], '5')
-        self.assertEqual(configurations['number3'], '4')
-        self.assertEqual(configurations['number4'], '3')
+        self.assertEqual(configurations['number1'].get_value(), '100')
+        self.assertEqual(configurations['number2'].get_value(), '5')
+        self.assertEqual(configurations['number3'].get_value(), '4')
+        self.assertEqual(configurations['number4'].get_value(), '3')
 
 
 class UtilTests(TestCase):
@@ -211,8 +211,8 @@ class UtilTests(TestCase):
 
         self.assertEqual(
             command,
-            'fab test_env --abort-on-prompts --set "foobar -i /path/to/keyfile --set foo2=bar" '
-            '--fabfile={}'.format(fabfile_path)
+            'fab test_env --set "foo\\=bar -i /path/to/keyfile --set foo2=bar" '
+            '--abort-on-prompts --fabfile={}'.format(fabfile_path)
         )
 
         configuration = mommy.make(models.Configuration, key='dummy_key', value='dummy_value')
@@ -222,8 +222,8 @@ class UtilTests(TestCase):
 
         self.assertEqual(
             command,
-            'fab test_env --abort-on-prompts --set "foobar -i /path/to/keyfile --set foo2=bar,dummy_key=dummy_value" '
-            '--fabfile={}'.format(fabfile_path)
+            'fab test_env --set "foo\=bar -i /path/to/keyfile --set foo2=bar,dummy_key=dummy_value" '
+            '--abort-on-prompts --fabfile={}'.format(fabfile_path)
         )
 
         deployment.stage.configuration_set.clear()
@@ -234,6 +234,45 @@ class UtilTests(TestCase):
 
         self.assertEqual(
             command,
-            'fab test_env --abort-on-prompts --set "dummy_keytest\\" | ls #=dummy_value" '
-            '--fabfile={}'.format(fabfile_path)
+            'fab test_env --set "dummy_key\=test\\" | ls #=dummy_value" '
+            '--abort-on-prompts --fabfile={}'.format(fabfile_path)
+        )
+
+        deployment.stage.configuration_set.clear()
+        configuration = mommy.make(models.Configuration, key='dummy_key', value='dummy_value,x=y')
+        deployment.stage.configuration_set.add(configuration)
+
+        command = build_command(deployment, {})
+
+        self.assertEqual(
+            command,
+            'fab test_env --set "dummy_key=dummy_value\,x\=y" '
+            '--abort-on-prompts --fabfile={}'.format(fabfile_path)
+        )
+
+        deployment.stage.configuration_set.clear()
+        configuration = mommy.make(models.Configuration, key='dummy_key=blah,x', value='dummy_value')
+        deployment.stage.configuration_set.add(configuration)
+
+        command = build_command(deployment, {})
+
+        self.assertEqual(
+            command,
+            'fab test_env --set "dummy_key\=blah\,x=dummy_value" '
+            '--abort-on-prompts --fabfile={}'.format(fabfile_path)
+        )
+
+    def test_build_command_with_args(self):
+        deployment = mommy.make(models.Deployment, task__name='test_env')
+
+        configuration = mommy.make(models.Configuration, key='arg', value='arg_value', task_argument=True)
+        deployment.stage.configuration_set.add(configuration)
+
+        command = build_command(deployment, {})
+        fabfile_path, active_loc = get_fabfile_path(deployment.stage.project)
+
+        self.assertEqual(
+            command,
+            'fab test_env:arg="arg_value" '
+            '--abort-on-prompts --fabfile={}'.format(fabfile_path)
         )

@@ -122,14 +122,14 @@ class Stage(TrackingFields):
 
         # Create project specific configurations dictionary
         for config in project_configurations:
-            project_configurations_dictionary[config.key] = config.get_value()
+            project_configurations_dictionary[config.key] = config
 
         stage_configurations_dictionary = {}
         stage_configurations = self.stage_configurations()
 
         # Create stage specific configurations dictionary
         for s in stage_configurations:
-            stage_configurations_dictionary[s.key] = s.get_value()
+            stage_configurations_dictionary[s.key] = s
 
         # override project specific configuration with the ones in the stage if they are there
         project_configurations_dictionary.update(stage_configurations_dictionary)
@@ -163,8 +163,18 @@ class Configuration(TrackingFields):
     value_boolean = models.BooleanField(verbose_name='Value', default=False)
     data_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10, default=STRING_TYPE)
 
-    prompt_me_for_input = models.BooleanField(default=False, help_text='When deploying you will be prompted for this value.')
-    sensitive_value = models.BooleanField(default=False, help_text='Password or other value that should not be stored in the logs.')
+    prompt_me_for_input = models.BooleanField(
+        default=False,
+        help_text='When deploying you will be prompted for this value.'
+    )
+    sensitive_value = models.BooleanField(
+        default=False,
+        help_text='Password or other value that should not be stored in the logs.'
+    )
+    task_argument = models.BooleanField(
+        default=False,
+        help_text='"Configuration" should be passed as a task argument rather than set on env.'
+    )
 
     # Managers
     objects = models.Manager()
@@ -196,6 +206,16 @@ class Configuration(TrackingFields):
             return self.value_number
         else:
             return self.value
+
+    def set_value(self, value):
+        """Determine the proper value based on the data_type"""
+
+        if self.data_type == self.BOOLEAN_TYPE:
+            self.value_boolean = bool(value)
+        elif self.data_type == self.NUMBER_TYPE:
+            self.value_number = float(value)
+        else:
+            self.value = value
 
     def get_display_value(self):
         if self.sensitive_value:

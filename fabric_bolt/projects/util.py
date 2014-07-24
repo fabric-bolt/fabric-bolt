@@ -107,63 +107,89 @@ def get_fabric_tasks(request, project):
 
 def clean_key_string(key):
     key = key.replace('"', '\\"')  # escape double quotes
-    key = key.replace('=', '')  # remove = because that would be setting a new key
+    key = key.replace(',', '\,')  # escape commas, that would be adding a new value
+    key = key.replace('=', '\=')  # escape = because that would be setting a new key
 
     return key
 
 
 def clean_value_string(value):
     value = value.replace('"', '\\"')  # escape double quotes
+    value = value.replace(',', '\,')  # escape commas, that would be adding a new value
+    value = value.replace('=', '\=')  # escape = because that would be setting a new key
 
     return value
 
 
-def get_key_value_string(key, value):
+def clean_arg_key_string(key):
+    # this has to be a valid python function argument, so we can get pretty strict here
+    key = re.sub(r'[^0-9a-zA-Z_]', '', key)  # remove anything that isn't a number, letter, or underscore
+
+    return key
+
+
+def get_key_value_string(key, config):
     key = clean_key_string(key)
 
-    if isinstance(value, bool):
-        return key + ('' if value else '=')
-    elif isinstance(value, float):
-        return key + '=' + str(value)
+    if config.data_type == config.BOOLEAN_TYPE:
+        return key + ('' if config.get_value() else '=')
+    elif config.data_type == config.NUMBER_TYPE:
+        return key + '=' + str(config.get_value())
     else:
-        return '{}={}'.format(key, clean_value_string(value))
+        return '{}={}'.format(key, clean_value_string(config.get_value()))
+
+
+def update_config_values_from_session(configs, session):
+    configs = configs.copy()
+
+    for key, config in configs.iteritems():
+        if session.get('configuration_values', {}).get(key, None) is not None:
+            config.set_value(session['configuration_values'][key])
+
+    return configs
 
 
 def build_command(deployment, session, abort_on_prompts=True):
-    command = ['fab', deployment.task.name]
-
-    if abort_on_prompts:
-        command.append('--abort-on-prompts')
-
-    hosts = deployment.stage.hosts.values_list('name', flat=True)
-    if hosts:
-        command.append('--hosts=' + ','.join(hosts))
-
     # Get the dictionary of configurations for this stage
-    config = deployment.stage.get_configurations()
+    configs = deployment.stage.get_configurations()
+    configs = update_config_values_from_session(configs, session)
 
-    config.update(session.get('configuration_values', {}))
+    task_args = [key for key, config in configs.iteritems() if config.task_argument]
+    task_configs = [key for key, config in configs.iteritems() if not config.task_argument]
 
     command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
 
     # Take the special env variables out
-    normal_options = list(set(config.keys()) - set(command_to_config.keys()))
+    normal_task_configs = list(set(task_configs) - set(command_to_config.keys()))
 
     # Special ones get set a different way
-    special_options = list(set(config.keys()) & set(command_to_config.keys()))
+    special_task_configs = list(set(task_configs) & set(command_to_config.keys()))
 
-    if normal_options:
-        command.append('--set')
-        command.append('"' + ','.join(get_key_value_string(key, config[key]) for key in normal_options) + '"')
+    command = 'fab ' + deployment.task.name
 
-    if special_options:
-        for key in special_options:
-            command.append('--' + get_key_value_string(command_to_config[key], config[key]))
+    if task_args:
+        command += ':'
+        command += ','.join('{}="{}"'.format(clean_arg_key_string(key), clean_value_string(unicode(configs[key].get_value()))) for key in task_args)
+
+    if normal_task_configs:
+        command += ' --set '
+        command += '"' + ','.join(get_key_value_string(key, configs[key]) for key in normal_task_configs) + '"'
+
+    if special_task_configs:
+        for key in special_task_configs:
+            command += ' --' + get_key_value_string(command_to_config[key], configs[key])
+
+    if abort_on_prompts:
+        command += ' --abort-on-prompts'
+
+    hosts = deployment.stage.hosts.values_list('name', flat=True)
+    if hosts:
+        command += ' --hosts=' + ','.join(hosts)
 
     fabfile_path, active_loc = get_fabfile_path(deployment.stage.project)
-    command.append('--fabfile={}'.format(fabfile_path))
+    command += ' --fabfile={}'.format(fabfile_path)
 
     if active_loc:
-        return 'source {};'.format(active_loc) + ' '.join(command)
+        return 'source {};'.format(active_loc) + ' ' + command
     else:
-        return ' '.join(command)
+        return command
