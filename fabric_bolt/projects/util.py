@@ -5,6 +5,7 @@ import subprocess
 from django.utils.text import slugify
 from django.conf import settings
 from django.contrib import messages
+from django.core.cache import cache
 
 from virtualenv import create_environment
 
@@ -52,6 +53,12 @@ def update_project_requirements(project, repo_dir, activate_loc):
 
 def get_fabfile_path(project):
     if project.use_repo_fabfile:
+        cache_key = 'project_{}_fabfile_path'.format(project.pk)
+        cached_result = cache.get(cache_key)
+
+        if cached_result:
+            return cached_result
+
         cache_dir = os.path.join(settings.PUBLIC_DIR, '.repo_caches')
         repo_dir = os.path.join(cache_dir, slugify(project.name))
 
@@ -61,7 +68,9 @@ def get_fabfile_path(project):
 
         update_project_requirements(project, repo_dir, activate_loc)
 
-        return os.path.join(repo_dir, 'fabfile.py'), activate_loc
+        result = os.path.join(repo_dir, 'fabfile.py'), activate_loc
+        cache.set(cache_key, result, settings.FABRIC_TASK_CACHE_TIMEOUT)
+        return result
     else:
         return settings.FABFILE_PATH, None
 
@@ -70,6 +79,13 @@ def get_fabric_tasks(request, project):
     """
     Generate a list of fabric tasks that are available
     """
+
+    cache_key = 'project_{}_fabfile_tasks'.format(project.pk)
+    cached_result = cache.get(cache_key)
+
+    if cached_result:
+        return cached_result
+
     try:
         fabfile_path, activate_loc = get_fabfile_path(project)
 
@@ -99,9 +115,12 @@ def get_fabric_tasks(request, project):
                     except:
                         pass # just stick with the original truncated description
                 dict_with_docs[name] = desc
+
+        cache.set(cache_key, dict_with_docs, settings.FABRIC_TASK_CACHE_TIMEOUT)
     except Exception as e:
         messages.error(request, 'Error loading fabfile: ' + str(e))
         dict_with_docs = {}
+
     return dict_with_docs
 
 

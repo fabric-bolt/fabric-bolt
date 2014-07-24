@@ -14,6 +14,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.forms import CharField, PasswordInput, Select, FloatField, BooleanField
 from django.conf import settings
+from django.core.cache import cache
 
 from django_tables2 import RequestConfig, SingleTableView
 
@@ -483,3 +484,20 @@ class ProjectStageUnmapHost(MultipleGroupRequiredMixin, RedirectView):
 
     def get_redirect_url(self, **kwargs):
         return reverse('projects_stage_view', args=(self.stage.project.pk, self.stage_id,))
+
+
+class ProjectInvalidateCache(RedirectView):
+    permanent = False
+
+    def get(self, request, *args, **kwargs):
+        self.project_id = kwargs.get('pk')
+
+        cache.delete_many(['project_{}_fabfile_tasks'.format(self.project_id),
+                           'project_{}_fabfile_path'.format(self.project_id)])
+
+        messages.info(request, "Tasks cache invalidated.")
+
+        return super(ProjectInvalidateCache, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('projects_project_view', args=(self.project_id,))

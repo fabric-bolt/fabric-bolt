@@ -245,4 +245,12 @@ LOGGING = {
 }
 ########## END LOGGING CONFIGURATION
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(PUBLIC_DIR, '.django_cache'),
+    }
+}
 
+
+FABRIC_TASK_CACHE_TIMEOUT = 60 * 60 * 24  # one day
