@@ -89,11 +89,6 @@ class ConfigurationCreateForm(ConfigurationUpdateForm):
 
     button_prefix = "Create"
 
-    def __init__(self, *args, **kwargs):
-        super(ConfigurationCreateForm, self).__init__(*args, **kwargs)
-
-        self.fields['key'].validators.append(RegexValidator(r'^[a-zA-Z_]+[0-9a-zA-Z_]*$')) # valid python variable name
-
 
 class DeploymentForm(forms.ModelForm):
 
