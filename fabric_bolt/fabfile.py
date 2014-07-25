@@ -58,10 +58,9 @@ def do_nothing():
         time.sleep(0.2)
 
 
-def test_env(**kwargs):
+def test_env(argument="nothing"):
     print("Task Arguments:")
-    for x, y in kwargs.iteritems():
-        print '{}: {}'.format(x, y)
+    print argument
     print
 
     print("Task Env:")

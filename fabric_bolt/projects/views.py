@@ -236,6 +236,8 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
 
         form = form_class(**self.get_form_kwargs())
 
+        used_arg_names = []
+
         # We want to inject fields into the form for the configurations they've marked as prompt
         for config in stage_configurations:
             if config.task_argument and config.task_name != self.task_name:
@@ -255,7 +257,26 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
                     field.widget = PasswordInput
 
                 if config.task_argument:
+                    used_arg_names.append(config.key)
                     field.label = 'Argument value for ' + config.key
+
+            form.fields[str_config_key] = field
+            form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
+
+        task_details = get_task_details(self.stage.project, self.task_name)
+
+        for arg in task_details[2]:
+            if isinstance(arg, tuple):
+                name, default = arg
+            else:
+                name, default = arg, None
+
+            if name in used_arg_names:
+                continue
+
+            str_config_key = 'configuration_value_for_{}'.format(name)
+
+            field = CharField(label='Argument value for ' + name, initial=default)
 
             form.fields[str_config_key] = field
             form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
