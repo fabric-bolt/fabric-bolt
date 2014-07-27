@@ -14,7 +14,7 @@ class UserChangeForm(forms.ModelForm):
     """
     A form for updating users.
     """
-    user_level = forms.ChoiceField(choices=Group.objects.all().values_list(), label='User Level')
+    user_level = forms.ChoiceField(label='User Level')
     is_active = forms.ChoiceField(choices=((True, 'Active'), (False, 'Disabled')), label='Status')
 
     class Meta:
@@ -40,6 +40,8 @@ class UserChangeForm(forms.ModelForm):
 
         super(UserChangeForm, self).__init__(*args, **kwargs)
 
+        self.fields['user_level'].choices = Group.objects.all().values_list()
+        
         if not user_is_admin:
             self.fields.pop('user_level', None)
             self.fields.pop('is_active', None)
