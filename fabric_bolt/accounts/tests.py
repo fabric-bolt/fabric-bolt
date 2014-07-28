@@ -34,7 +34,7 @@ class ModelsTest(TestCase):
 
         self.assertFalse(user.user_is_admin())
 
-        user.groups.add(mommy.make(Group, name='Admin'))
+        user.groups.add(Group.objects.get(name='Admin'))
         delattr(user, '_cached_groups')
 
         self.assertTrue(user.user_is_admin())
@@ -53,7 +53,7 @@ class ModelsTest(TestCase):
 
         self.assertFalse(user.user_is_deployer())
 
-        user.groups.add(mommy.make(Group, name='Deployer'))
+        user.groups.add(Group.objects.get(name='Deployer'))
         delattr(user, '_cached_groups')
 
         self.assertTrue(user.user_is_deployer())
@@ -72,7 +72,7 @@ class ModelsTest(TestCase):
 
         self.assertFalse(user.user_is_historian())
 
-        user.groups.add(mommy.make(Group, name='Historian'))
+        user.groups.add(Group.objects.get(name='Historian'))
         delattr(user, '_cached_groups')
 
         self.assertTrue(user.user_is_historian())
@@ -87,10 +87,10 @@ class ModelsTest(TestCase):
 
         self.assertEqual(user.group_strigify(), 'junk-group')
 
-        user.groups.add(mommy.make(Group, name='Admin'))
+        user.groups.add(mommy.make(Group, name='New-Admin'))
         delattr(user, '_cached_groups')
 
-        self.assertEqual(user.group_strigify(), 'junk-group/Admin')
+        self.assertEqual(user.group_strigify(), 'junk-group/New-Admin')
 
     def test_user_gravatar(self):
         user = mommy.make(DeployUser, email='email@example.com')

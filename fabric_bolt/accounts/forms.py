@@ -41,7 +41,7 @@ class UserChangeForm(forms.ModelForm):
         super(UserChangeForm, self).__init__(*args, **kwargs)
 
         self.fields['user_level'].choices = Group.objects.all().values_list()
-        
+
         if not user_is_admin:
             self.fields.pop('user_level', None)
             self.fields.pop('is_active', None)
