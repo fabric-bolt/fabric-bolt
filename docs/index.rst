@@ -113,11 +113,12 @@ Deployments are actually run against a project stage, since project stages fully
 7. Review the deployment details and provide comments about the deployment
 8. Click "Go!"
 
+Deployments run in a background thread so you can navigate away from the deployment detail screen while a deployment is running. Fabric Bolt tracks the status of the deployment so that you can always come back later and check for success. However, from the deployment detail screen you can watch the live log of what commands are being run on the remote hosts while a deployment is running. After the deployment is complete the log is available for review. This is particularly helpful for resolving issues with failed deployments.
 
 Users
 -----
 
-Users are configured in the system with one of three roles. For details on these roles see the http://_yourdomain.com_/user/permissions/ page.
+Users are configured in the system with one of three roles. For details on these roles see the http://yourdomain.com/user/permissions/ page.
 
 
 FAQ
