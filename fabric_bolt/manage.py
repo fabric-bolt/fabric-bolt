@@ -5,7 +5,7 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 if __name__ == '__main__':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fabric_bolt.core.settings.local')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fabric_bolt.core.settings.np')
     sys.path.append(os.getcwd())
 
     from django.conf import settings

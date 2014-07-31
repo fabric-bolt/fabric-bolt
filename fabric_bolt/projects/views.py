@@ -24,6 +24,15 @@ from fabric_bolt.projects import forms, tables, models
 from fabric_bolt.projects.util import get_fabric_tasks, build_command, get_task_details
 
 
+from .signals import deployment_finished
+from django.dispatch import receiver
+
+@receiver(deployment_finished)
+def my_callback(sender, **kwargs):
+    print("Request finished!")
+
+
+
 class BaseGetProjectCreateView(CreateView):
     """
     Reusable class for create views that need the project pulled in
@@ -319,6 +328,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
+
         return reverse('projects_deployment_detail', kwargs={'pk': self.object.pk})
 
 
