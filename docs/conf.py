@@ -15,9 +15,8 @@
 import sys
 import os
 
-from fabric_bolt.core.settings import local
-from django.core.management import setup_environ
-setup_environ(local)
+if 'DJANGO_SETTINGS_MODULE' not in os.environ:
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'fabric_bolt.core.settings.local'
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
