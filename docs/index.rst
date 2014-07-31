@@ -84,7 +84,7 @@ Your deployment tasks are defined at the project level, but because Project Stag
 Putting it Together
 -------------------
 
-If we diagram this simple structure, it looks something like this:
+If we diagram this simple structure, it looks something like this::
 
 	Project
 	|_ Configurations (git repo, git branch, code_root, etc.)
@@ -98,7 +98,6 @@ If we diagram this simple structure, it looks something like this:
 	  |_ Hosts (w/ roles)
 	  |_ Configurations (git branch, settings_file, etc.)
 	  
-
 
 Running a Deployment
 ---------------------
