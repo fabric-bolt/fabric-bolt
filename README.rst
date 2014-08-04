@@ -59,11 +59,4 @@ Authors
 * Nathaniel Pardington (npardington)
 
 
-  ,-----.
- / ,---. \
-/ / Fab \ \
-\ \ ric / /
- \ `---' /
-  `-----'
-
 Bolting web applications to servers since 2013 :: Deploy Happy!
