@@ -52,7 +52,7 @@ as well the ``wsgi.py`` module:
 ::
 
     [uwsgi]
-    env = FABRICBOLT_CONF=/etc/fabric-bolt/settings.py
+    env = FABRIC_BOLT_CONF=/etc/fabric-bolt/settings.py
     module = wsgi.py
 
     ; spawn the master and 4 processes
