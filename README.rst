@@ -1,19 +1,28 @@
 Fabric Bolt
 ===========
 
-A web interface for fabric deployments.
-
-Build Status
-------------
-
 .. image:: https://travis-ci.org/worthwhile/fabric-bolt.png?branch=master
         :target: https://travis-ci.org/worthwhile/fabric-bolt
 
 .. image:: https://coveralls.io/repos/worthwhile/fabric-bolt/badge.png?branch=master
         :target: https://coveralls.io/r/worthwhile/fabric-bolt?branch=master
 
+| **tl;dr**
+| A web interface for fabric deployments.
+
+Fabric Bolt is a Python/Django project that allows you to deploy code stored in source control (a project) to a target server (host).
+Fabric Bolt provides convenient web interfaces to configure both the projects and the hosts. Additionally, deployment history and
+logs are stored so that you know who, what, where, when, and why something was deployed.
+
+Documentation found at http://fabric-bolt.readthedocs.org/en/latest/
+
+.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.18%20PM.png
+
 Quickstart
 ----------
+
+These steps are designed to get you rolling quickly, but more complete install/setup information is provided in our `documentation
+<http://fabric-bolt.readthedocs.org/en/latest/>`_.
 
 1. Install::
 
@@ -42,35 +51,12 @@ Note:
 If you have created a settings file at a different location than the default, you can use the --config option on any
 command (besides the init command) to specify the custom file path. Alternatively, you can set an env variable: FABRIC_BOLT_CONF.
 
-Examples Screens
-----------------
-
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.34.45%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.35.16%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.35.44%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.35.55%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.36.06%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.36.28%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.37.19%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.37.29%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.37.35%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.37.42%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.37.48%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.37.54%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.38.03%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.38.25%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.40.08%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.40.24%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.40.34%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.41.53%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.18%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.30%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.37%20PM.png
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.43.28%20PM.png
-
 Authors
 -------
 
-* Dan Dietz
-* Jared Proffitt
-* Nathaniel Pardington
+* Dan Dietz (paperreduction)
+* Jared Proffitt (jproffitt)
+* Nathaniel Pardington (npardington)
+
+
+Bolting web applications to servers since 2013 :: Deploy Happy!
