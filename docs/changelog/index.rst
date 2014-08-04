@@ -1,4 +1,4 @@
 Changelog
 =========
 
-.. include:: ../../CHANGES
+.. include:: ../../CHANGELOG
