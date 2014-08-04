@@ -48,16 +48,22 @@ Setting up an Environment
 -------------------------
 
 The first thing you'll need is the Python ``virtualenv`` package. You probably already
-have this, but if not, you can install it with::
+have this, but if not, you can install it with:
 
-  easy_install -UZ virtualenv
+.. code-block:: bash
+
+    easy_install -UZ virtualenv
 
 Once that's done, choose a location for the environment, and create it with the ``virtualenv``
-command. For our guide, we're going to choose ``/www/fabric-bolt/``::
+command. For our guide, we're going to choose ``/www/fabric-bolt/``:
 
-  virtualenv /www/fabric-bolt/
+.. code-block:: bash
 
-Finally, activate your virtualenv::
+    virtualenv /www/fabric-bolt/
+
+Finally, activate your virtualenv:
+
+.. code-block:: bash
 
   source /www/fabric-bolt/bin/activate
 
@@ -70,9 +76,11 @@ Install Fabric Bolt
 
 Once you have the environment setup you can install Fabric Bolt and all its dependencies 
 with ``pip`` (``virtualenv`` comes with a copy of ``pip`` which gets copied into every 
-new environment you create)::
+new environment you create):
 
-  pip install fabric-bolt
+.. code-block:: bash
+
+    pip install fabric-bolt
 
 Don't be worried by the amount of dependencies Fabric Bolt has. Our philosophy is to use the right tool for
 the job, and to not reinvent them if they already exist.
@@ -83,17 +91,25 @@ Initializing the Configuration
 
 After Fabric Bolt has been installed, you will need to create and configure a ``settings.py`` file.  We have packaged Fabric Bolt with a utility to generate a ``settings.py`` file for you:
 
-  fabric-bolt init
+.. code-block:: bash
+
+    fabric-bolt init
 
 Or, optionally, you can provide a path to the settings file:
 
-  fabric-bolt init /etc/fabric-bolt/settings.py
+.. code-block:: bash
+
+    fabric-bolt init /etc/fabric-bolt/settings.py
  
 The settings file will be located at ``~/.fabric-bolt/settings.py``. And should be edited for your database configuration:
 
-  vi ~/.fabric-bolt/settings.py
+.. code-block:: bash
 
-The configuration for the server is based on the settings file, which contains a basic Django project configuration::
+    vi ~/.fabric-bolt/settings.py
+
+The configuration for the server is based on the settings file, which contains a basic Django project configuration:
+
+.. code-block:: python
 
     # ~/.fabric-bolt/settings.py
 
@@ -142,9 +158,9 @@ the first time you'll need to make sure you've created the database:
     # If you're using Postgres, and kept the database ``NAME`` as ``fabric-bolt``
     $ createdb -E utf-8 fabric-bolt
 
-Once done, you can create the initial schema using the ``upgrade`` command:
+Once done, you can create the initial schema using the ``syncdb --migrate`` command:
 
-.. code-block:: python
+.. code-block:: bash
 
     $ fabric-bolt syncdb --migrate
 
@@ -158,10 +174,7 @@ If you did not create the user on the first run, you can correct this by doing t
     # create a new user
     $ fabric-bolt --config=/etc/fabric-bolt/settings.py createsuperuser
 
-    # run the automated repair script
-    $ fabric-bolt --config=/etc/fabric-bolt/settings.py repair --owner=<username>
-
-All schema changes and database upgrades are handled via the ``syncdb`` command, and this is the first
+All schema changes and database upgrades are handled via the ``syncdb --migrate`` command, and this is the first
 thing you'll want to run when upgrading to future versions of Fabric Bolt.
 
 .. note:: Internally, this uses `South <http://south.aeracode.org>`_ to manage database migrations.
@@ -248,13 +261,6 @@ folder and you're good to go.
   [program:fabric-bolt-web]
   directory=/www/fabric-bolt/
   command=/www/fabric-bolt/bin/fabric-bolt start
-  autostart=true
-  autorestart=true
-  redirect_stderr=true
-
-  [program:fabric-bolt-worker]
-  directory=/www/fabric-bolt/
-  command=/www/fabric-bolt/bin/fabric-bolt celery worker -B
   autostart=true
   autorestart=true
   redirect_stderr=true

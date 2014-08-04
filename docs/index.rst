@@ -28,7 +28,7 @@ Users Guide
    install/nginx
    usage/index
    faq/index
-   
+
 
 Developers
 ----------
@@ -51,7 +51,7 @@ Reference
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
