@@ -34,13 +34,21 @@ class HookCreate(MultipleGroupRequiredMixin, CreateView):
     form_class = forms.HookCreateForm
     template_name_suffix = '_create'
 
+    def get_initial(self):
+
+        initial = super(HookCreate, self).get_initial()
+
+        initial['project'] = self.kwargs.get('project_id')
+
+        return initial
+
     def form_valid(self, form):
         """After the form is valid lets let people know"""
 
         ret = super(HookCreate, self).form_valid(form)
 
         # Good to make note of that
-        messages.add_message(self.request, messages.SUCCESS, 'Hook %s created' % self.object.name)
+        messages.add_message(self.request, messages.SUCCESS, 'Hook %s created' % self.object.url)
 
         return ret
 
@@ -84,10 +92,10 @@ class HookUpdate(MultipleGroupRequiredMixin, UpdateView):
     Update a project
     """
     group_required = ['Admin', 'Deployer', ]
-    model = models.Project
+    model = models.Hook
     form_class = forms.HookUpdateForm
     template_name_suffix = '_update'
-    success_url = reverse_lazy('projects_project_list')
+    # success_url = reverse_lazy('projects_project_list')
 
 
 class HookDelete(MultipleGroupRequiredMixin, DeleteView):
@@ -98,9 +106,9 @@ class HookDelete(MultipleGroupRequiredMixin, DeleteView):
     model = models.Hook
 
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.date_deleted = datetime.datetime.now()
-        self.object.save()
 
-        messages.add_message(request, messages.WARNING, 'Project {} Successfully Deleted'.format(self.object))
-        return HttpResponseRedirect(reverse('projects_project_list'))
+        self.success_url = self.get_object().get_absolute_url()
+
+        messages.add_message(request, messages.WARNING, 'Hook Successfully Deleted')
+
+        return super(HookDelete, self).delete(request, *args, **kwargs)

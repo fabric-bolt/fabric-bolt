@@ -22,7 +22,8 @@ from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
 from fabric_bolt.projects.util import get_fabric_tasks, build_command, get_task_details
-
+from fabric_bolt.web_hooks.tables import HookTable
+from fabric_bolt.web_hooks.models import Hook
 
 from .signals import deployment_finished
 from django.dispatch import receiver
@@ -107,6 +108,10 @@ class ProjectDetail(DetailView):
         deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
         context['deployment_table'] = deployment_table
+
+        hook_table = HookTable(Hook.objects.filter(project=self.object))
+        RequestConfig(self.request).configure(hook_table)
+        context['hook_table'] = hook_table
 
         return context
 
