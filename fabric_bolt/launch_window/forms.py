@@ -9,6 +9,10 @@ from fabric_bolt.launch_window import models
 
 class LaunchWindowCreateForm(forms.ModelForm):
 
+    class Meta:
+        model = models.LaunchWindow
+        fields = ['name', 'description', 'cron_format']
+
     # Form Layout
     helper = FormHelper()
     helper.form_class = 'form-horizontal'
@@ -22,9 +26,6 @@ class LaunchWindowCreateForm(forms.ModelForm):
             Submit('save', 'Save', css_class="button"),
         )
     )
-
-    class Meta:
-        model = models.LaunchWindow
 
 
 class LaunchWindowUpdateForm(LaunchWindowCreateForm):

@@ -5,8 +5,6 @@ from setuptools import setup, find_packages
 setup_requires = []
 
 install_requires = [
-    'django>=1.6.5,<1.7',
-    'south>=0.8.4,<0.9',
     'pillow>=2.5.1,<2.6',
     'django-stronghold>=0.2.6,<0.3',
     'django-crispy-forms>=1.4.0,<1.5',
@@ -15,11 +13,11 @@ install_requires = [
     'django-braces>=1.4,<1.5',
     'django-sekizai>=0.7,<0.8',
     'django-grappelli>=2.5.1,<2.6',
-    'fabric>=1.9,<1.10',
+    'fabric>=1.9.1,<1.10',
     'logan>=0.5.10,<0.6',
     'GitPython',
     'django-bootstrap-form>=3.1,<3.2',
-    'croniter==0.3.4',
+    'croniter>=0.3.5,<0.4',
     'gevent-socketio>=0.3.6,<0.4',
     'virtualenv>=1.11.6,<1.12',
 ]
@@ -67,4 +65,5 @@ setup(
         'Framework :: Django',
         'Programming Language :: Python'
     ],
+    dependency_links = ['https://www.djangoproject.com/download/1.7c2/tarball/']
 )
