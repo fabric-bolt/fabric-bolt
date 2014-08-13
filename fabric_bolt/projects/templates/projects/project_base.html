@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load activeurl %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+        {% block project_breadcrumb_links %}
+            <li class="active">{{ project.name }}</li>
+        {% endblock project_breadcrumb_links %}
+    </ol>
+{% endblock breadcrumb %}
+
+{% block sidebar %}
+    <div class="col-md-3" style="margin-top: 25px;">
+        {% activeurl menu="no" %}
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="{% url 'projects_project_view' project.pk %}">Dashboard</a></li>
+                <li><a href="{% url 'projects_configuration_list' project.pk %}">Configuration</a></li>
+                <li><a href="{% url 'projects_stage_list' project.pk %}">Stages</a></li>
+                <li><a href="{% url 'projects_deployment_list' project.pk %}">Deployments</a></li>
+            </ul>
+        {% endactiveurl %}
+    </div>
+{% endblock %}

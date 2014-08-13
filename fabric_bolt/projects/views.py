@@ -24,18 +24,20 @@ from fabric_bolt.projects import forms, tables, models
 from fabric_bolt.projects.util import get_fabric_tasks, build_command, get_task_details
 
 
-class BaseGetProjectCreateView(CreateView):
+class ProjectSubPageMixin(object):
     """
-    Reusable class for create views that need the project pulled in
+    View mixin which adds self.project on the view, and {project} in the template.
+    assumes project_id is defined in url.
     """
 
     def dispatch(self, request, *args, **kwargs):
+        self.project = get_object_or_404(models.Project, id=kwargs['project_id'])
+        return super(ProjectSubPageMixin, self).dispatch(request, *args, **kwargs)
 
-        # Lets set the project so we can use it later
-        project_id = kwargs.get('project_id')
-        self.project = models.Project.objects.get(pk=project_id)
-
-        return super(BaseGetProjectCreateView, self).dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(ProjectSubPageMixin, self).get_context_data(**kwargs)
+        context['project'] = self.project
+        return context
 
 
 class ProjectList(SingleTableView):
@@ -84,16 +86,8 @@ class ProjectDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectDetail, self).get_context_data(**kwargs)
 
-        configuration_table = tables.ConfigurationTable(self.object.project_configurations(), prefix='config_')
-        RequestConfig(self.request).configure(configuration_table)
-        context['configurations'] = configuration_table
-
         stages = self.object.get_stages().annotate(deployment_count=Count('deployment'))
         context['stages'] = stages
-
-        stage_table = tables.StageTable(stages, prefix='stage_')
-        RequestConfig(self.request).configure(stage_table)
-        context['stage_table'] = stage_table
 
         deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
@@ -129,7 +123,19 @@ class ProjectDelete(MultipleGroupRequiredMixin, DeleteView):
         return HttpResponseRedirect(reverse('projects_project_list'))
 
 
-class ProjectConfigurationCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
+class ProjectConfigurationList(ProjectSubPageMixin, SingleTableView):
+    """
+    Project Configuration List page
+    """
+
+    table_class = tables.ConfigurationTable
+    model = models.Configuration
+
+    def get_queryset(self):
+        return self.project.project_configurations()
+
+
+class ProjectConfigurationCreate(MultipleGroupRequiredMixin, ProjectSubPageMixin, CreateView):
     """
     Create a Project Configuration. These are used to set the Fabric env object for a task.
     """
@@ -164,7 +170,7 @@ class ProjectConfigurationCreate(MultipleGroupRequiredMixin, BaseGetProjectCreat
         return success_url
 
 
-class ProjectConfigurationUpdate(MultipleGroupRequiredMixin, UpdateView):
+class ProjectConfigurationUpdate(MultipleGroupRequiredMixin, ProjectSubPageMixin, UpdateView):
     """
     Update a Project Configuration
     """
@@ -174,7 +180,7 @@ class ProjectConfigurationUpdate(MultipleGroupRequiredMixin, UpdateView):
     form_class = forms.ConfigurationUpdateForm
 
 
-class ProjectConfigurationDelete(MultipleGroupRequiredMixin, DeleteView):
+class ProjectConfigurationDelete(MultipleGroupRequiredMixin, ProjectSubPageMixin, DeleteView):
     """
     Delete a project configuration from a project
     """
@@ -207,6 +213,18 @@ class ProjectConfigurationDelete(MultipleGroupRequiredMixin, DeleteView):
         return super(ProjectConfigurationDelete, self).delete(self, request, *args, **kwargs)
 
 
+class ProjectDeploymentList(ProjectSubPageMixin, SingleTableView):
+    """
+    Project Deployment List page
+    """
+
+    table_class = tables.DeploymentTable
+    model = models.Deployment
+
+    def get_queryset(self):
+        return models.Deployment.objects.filter(stage__project=self.project).select_related('stage', 'task')
+
+
 class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
     """
     Form to create a new Deployment for a Project Stage. POST will kick off the DeploymentOutputStream view.
@@ -217,7 +235,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         #save the stage for later
-        self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
+        self.stage = get_object_or_404(models.Stage, pk=int(kwargs['stage_id']))
 
         task_details = get_task_details(self.stage.project, self.kwargs['task_name'])
 
@@ -381,7 +399,19 @@ class DeploymentOutputStream(View):
         return resp
 
 
-class ProjectStageCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
+class ProjectStageList(ProjectSubPageMixin, SingleTableView):
+    """
+    Project Stage List page
+    """
+
+    table_class = tables.StageTable
+    model = models.Stage
+
+    def get_queryset(self):
+        return self.project.get_stages().annotate(deployment_count=Count('deployment'))
+
+
+class ProjectStageCreate(MultipleGroupRequiredMixin, ProjectSubPageMixin, CreateView):
     """
     Create/Add a Stage to a Project
     """
@@ -403,7 +433,7 @@ class ProjectStageCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
         return super(ProjectStageCreate, self).form_valid(form)
 
 
-class ProjectStageUpdate(MultipleGroupRequiredMixin, UpdateView):
+class ProjectStageUpdate(MultipleGroupRequiredMixin, ProjectSubPageMixin, UpdateView):
     """
     Project Stage Update form
     """
@@ -413,7 +443,7 @@ class ProjectStageUpdate(MultipleGroupRequiredMixin, UpdateView):
     form_class = forms.StageUpdateForm
 
 
-class ProjectStageView(DetailView):
+class ProjectStageView(ProjectSubPageMixin, DetailView):
     """
     Display the details on a project stage: List Hosts, Configurations, and Tasks available to run
     """
@@ -446,7 +476,7 @@ class ProjectStageView(DetailView):
         return context
 
 
-class ProjectStageTasksAjax(DetailView):
+class ProjectStageTasksAjax(ProjectSubPageMixin, DetailView):
     model = models.Stage
     template_name = 'projects/stage_tasks_snippet.html'
 
@@ -464,12 +494,15 @@ class ProjectStageTasksAjax(DetailView):
         return context
 
 
-class ProjectStageDelete(MultipleGroupRequiredMixin, DeleteView):
+class ProjectStageDelete(MultipleGroupRequiredMixin, ProjectSubPageMixin, DeleteView):
     """
     Delete a project stage
     """
     group_required = ['Admin', ]
     model = models.Stage
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProjectStageDelete, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()

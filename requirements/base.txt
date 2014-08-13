@@ -1,4 +1,4 @@
-django>=1.6.5,<1.7
+django==1.6.5
 south>=0.8.4,<0.9
 pillow>=2.5.1,<2.6
 django-stronghold>=0.2.6,<0.3
@@ -14,3 +14,5 @@ croniter==0.3.4
 GitPython
 gevent-socketio>=0.3.6,<0.4
 virtualenv>=1.11.6,<1.12
+django-graphos==0.0.2a0
+django-activeurl>=0.1.8,<0.2

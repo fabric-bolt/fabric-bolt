@@ -22,6 +22,8 @@ install_requires = [
     'croniter==0.3.4',
     'gevent-socketio>=0.3.6,<0.4',
     'virtualenv>=1.11.6,<1.12',
+    'django-graphos==0.0.2a0',
+    'django-activeurl>=0.1.8,<0.2',
 ]
 
 dev_requires = [

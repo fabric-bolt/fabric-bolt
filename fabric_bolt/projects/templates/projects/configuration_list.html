@@ -1,0 +1,22 @@
+{% extends 'projects/project_base.html' %}
+{% load crispy_forms_tags %}
+{% load sekizai_tags %}
+{% load render_table from django_tables2 %}
+
+{% block project_breadcrumb_links %}
+    <li><a href="{% url 'projects_project_view' project.pk %}">{{ project.name }}</a></li>
+    <li class="active">Configurations</li>
+{% endblock project_breadcrumb_links %}
+
+{% block content %}
+
+    <h1>Project Configuration
+        <i class="glyphicon glyphicon-info-sign small" data-toggle="tooltip" data-delay="{ 'show': 300, 'hide': 0 }"
+                           data-original-title="Configurations added here will be added to fab's env variable"></i>
+        <a href="{% url 'projects_configuration_create' project.pk %}" class="btn btn-default btn-sm pull-right">
+            <i class="glyphicon glyphicon-plus-sign"></i> Add Configuration
+        </a>
+    </h1><br/>
+    {% render_table table %}
+
+{% endblock content %}

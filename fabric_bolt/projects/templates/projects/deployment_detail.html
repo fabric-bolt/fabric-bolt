@@ -55,7 +55,7 @@
     <div class="well">
         {% block output %}
             {% if object.status == object.PENDING %}
-                <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
+                <iframe src="{% url 'projects_deployment_output' object.stage.project_id object.stage_id object.pk %}" id="deployment_output"></iframe>
             {% else %}
                 <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
             {% endif %}

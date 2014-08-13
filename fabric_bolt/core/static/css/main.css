@@ -1,3 +1,6 @@
+body {
+  padding-top: 70px;
+}
 #deployment_output {
   width: 100%;
   background: black;

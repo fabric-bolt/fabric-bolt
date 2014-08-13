@@ -37,14 +37,25 @@ class ConfigurationTable(PaginateTable):
 
     Also provides actions to edit and delete"""
 
-    actions = ActionsColumn([
-        {'title': '<i class="glyphicon glyphicon-pencil"></i>', 'url': 'projects_configuration_update', 'args': [tables.A('pk')],
-         'attrs':{'data-toggle': 'tooltip', 'title': 'Edit Configuration', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-        {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_configuration_delete', 'args': [tables.A('pk')],
-         'attrs':{'data-toggle': 'tooltip', 'title': 'Delete Configuration', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-    ], delimiter='&#160;&#160;&#160;')
+    actions = ActionsColumn(
+        [
+            {
+                'title': '<i class="glyphicon glyphicon-pencil"></i>',
+                'url': 'projects_configuration_update',
+                'args': [tables.A('project_id'), tables.A('pk')],
+                'attrs': {'data-toggle': 'tooltip', 'title': 'Edit Configuration', 'data-delay': '{ "show": 300, "hide": 0 }'}
+            },
+            {
+                'title': '<i class="glyphicon glyphicon-trash"></i>',
+                'url': 'projects_configuration_delete',
+                'args': [tables.A('project_id'), tables.A('pk')],
+                'attrs':{'data-toggle': 'tooltip', 'title': 'Delete Configuration', 'data-delay': '{ "show": 300, "hide": 0 }'}
+            },
+        ],
+        delimiter='&#160;&#160;&#160;'
+    )
 
-    key = tables.LinkColumn('projects_configuration_update', kwargs={'pk': tables.A('pk')})
+    key = tables.LinkColumn('projects_configuration_update', kwargs={'project_id': tables.A('project_id'), 'pk': tables.A('pk')})
     value = tables.Column(accessor='get_display_value', orderable=False)
 
     # Clean up the labels a little
@@ -97,10 +108,17 @@ class DeploymentTable(PaginateTable):
 
     Also provides actions to view individual deployment"""
 
-    actions = ActionsColumn([
-        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_deployment_detail', 'args': [tables.A('pk')],
-         'attrs':{'data-toggle': 'tooltip', 'title': 'View Deployment Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-    ], delimiter='&#160;&#160;&#160;')
+    actions = ActionsColumn(
+        [
+            {
+                'title': '<i class="glyphicon glyphicon-file"></i>',
+                'url': 'projects_deployment_detail',
+                'args': [tables.A('stage.project_id'), tables.A('stage_id'), tables.A('pk')],
+                'attrs': {'data-toggle': 'tooltip', 'title': 'View Deployment Details', 'data-delay': '{ "show": 300, "hide": 0 }'}
+            },
+        ],
+        delimiter='&#160;&#160;&#160;'
+    )
 
     task_name = tables.Column(accessor='task.name', verbose_name='Task')
 

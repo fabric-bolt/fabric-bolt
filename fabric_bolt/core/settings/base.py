@@ -169,6 +169,8 @@ INSTALLED_APPS = (
     'stronghold',
     'django_tables2',
     'bootstrapform',
+    'graphos',
+    'django_activeurl',
 
     # Project
     'fabric_bolt.accounts',

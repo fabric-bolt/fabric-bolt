@@ -1,5 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'projects/project_base.html' %}
 {% load crispy_forms_tags %}
+
+{% block project_breadcrumb_links %}
+    <li><a href="{% url 'projects_project_view' project.pk %}">{{ project.name }}</a></li>
+    <li><a href="{% url 'projects_stage_list' project.pk %}">Stages</a></li>
+    <li><a href="{% url 'projects_stage_view' project.pk object.pk %}">{{ object.name }}</a></li>
+    <li class="active">Update</li>
+{% endblock project_breadcrumb_links %}
 
 {% block content %}
     <h1>Stage Update</h1>
