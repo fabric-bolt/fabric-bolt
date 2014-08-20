@@ -1,17 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'projects/stage_base.html' %}
 {% load humanize %}
 {% load sekizai_tags %}
 {% load staticfiles %}
 
-
-{% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
-        <li><a href="{% url 'projects_project_view' object.stage.project.pk %}">{{ object.stage.project.name }}</a></li>
-        <li><a href="{% url 'projects_stage_view' object.stage.project.pk object.stage.pk %}">{{ object.stage.name }}</a></li>
-        <li class="active">Deployment started {{ object.date_created|naturaltime }}</li>
-    </ol>
-{% endblock breadcrumb %}
+{% block stage_breadcrumb_links %}
+    <li><a href="{% url 'projects_stage_view' stage.project.pk stage.pk %}">{{ stage.name }}</a></li>
+    <li class="active">Deployment started {{ object.date_created|naturaltime }}</li>
+{% endblock stage_breadcrumb_links %}
 
 {% block content %}
     <h1>Deployment started {{ object.date_created|naturaltime }}</h1><br/>

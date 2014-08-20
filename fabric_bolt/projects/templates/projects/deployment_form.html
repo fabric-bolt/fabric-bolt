@@ -1,14 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'projects/stage_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
-        <li><a href="{% url 'projects_project_view' stage.project.pk %}">{{ stage.project.name }}</a></li>
-        <li><a href="{% url 'projects_stage_view' stage.project.pk stage.pk %}">{{ stage.name }}</a></li>
-        <li class="active">New Deployment</li>
-    </ol>
-{% endblock breadcrumb %}
+
+{% block stage_breadcrumb_links %}
+    <li><a href="{% url 'projects_stage_view' stage.project.pk stage.pk %}">{{ stage.name }}</a></li>
+    <li class="active">New Deployment</li>
+{% endblock stage_breadcrumb_links %}
 
 {% block content %}
     <h1>Deploy</h1><br/>

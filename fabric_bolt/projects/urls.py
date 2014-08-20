@@ -29,6 +29,9 @@ urlpatterns = patterns('',
     url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/update/$', views.ProjectStageUpdate.as_view(), name='projects_stage_update'),
     url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/get-tasks-ajax/$', views.ProjectStageTasksAjax.as_view(), name='projects_stage_tasks_ajax'),
     url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/delete/$', views.ProjectStageDelete.as_view(), name='projects_stage_delete'),
-    url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/host/(?P<host_id>\w+)/map/$', views.ProjectStageMapHost.as_view(), name='projects_stage_maphost'),
-    url(r'^(?P<project_id>\w+)/stage/(?P<pk>\w+)/host/(?P<host_id>\w+)/unmap/$', views.ProjectStageUnmapHost.as_view(), name='projects_stage_unmaphost'),
+
+    url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\w+)/configuration/$', views.StageConfigurationList.as_view(), name='projects_stage_configuration_list'),
+    url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\w+)/deployment/$', views.StageDeploymentList.as_view(), name='projects_stage_deployment_list'),
+    url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\w+)/host/(?P<host_id>\w+)/map/$', views.ProjectStageMapHost.as_view(), name='projects_stage_maphost'),
+    url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\w+)/host/(?P<host_id>\w+)/unmap/$', views.ProjectStageUnmapHost.as_view(), name='projects_stage_unmaphost'),
 )

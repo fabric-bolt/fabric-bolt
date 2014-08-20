@@ -1,15 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'projects/stage_base.html' %}
 {% load render_table from django_tables2 %}
 {% load sekizai_tags staticfiles %}
-
-{% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
-        <li><a href="{% url 'projects_project_view' object.project.pk %}">{{ object.project.name }}</a></li>
-        <li><a href="{% url 'projects_project_view' object.project.pk %}">Stages</a></li>
-        <li class="active">{{ object.name }}</li>
-    </ol>
-{% endblock breadcrumb %}
 
 {% block content %}
 
@@ -72,50 +63,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>
-                        Stage Configuration
-                        <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{'show': 300, 'hide': 0 }"
-                            data-original-title="Configurations added here will be added to fab's env variable and will override whatever is in the project configuration."></i>
-                    </h4>
-                </div>
-
-                <div class="panel-body">
-                    {% render_table configurations %}
-                </div>
-
-                <div class="panel-footer">
-                    <a class="btn btn-default btn-sm" href="{% url 'projects_configuration_stage_create' object.project.pk object.pk %}">
-                        <i class="glyphicon glyphicon-plus-sign"></i>
-                        Add Stage Configuration
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h4>
-                        Recent Deployments
-                        <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{ 'show': 300, 'hide': 0 }"
-                           data-original-title="See what was shipped out when, and the status of each attempt."></i>
-                    </h4>
-                </div>
-
-                <div class="panel-body">
-                    {% render_table deployment_table %}
-                </div>
-
             </div>
         </div>
     </div>
