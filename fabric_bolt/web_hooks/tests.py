@@ -128,8 +128,16 @@ class BasicTests(TestCase):
         result = c.get(reverse('hooks_hook_delete', args=(self.project_hook.pk,)))
         self.assertIn(result.status_code, [200, 302])
 
+    def test_web_hooks(self):
+
+        self.assertEqual(2, self.project.web_hooks.count())
+
     def test_global_web_hooks(self):
-        raise Exception
+        global_hooks = hook_models.Hook.objects.filter(project=None)
+
+        self.assertEqual(1, global_hooks.count())
 
     def test_project_web_hooks(self):
-        raise Exception
+        project_hooks = hook_models.Hook.objects.filter(project=self.project)
+
+        self.assertEqual(1, project_hooks.count())
