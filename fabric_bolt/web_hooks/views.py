@@ -60,32 +60,6 @@ class HookDetail(DetailView):
 
     model = models.Hook
 
-    def dispatch(self, request, *args, **kwargs):
-        # if request.user.user_is_historian():
-        #     self.template_name = "projects/historian_detail.html"
-
-        return super(HookDetail, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(HookDetail, self).get_context_data(**kwargs)
-
-        configuration_table = tables.ConfigurationTable(self.object.project_configurations(), prefix='config_')
-        RequestConfig(self.request).configure(configuration_table)
-        context['configurations'] = configuration_table
-
-        stages = self.object.get_stages().annotate(deployment_count=Count('deployment'))
-        context['stages'] = stages
-
-        stage_table = tables.StageTable(stages, prefix='stage_')
-        RequestConfig(self.request).configure(stage_table)
-        context['stage_table'] = stage_table
-
-        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
-        RequestConfig(self.request).configure(deployment_table)
-        context['deployment_table'] = deployment_table
-
-        return context
-
 
 class HookUpdate(MultipleGroupRequiredMixin, UpdateView):
     """

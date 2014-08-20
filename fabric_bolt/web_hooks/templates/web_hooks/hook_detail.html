@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 style="margin-bottom:30px;">Host {{ object }}
+        <span class="pull-right">
+            <a class="btn btn-primary" href="{% url 'hooks_hook_update' object.pk %}">Edit Hook</a>
+            <a class="btn btn-danger" href="{% url 'hooks_hook_delete' object.pk %}">Delete Hook</a>
+        </span>
+    </h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well">
+                <dl class="dl-horizontal">
+                    <dt>Hook</dt>
+                    <dd>{% if object.alias %}{{ object.alias }}{% else %}{{ object }}{% endif %}</dd>
+                </dl>
+            </div>
+        </div>
+
+    </div>
+{% endblock content %}
