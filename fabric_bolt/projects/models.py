@@ -50,6 +50,12 @@ class Project(TrackingFields):
 
         return reverse('projects_project_view', args=(self.pk,))
 
+    @property
+    def web_hooks(self):
+        from fabric_bolt.web_hooks.models import Hook
+
+        return Hook.objects.filter(project=self)
+
     def get_deployment_count(self):
         """Utility function to get the number of deployments a given project has"""
 
@@ -79,6 +85,10 @@ class Stage(TrackingFields):
         """Stages are show on a project page so that's where we're sending you to see them"""
 
         return self.project.get_absolute_url()
+
+    @property
+    def web_hooks(self):
+        return self.project.web_hooks
 
     def get_queryset_configurations(self, **kwargs):
         """
@@ -267,6 +277,11 @@ class Deployment(TrackingFields):
 
     def __unicode__(self):
         return u'Deployment at {} status: {}'.format(self.date_created, self.get_status_display())
+
+    @property
+    def web_hooks(self):
+        return self.stage.web_hooks
+
 
 
 class Task(models.Model):

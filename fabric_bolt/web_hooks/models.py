@@ -27,3 +27,5 @@ class Hook(TrackingFields):
             return reverse('index')
 
         return reverse('projects_project_view', args=(self.project.pk,))
+
+import receivers

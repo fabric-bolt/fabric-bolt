@@ -21,6 +21,5 @@ class HookTable(PaginateTable):
         model = models.Hook
         attrs = {"class": "table table-striped"}
         sequence = fields = (
-            'project',
             'url',
         )
