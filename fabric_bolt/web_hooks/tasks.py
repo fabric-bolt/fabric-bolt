@@ -39,6 +39,7 @@ class DeliverHook(Task):
 
         # would be nice to log this, at least for a little while...
 
+
 def deliver_hook_wrapper(target, payload, instance=None, hook=None, **kwargs):
     if hook:
         kwargs['hook_id'] = hook.id
