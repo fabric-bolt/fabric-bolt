@@ -1,7 +1,6 @@
 from django.dispatch import receiver
-from django.core import serializers
 
-from fabric_bolt.web_hooks.utils import deliver_hook
+from fabric_bolt.web_hooks.utils import deliver_hook, payload_generator
 from fabric_bolt.projects.signals import deployment_finished
 from fabric_bolt.projects.models import Deployment
 
@@ -19,6 +18,6 @@ def web_hook_receiver(sender, **kwargs):
 
     for hook in hooks:
 
-        data = serializers.serialize('json', [deployment])
+        data = payload_generator(deployment)
 
         deliver_hook(deployment, hook.url, data)

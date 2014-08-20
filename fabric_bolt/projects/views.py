@@ -102,7 +102,7 @@ class ProjectDetail(DetailView):
         RequestConfig(self.request).configure(deployment_table)
         context['deployment_table'] = deployment_table
 
-        hook_table = HookTable(self.object.web_hooks)
+        hook_table = HookTable(self.object.web_hooks(False))
         RequestConfig(self.request).configure(hook_table)
         context['hook_table'] = hook_table
 

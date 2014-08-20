@@ -14,13 +14,13 @@ import json
 
 from django.conf import settings
 from django.core import serializers
+from django.core.urlresolvers import reverse
 
 if getattr(settings, 'HOOK_THREADING', True):
     from .client import Client
     client = Client()
 else:
     client = requests
-
 
 def get_module(path):
     """
@@ -85,3 +85,39 @@ def deliver_hook(instance, target, payload_override=None):
         )
 
     return None
+
+
+def get_payload(deployment):
+
+    return {
+        "event_name": "deployment_create",
+        "id": deployment.pk,
+
+        "url": reverse('projects_deployment_detail', args=(deployment.pk,)),
+        "status": deployment.status,
+        "task": {
+            "name": deployment.task.name
+        },
+        "date_deleted": '',
+        "date_update": '',
+        "comments": deployment.comments,
+        "user": {
+            "id": deployment.user.pk,
+            "name": '{} {}'.format(deployment.user.first_name, deployment.user.last_name),
+            "email": deployment.user.email
+        },
+        "output": deployment.output,
+        "date_created": '',
+        "configuration": '',
+        "stage": {
+            "id": deployment.stage.pk,
+            "name": deployment.stage.name,
+            "url": reverse('projects_stage_view', args=(deployment.stage.project.pk, deployment.stage.pk))
+        }
+    }
+
+
+if getattr(settings, 'DEPLOYMENT_FINISHED_PAYLOAD_GENERATOR', False):
+    payload_generator = settings.DEPLOYMENT_FINISHED_PAYLOAD_GENERATOR
+else:
+    payload_generator = get_payload

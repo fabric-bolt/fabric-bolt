@@ -1,3 +1,5 @@
+import operator
+
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
 from django.db import models
@@ -51,12 +53,17 @@ class Project(TrackingFields):
 
         return reverse('projects_project_view', args=(self.pk,))
 
-    @property
-    def web_hooks(self):
+    def web_hooks(self, include_global=True):
         """Get all web hooks for this project. Includes global hooks."""
         from fabric_bolt.web_hooks.models import Hook
+        ors = [Q(project=self)]
 
-        return Hook.objects.filter(Q(project=self) | Q(project=None))
+        if include_global:
+            ors.append(Q(project=None))
+
+        hooks = Hook.objects.filter(reduce(operator.or_, ors))
+
+        return hooks
 
     def get_deployment_count(self):
         """Utility function to get the number of deployments a given project has"""
@@ -92,7 +99,7 @@ class Stage(TrackingFields):
     def web_hooks(self):
         """Get web hooks from the project"""
 
-        return self.project.web_hooks
+        return self.project.web_hooks()
 
     def get_queryset_configurations(self, **kwargs):
         """
@@ -287,7 +294,6 @@ class Deployment(TrackingFields):
         """Get web hooks from the stage"""
 
         return self.stage.web_hooks
-
 
 
 class Task(models.Model):

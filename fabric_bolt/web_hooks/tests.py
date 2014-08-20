@@ -130,7 +130,7 @@ class BasicTests(TestCase):
 
     def test_web_hooks(self):
 
-        self.assertEqual(2, self.project.web_hooks.count())
+        self.assertEqual(2, self.project.web_hooks().count())
 
     def test_global_web_hooks(self):
         global_hooks = hook_models.Hook.objects.filter(project=None)
