@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 
 from fabric_bolt.core.mixins.models import TrackingFields
@@ -52,9 +53,10 @@ class Project(TrackingFields):
 
     @property
     def web_hooks(self):
+        """Get all web hooks for this project. Includes global hooks."""
         from fabric_bolt.web_hooks.models import Hook
 
-        return Hook.objects.filter(project=self)
+        return Hook.objects.filter(Q(project=self) | Q(project=None))
 
     def get_deployment_count(self):
         """Utility function to get the number of deployments a given project has"""
@@ -88,6 +90,8 @@ class Stage(TrackingFields):
 
     @property
     def web_hooks(self):
+        """Get web hooks from the project"""
+
         return self.project.web_hooks
 
     def get_queryset_configurations(self, **kwargs):
@@ -280,6 +284,8 @@ class Deployment(TrackingFields):
 
     @property
     def web_hooks(self):
+        """Get web hooks from the stage"""
+
         return self.stage.web_hooks
 
 
