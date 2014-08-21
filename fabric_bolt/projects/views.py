@@ -22,6 +22,9 @@ from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
 from fabric_bolt.projects.util import get_fabric_tasks, build_command, get_task_details
+from fabric_bolt.web_hooks.tables import HookTable
+
+from fabric_bolt.projects.signals import deployment_finished
 
 
 class BaseGetProjectCreateView(CreateView):
@@ -98,6 +101,10 @@ class ProjectDetail(DetailView):
         deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
         context['deployment_table'] = deployment_table
+
+        hook_table = HookTable(self.object.web_hooks(False))
+        RequestConfig(self.request).configure(hook_table)
+        context['hook_table'] = hook_table
 
         return context
 
@@ -319,6 +326,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
+
         return reverse('projects_deployment_detail', kwargs={'pk': self.object.pk})
 
 
@@ -369,6 +377,8 @@ class DeploymentOutputStream(View):
 
             self.object.output = all_output
             self.object.save()
+
+            deployment_finished.send(self.object, deployment_id=self.object.pk)
 
         except Exception as e:
             message = "An error occurred: " + e.message
