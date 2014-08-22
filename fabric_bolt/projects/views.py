@@ -135,6 +135,7 @@ class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
             new_stage.id = None
             new_stage.project=self.object
             new_stage.save()
+            new_stage.hosts = stage.hosts.all()
             self.copy_configurations(stages=[stage, new_stage])
 
 
