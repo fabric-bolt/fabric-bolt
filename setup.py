@@ -23,6 +23,7 @@ install_requires = [
     'gevent-socketio>=0.3.6,<0.4',
     'virtualenv>=1.11.6,<1.12',
     'requests',
+    'django-authtools>=1.0.0',
 ]
 
 dev_requires = [

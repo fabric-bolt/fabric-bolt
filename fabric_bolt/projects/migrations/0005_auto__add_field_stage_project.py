@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Stage.project'
         db.add_column(u'projects_stage', 'project',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['projects.Project']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project']),
                       keep_default=False)
 
 
