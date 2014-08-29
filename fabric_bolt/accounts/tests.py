@@ -96,3 +96,11 @@ class ModelsTest(TestCase):
         user = mommy.make(DeployUser, email='email@example.com')
 
         self.assertEqual(user.gravatar(30), 'http://www.gravatar.com/avatar/5658ffccee7f0ebfda2b226238b1eb6e?s=30&d=mm')
+
+    def test_createsuperuser(self):
+        user = DeployUser.objects.create_superuser(email='test@test.com', password='password')
+        self.assertTrue(user.user_is_admin())
+
+    def test_createuser(self):
+        user = DeployUser.objects.create_user(email='test@test.com', password='password')
+        self.assertTrue(user.user_is_historian())
