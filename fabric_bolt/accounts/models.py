@@ -10,6 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from authtools.models import AbstractEmailUser
 
+from .managers import DeployUserManager
+
 
 class DeployUser(AbstractEmailUser):
     """
@@ -53,6 +55,8 @@ class DeployUser(AbstractEmailUser):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     template = models.CharField(max_length=255, blank=True, choices=TEMPLATES, default=YETI)
+
+    objects = DeployUserManager()
 
     def __unicode__(self):
         return u'{} {}'.format(self.first_name, self.last_name)
