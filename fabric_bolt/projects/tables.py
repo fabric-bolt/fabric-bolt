@@ -17,6 +17,8 @@ class ProjectTable(PaginateTable):
          'attrs':{'data-toggle': 'tooltip', 'title': 'Edit Project', 'data-delay': '{ "show": 300, "hide": 0 }'}},
         {'title': '<i class="glyphicon glyphicon-trash"></i>', 'url': 'projects_project_delete', 'args': [tables.A('pk')],
          'attrs':{'data-toggle': 'tooltip', 'title': 'Delete Project', 'data-delay': '{ "show": 300, "hide": 0 }'}},
+        {'title': '<i class="glyphicon glyphicon-tags"></i>', 'url': 'projects_project_copy', 'args': [tables.A('pk')],
+         'attrs':{'data-toggle': 'tooltip', 'title': 'Copy Project', 'data-delay': '{ "show": 300, "hide": 0 }'}},
     ], delimiter='&#160;&#160;&#160;')
 
     name = tables.LinkColumn('projects_project_view', kwargs={'pk': tables.A('pk')})
