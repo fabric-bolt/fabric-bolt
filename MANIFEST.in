@@ -8,3 +8,6 @@ recursive-include fabric_bolt/projects/static *
 recursive-include fabric_bolt/core/fixtures *
 recursive-include fabric_bolt/core/static *
 recursive-include fabric_bolt/core/templates *
+
+recursive-include fabric_bolt/web_hooks/static *
+recursive-include fabric_bolt/web_hooks/templates *
