@@ -17,7 +17,6 @@ class UserChangeAdminFrom(UserChangeForm):
     def __init__(self, *args, **kwargs):
         kwargs.update(user_is_admin=True)
         super(UserChangeAdminFrom, self).__init__(*args, **kwargs)
-        self.fields['user_level'].required = False
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -52,6 +51,10 @@ class DeployUserAdmin(UserAdmin):
     search_fields = ('email', 'first_name', 'last_name', )
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions',)
+
+    def save_model(self, request, obj, form, change):
+        super(DeployUserAdmin, self).save_model(request, obj, form, change)
+        form.set_permissions(obj)
 
 # Register the new DeployUserAdmin
 admin.site.register(DeployUser, DeployUserAdmin)
