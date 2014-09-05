@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url(r'^$', views.ProjectList.as_view(), name='projects_project_list'),
 
     url(r'^create/$', views.ProjectCreate.as_view(), name='projects_project_create'),
+    url(r'^copy/(?P<pk>\w+)/$', views.ProjectCopy.as_view(), name='projects_project_copy'),
     url(r'^view/(?P<pk>\w+)/$', views.ProjectDetail.as_view(), name='projects_project_view'),
     url(r'^update/(?P<pk>\w+)/$', views.ProjectUpdate.as_view(), name='projects_project_update'),
     url(r'^delete/(?P<pk>\w+)/$', views.ProjectDelete.as_view(), name='projects_project_delete'),

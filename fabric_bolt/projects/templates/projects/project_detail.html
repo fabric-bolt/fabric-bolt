@@ -106,6 +106,31 @@
 
     <div class="row">
         <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>
+                        Project Hooks
+                        <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-delay="{ 'show': 300, 'hide': 0 }"
+                           data-original-title="Hooks allow you to specify a URL to be notified when a deployment is run"></i>
+                    </h4>
+                </div>
+
+                <div class="panel-body">
+                    {% render_table hook_table %}
+                </div>
+
+                <div class="panel-footer">
+                    <a class="btn btn-default btn-sm" href="{% url 'hooks_hook_create_with_project' object.pk %}">
+                        <i class="glyphicon glyphicon-plus-sign"></i>
+                        Add Hook
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h4>

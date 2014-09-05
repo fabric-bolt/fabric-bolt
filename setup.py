@@ -20,6 +20,8 @@ install_requires = [
     'croniter>=0.3.5,<0.4',
     'gevent-socketio>=0.3.6,<0.4',
     'virtualenv>=1.11.6,<1.12',
+    'requests',
+    'django-authtools>=1.0.0',
 ]
 
 dev_requires = [
@@ -65,5 +67,4 @@ setup(
         'Framework :: Django',
         'Programming Language :: Python'
     ],
-    dependency_links = ['https://www.djangoproject.com/download/1.7c2/tarball/']
 )

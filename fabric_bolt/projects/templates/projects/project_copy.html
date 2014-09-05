@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+        <li class="active">Add Project</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <h1>Copy Project</h1>
+
+    {% crispy form %}
+
+{% endblock %}
