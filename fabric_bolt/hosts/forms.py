@@ -8,6 +8,7 @@ from fabric_bolt.hosts import models
 class HostCreateForm(forms.ModelForm):
     class Meta:
         model = models.Host
+        fields = ['name', 'alias']
 
     helper = FormHelper()
     helper.form_class = 'form-horizontal'
