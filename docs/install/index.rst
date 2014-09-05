@@ -32,7 +32,7 @@ get Fabric Bolt running. Otherwise skip this and use the detailed directions bel
 
 4. Migrate db::
 
-    fabric-bolt syncdb --migrate
+    fabric-bolt migrate
 
 5. Run::
 
@@ -158,23 +158,20 @@ the first time you'll need to make sure you've created the database:
     # If you're using Postgres, and kept the database ``NAME`` as ``fabric-bolt``
     $ createdb -E utf-8 fabric-bolt
 
-Once done, you can create the initial schema using the ``syncdb --migrate`` command:
+Once done, you can create the initial schema using the ``migrate`` command:
 
 .. code-block:: bash
 
-    $ fabric-bolt syncdb --migrate
+    $ fabric-bolt migrate
 
-**It's very important that you create the default superuser through the syncdb process. If you do not, there is
-a good chance you'll see issues in your initial install.**
-
-If you did not create the user on the first run, you can correct this by doing the following:
+Next, create a super user by doing the following:
 
 .. code-block:: bash
 
     # create a new user
     $ fabric-bolt --config=/etc/fabric-bolt/settings.py createsuperuser
 
-All schema changes and database upgrades are handled via the ``syncdb --migrate`` command, and this is the first
+All schema changes and database upgrades are handled via the ``migrate`` command, and this is the first
 thing you'll want to run when upgrading to future versions of Fabric Bolt.
 
 .. note:: Internally, this uses `South <http://south.aeracode.org>`_ to manage database migrations.

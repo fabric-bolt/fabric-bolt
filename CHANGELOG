@@ -10,3 +10,4 @@ v 0.1 (in development)
   - Using virtualenv to run project fabfiles
   - Added task argument support!
   - Fabric task lists are now cached per project. Invalidate the cache on the project detail page.
+  - Upgraded to django 1.7. IMPORTANT: run fabric-bolt migrate.

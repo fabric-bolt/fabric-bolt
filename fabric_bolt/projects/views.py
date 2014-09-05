@@ -5,6 +5,7 @@ Views for the Projects App
 import datetime
 import subprocess
 import sys
+from copy import deepcopy
 
 from django.http import HttpResponseRedirect, StreamingHttpResponse
 from django.db.models.aggregates import Count
@@ -22,6 +23,8 @@ from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
 from fabric_bolt.projects.util import get_fabric_tasks, build_command, get_task_details
+from fabric_bolt.web_hooks.tables import HookTable
+from fabric_bolt.projects.signals import deployment_finished
 
 
 class ProjectSubPageMixin(object):
@@ -87,6 +90,88 @@ class ProjectCreate(MultipleGroupRequiredMixin, CreateView):
 
         return ret
 
+class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
+    """
+    Copy project
+    """
+    group_required = ['Admin', 'Deployer', ]
+    model = models.Project
+    form_class = forms.ProjectCreateForm
+    template_name_suffix = '_copy'
+    copy_object = None
+
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        initial = super(ProjectCopy, self).get_initial()
+        if self.copy_object:
+            initial.update({'name': '%s copy' % self.copy_object.name,
+                            'type_id': self.copy_object.type_id,
+                            'description': self.copy_object.description,
+                            'use_repo_fabfile': self.copy_object.use_repo_fabfile,
+                            'fabfile_requirements': self.copy_object.fabfile_requirements,
+                            'repo_url': self.copy_object.repo_url})
+        return initial
+
+    def get(self, request, *args, **kwargs):
+        self.copy_object = self.get_object()
+        return super(ProjectCopy, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.copy_object = self.get_object()
+        return super(ProjectCopy, self).post(request, *args, **kwargs)
+
+    def copy_relations(self):
+        """"
+        Copy relations objects:  Configuration, Stages
+        """
+        if self.copy_object:
+            # copy project configurations
+            self.copy_configurations()
+            # copy stages
+            self.copy_stages()
+
+    def copy_configurations(self, stages=None):
+        """
+        Copy configuretions
+        """
+        if stages:
+            confs = stages[0].stage_configurations()
+            new_stage = stages[1]
+        else:
+            confs = self.copy_object.project_configurations()
+            new_stage = None
+
+        for conf in confs:
+            new_conf = deepcopy(conf)
+            new_conf.id = None
+            new_conf.project = self.object
+            new_conf.stage = new_stage
+            new_conf.save()
+
+
+    def copy_stages(self):
+        stages = self.copy_object.get_stages()
+        for stage in stages:
+            new_stage = deepcopy(stage)
+            new_stage.id = None
+            new_stage.project=self.object
+            new_stage.save()
+            new_stage.hosts = stage.hosts.all()
+            self.copy_configurations(stages=[stage, new_stage])
+
+
+    def form_valid(self, form):
+        """After the form is valid lets let people know"""
+
+        ret = super(ProjectCopy, self).form_valid(form)
+        self.copy_relations()
+
+        # Good to make note of that
+        messages.add_message(self.request, messages.SUCCESS, 'Project %s copied' % self.object.name)
+
+        return ret
 
 class ProjectDetail(DetailView):
     """
@@ -110,6 +195,10 @@ class ProjectDetail(DetailView):
         deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
         context['deployment_table'] = deployment_table
+
+        hook_table = HookTable(self.object.web_hooks(False))
+        RequestConfig(self.request).configure(hook_table)
+        context['hook_table'] = hook_table
 
         return context
 
@@ -408,6 +497,8 @@ class DeploymentOutputStream(StageSubPageMixin, View):
 
             self.object.output = all_output
             self.object.save()
+
+            deployment_finished.send(self.object, deployment_id=self.object.pk)
 
         except Exception as e:
             message = "An error occurred: " + e.message

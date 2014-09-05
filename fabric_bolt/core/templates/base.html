@@ -55,6 +55,19 @@
                                     <br/><a href="{% url 'accounts_user_add' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add User</a>
                                 </div>
                             </div>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Hooks</div>
+                                <div class="panel-body">
+                                    {% for hook in system_hooks %}
+                                        <a href="{% url 'hooks_hook_update' hook.pk %}">{{ hook }}</a><br/>
+                                    {% empty %}
+                                        No Hooks<br/>
+                                    {% endfor %}
+                                    <br/><a href="{% url 'hooks_hook_create' %}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus-sign"></i> Add Hook</a>
+                                </div>
+                            </div>
+
                         {% endif %}
 
                     {% endif %}
