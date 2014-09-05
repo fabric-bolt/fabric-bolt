@@ -14,7 +14,7 @@ class UserChangeForm(forms.ModelForm):
     """
     A form for updating users.
     """
-    user_level = forms.ChoiceField(label='User Level')
+    user_level = forms.ModelChoiceField(queryset=Group.objects.all())
     is_active = forms.ChoiceField(choices=((True, 'Active'), (False, 'Disabled')), label='Status')
 
     class Meta:
@@ -40,8 +40,6 @@ class UserChangeForm(forms.ModelForm):
 
         super(UserChangeForm, self).__init__(*args, **kwargs)
 
-        self.fields['user_level'].choices = Group.objects.all().values_list()
-
         if not user_is_admin:
             self.fields.pop('user_level', None)
             self.fields.pop('is_active', None)
@@ -57,18 +55,19 @@ class UserChangeForm(forms.ModelForm):
         instance = super(UserChangeForm, self).save(commit=commit)
 
         if commit:
-            instance.save()
-
-            # Assign user to selected group
-            if self.cleaned_data.get('user_level', False):
-                instance.groups.clear()
-                instance.groups.add(Group.objects.get(id=self.cleaned_data['user_level']))
-
-            # Set staff status based on user group
-            instance.is_staff = instance.user_is_admin()
-            instance.save()
+            self.set_permissions(instance)
 
         return instance
+
+    def set_permissions(self, instance):
+        # Assign user to selected group
+        if self.cleaned_data.get('user_level', False):
+            instance.groups.clear()
+            instance.groups.add(self.cleaned_data['user_level'])
+
+        # Set staff status based on user group
+        instance.is_staff = instance.user_is_admin()
+        instance.save()
 
 
 class UserCreationForm(UserChangeForm):
