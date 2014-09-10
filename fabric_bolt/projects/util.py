@@ -220,16 +220,11 @@ def build_command(deployment, session, abort_on_prompts=True):
 
     task_details = get_task_details(deployment.stage.project, deployment.task.name)
 
-    task_args = list(set(task_args + task_details[2]))
+    task_args = list(set(task_args + [x[0] if isinstance(x, tuple) else x for x in task_details[2]]))
 
     if task_args:
         key_value_strings = []
-        for key_ in task_args:
-            if isinstance(key_, tuple):
-                key = key_[0]
-            else:
-                key = key_
-
+        for key in task_args:
             if key in configs:
                 value = unicode(configs[key].get_value())
             elif key in arg_values:
