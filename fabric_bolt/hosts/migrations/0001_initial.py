@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
             name='Host',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(help_text=b'DNS name or IP address', max_length=255, validators=[fabric_bolt.hosts.models.SchemelessURLValidator()])),
-                ('alias', models.CharField(blank=True, max_length=255, null=True, help_text=b'Human readable value (optional)', validators=[fabric_bolt.hosts.models.SchemelessURLValidator()])),
+                ('name', models.CharField(help_text=b'DNS name or IP address', max_length=255, validators=[fabric_bolt.hosts.models.full_domain_validator])),
+                ('alias', models.CharField(blank=True, max_length=255, null=True, help_text=b'Human readable value (optional)')),
             ],
             options={
             },
