@@ -37,7 +37,6 @@ class Host(models.Model):
         null=True,
         max_length=255,
         help_text='Human readable value (optional)',
-        validators=[full_domain_validator]
     )
 
     def __unicode__(self):
