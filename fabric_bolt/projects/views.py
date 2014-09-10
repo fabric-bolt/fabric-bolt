@@ -321,7 +321,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
 
     def get_form(self, form_class):
 
-        stage_configurations = self.stage.get_queryset_configurations(prompt_me_for_input=True)
+        stage_configurations = self.stage.get_queryset_configurations()
 
         form = form_class(**self.get_form_kwargs())
 
@@ -330,6 +330,11 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
         # We want to inject fields into the form for the configurations they've marked as prompt
         for config in stage_configurations:
             if config.task_argument and config.task_name != self.task_name:
+                continue
+
+            if not config.prompt_me_for_input:
+                if config.task_argument:
+                    used_arg_names.append(config.key)
                 continue
 
             str_config_key = 'configuration_value_for_{}'.format(config.key)
@@ -348,6 +353,8 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
                 if config.task_argument:
                     used_arg_names.append(config.key)
                     field.label = 'Argument value for ' + config.key
+
+            field.initial = config.value
 
             form.fields[str_config_key] = field
             form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
