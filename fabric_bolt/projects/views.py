@@ -343,7 +343,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
                 field = CharField()
 
                 if config.sensitive_value:
-                    field.widget = PasswordInput
+                    field.widget = PasswordInput()
 
                 if config.task_argument:
                     used_arg_names.append(config.key)
