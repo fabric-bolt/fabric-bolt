@@ -16,7 +16,7 @@ logs are stored so that you know who, what, where, when, and why something was d
 
 Documentation found at http://fabric-bolt.readthedocs.org/en/latest/
 
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.18%20PM.png
+.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202014-09-11%20at%202.14.30%20PM.png
 
 Quickstart
 ----------
