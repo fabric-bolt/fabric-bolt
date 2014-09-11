@@ -372,10 +372,15 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
 
             str_config_key = 'configuration_value_for_{}'.format(name)
 
-            field = CharField(label='Argument value for ' + name, initial=default)
+            if not config.prompt_me_for_input:
+                if config.task_argument:
+                    used_arg_names.append(config.key)
+                continue
 
-            form.fields[str_config_key] = field
-            form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
+                field = CharField(label='Argument value for ' + name, initial=default)
+
+                form.fields[str_config_key] = field
+                form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
 
         return form
 
