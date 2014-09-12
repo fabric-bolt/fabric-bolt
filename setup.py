@@ -13,6 +13,7 @@ install_requires = [
     'django-tables2>=0.15.0,<0.16',
     'django-braces>=1.4,<1.5',
     'django-sekizai>=0.7,<0.8',
+    'django-grappelli==2.6.1',
     'fabric>=1.10.0,<1.11',
     'logan>=0.5.10,<0.6',
     'django-bootstrap-form>=3.1,<3.2',
