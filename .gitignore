@@ -63,3 +63,9 @@ worthwhile_fabfile.py
 core.db
 .repo_caches
 .django_cache
+
+# Distribution / packaging
+###############################
+build/
+dist/
+*.egg-info/
