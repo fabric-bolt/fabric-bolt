@@ -7,6 +7,8 @@ class DeployUserManager(UserManager):
         user = super(DeployUserManager, self).create_user(email, password, **kwargs)
 
         try:
+            # make sure there are no groups defined already.
+            user.groups.clear()
             # just set as lowest level since we're not sure what you want.
             user.groups.add(Group.objects.get(name='Historian'))
         except Group.DoesNotExist:
@@ -19,6 +21,8 @@ class DeployUserManager(UserManager):
         user = super(DeployUserManager, self).create_superuser(**kwargs)
 
         try:
+            # make sure there are no groups defined already.
+            user.groups.clear()
             # Grab the admin group and assign it.
             user.groups.add(Group.objects.get(name='Admin'))
         except Group.DoesNotExist:

@@ -100,7 +100,11 @@ class ModelsTest(TestCase):
     def test_createsuperuser(self):
         user = DeployUser.objects.create_superuser(email='test@test.com', password='password')
         self.assertTrue(user.user_is_admin())
+        self.assertFalse(user.user_is_deployer())
+        self.assertFalse(user.user_is_historian())
 
     def test_createuser(self):
         user = DeployUser.objects.create_user(email='test@test.com', password='password')
         self.assertTrue(user.user_is_historian())
+        self.assertFalse(user.user_is_deployer())
+        self.assertFalse(user.user_is_admin())
