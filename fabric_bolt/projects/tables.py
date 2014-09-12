@@ -29,7 +29,6 @@ class ProjectTable(PaginateTable):
         attrs = {"class": "table table-striped"}
         sequence = fields = (
             'name',
-            'type',
             'deployments',
         )
 
