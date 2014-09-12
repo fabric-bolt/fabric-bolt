@@ -37,16 +37,9 @@ class BasicTests(TestCase):
         self._create_project()
 
     def _create_project(self):
-
-        # Bare bones project type
-        project_type = models.ProjectType()
-        project_type.name = 'Django'
-        self.project_type = project_type.save()
-
         # Bare bones project
         project = models.Project()
         project.name = 'TEST_PROJECT'
-        project.type = project_type
         project.description = 'TEST_DESCRIPTION'
 
         project.save()

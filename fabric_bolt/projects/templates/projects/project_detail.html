@@ -24,7 +24,6 @@
                 <div>
                     Description: {{ object.description }}
                 </div>
-                <div>Project Type: {{ object.type }}</div>
                 <div>Deployments: {{ object.get_deployment_count }}</div>
                 <div><a href="{% url 'projects_project_invalidate_cache' object.pk %}">Invalidate tasks cache</a></div>
             </div>

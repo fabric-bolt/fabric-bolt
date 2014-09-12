@@ -87,7 +87,6 @@ class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
         initial = super(ProjectCopy, self).get_initial()
         if self.copy_object:
             initial.update({'name': '%s copy' % self.copy_object.name,
-                            'type_id': self.copy_object.type_id,
                             'description': self.copy_object.description,
                             'use_repo_fabfile': self.copy_object.use_repo_fabfile,
                             'fabfile_requirements': self.copy_object.fabfile_requirements,
