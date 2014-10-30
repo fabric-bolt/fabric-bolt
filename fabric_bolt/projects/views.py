@@ -247,7 +247,8 @@ class ProjectConfigurationCreate(MultipleGroupRequiredMixin, BaseGetProjectCreat
         success_url = super(ProjectConfigurationCreate, self).get_success_url()
 
         if self.object.stage:
-            success_url = reverse('projects_stage_view', args=(self.object.pk, self.object.stage.pk))
+            success_url = reverse('projects_stage_view', args=(self.object.project.id, self.object.stage.pk))
+
 
         return success_url
 
