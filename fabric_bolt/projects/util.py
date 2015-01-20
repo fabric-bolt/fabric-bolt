@@ -38,6 +38,12 @@ def update_project_git(project, cache_dir, repo_dir):
         )
 
 
+def setup_link_env_if_needed(repo_dir):
+    env_dir = os.path.join(repo_dir, 'env')
+    if not os.path.exists(env_dir):
+        os.symlink(os.environ.get('VIRTUAL_ENV'), env_dir)
+
+
 def setup_virtual_env_if_needed(repo_dir):
     env_dir = os.path.join(repo_dir, 'env')
     if not os.path.exists(env_dir):
@@ -63,7 +69,10 @@ def get_fabfile_path(project):
         repo_dir = os.path.join(cache_dir, slugify(project.name))
 
         update_project_git(project, cache_dir, repo_dir)
-        setup_virtual_env_if_needed(repo_dir)
+        if project.link_repo_env:
+            setup_link_env_if_needed(repo_dir)
+        else:
+            setup_virtual_env_if_needed(repo_dir)
         activate_loc = os.path.join(repo_dir, 'env', 'bin', 'activate')
 
         update_project_requirements(project, repo_dir, activate_loc)

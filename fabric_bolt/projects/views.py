@@ -89,6 +89,7 @@ class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
             initial.update({'name': '%s copy' % self.copy_object.name,
                             'description': self.copy_object.description,
                             'use_repo_fabfile': self.copy_object.use_repo_fabfile,
+                            'link_repo_env': self.copy_object.link_repo_env,
                             'fabfile_requirements': self.copy_object.fabfile_requirements,
                             'repo_url': self.copy_object.repo_url})
         return initial

@@ -20,6 +20,8 @@ class Project(TrackingFields):
 
     use_repo_fabfile = models.BooleanField(default=False, verbose_name='Use repo\'s fabfile?',
                                            help_text='If no, use the default fabfile.')
+    link_repo_env = models.BooleanField(default=False, verbose_name='Link repo\'s environment?',
+                                           help_text='If no, create a new virtual environment.')
     repo_url = models.CharField(max_length=200, null=True, blank=True, help_text='Currently only git repos are supported.')
     fabfile_requirements = models.TextField(null=True, blank=True, help_text='Pip requirements to install for fabfile. '
                                                                              'Enter one requirement per line.')
