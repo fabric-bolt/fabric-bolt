@@ -7,14 +7,24 @@
   color: #c8c8c8;
   padding: 20px;
   cursor: text;
+  overflow: auto;
 }
-#deployment_output pre {
-  width: 100%;
-  height: 100%;
-  background: none;
-  border: none;
-  color: #c8c8c8;
-  overflow-y: scroll;
+.output {
+  color:white;
   font-size: 14px;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.output li {
+  list-style:none;
+  background-image:none;
+  background-repeat:none;
+  background-position:0; 
+}
+.outputred {
+  color:red !important;
+  padding-left:0;
+}
+.outputgreen {
+  color:green !important;
+  padding-left:0;
 }
