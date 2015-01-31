@@ -57,7 +57,7 @@
             {% if object.status == object.PENDING %}
                 <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
             {% else %}
-                <div id="deployment_output"><ul class="output">{{ object.output|safe }}</ul></div>
+                <div id="deployment_output"><div class="outputcontainer"><ul class="output">{{ object.output|safe }}</ul></div></div>
             {% endif %}
         {% endblock %}
     </div>

@@ -7,7 +7,16 @@
   color: #c8c8c8;
   padding: 20px;
   cursor: text;
-  overflow: auto;
+}
+#deployment_output .outputcontainer {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  color: #c8c8c8;
+  overflow-y: scroll;
+  font-size: 14px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .output {
   color:white;
