@@ -4,7 +4,7 @@ Fabric Bolt
 .. image:: https://travis-ci.org/worthwhile/fabric-bolt.png?branch=master
         :target: https://travis-ci.org/worthwhile/fabric-bolt
 
-.. image:: https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_69.svg
+.. image:: https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_68.svg
         :target: https://coveralls.io/r/worthwhile/fabric-bolt?branch=master
 
 | **tl;dr**
