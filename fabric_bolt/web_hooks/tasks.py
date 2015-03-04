@@ -12,11 +12,15 @@
 import requests
 import json
 
-from celery.task import Task
+try:
+    from celery.task import Task
+except ImportError:
+    class Task(object):
+        pass
 
 from django.core.serializers.json import DjangoJSONEncoder
 
-from rest_hooks.models import Hook
+from fabric_bolt.web_hooks.models import Hook
 
 
 class DeliverHook(Task):
@@ -27,6 +31,10 @@ class DeliverHook(Task):
         instance:   a possibly null "trigger" instance
         hook:       the defining Hook object (useful for removing)
         """
+        self.post_data(target, payload, hook_id)
+
+    def post_data(self, target, payload, hook_id=None):
+
         response = requests.post(
             url=target,
             data=json.dumps(payload, cls=DjangoJSONEncoder),
@@ -34,10 +42,10 @@ class DeliverHook(Task):
         )
 
         if response.status_code == 410 and hook_id:
-            hook = Hook.object.get(id=hook_id)
+            hook = Hook.objects.get(pk=hook_id)
             hook.delete()
 
-        # would be nice to log this, at least for a little while...
+        return response
 
 
 def deliver_hook_wrapper(target, payload, instance=None, hook=None, **kwargs):

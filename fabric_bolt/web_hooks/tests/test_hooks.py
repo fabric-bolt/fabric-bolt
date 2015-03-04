@@ -13,11 +13,14 @@ from model_mommy import mommy
 
 from fabric_bolt.projects import models
 from fabric_bolt.web_hooks import models as hook_models
+from fabric_bolt.web_hooks.tasks import DeliverHook
+
+import mock
 
 User = get_user_model()
 
 
-class BasicTests(TestCase):
+class TestHooks(TestCase):
 
     project_type = None
     project = None
@@ -96,31 +99,6 @@ class BasicTests(TestCase):
 
         self.project = project
 
-    def test_create_url(self):
-        c = self.client
-        result = c.get(reverse('hooks_hook_create'))
-        self.assertIn(result.status_code, [200, 302])
-
-    def test_hook_with_project_url(self):
-        c = self.client
-        result = c.get(reverse('hooks_hook_create_with_project', args=(self.project.pk,)))
-        self.assertIn(result.status_code, [200, 302])
-
-    def test_hook_view(self):
-        c = self.client
-        result = c.get(reverse('hooks_hook_view', args=(self.project_hook.pk,)))
-        self.assertIn(result.status_code, [200, 302])
-
-    def test_hook_update(self):
-        c = self.client
-        result = c.get(reverse('hooks_hook_update', args=(self.project_hook.pk,)))
-        self.assertIn(result.status_code, [200, 302])
-
-    def test_hook_delete(self):
-        c = self.client
-        result = c.get(reverse('hooks_hook_delete', args=(self.project_hook.pk,)))
-        self.assertIn(result.status_code, [200, 302])
-
     def test_web_hooks(self):
 
         self.assertEqual(2, self.project.web_hooks().count())
@@ -134,3 +112,49 @@ class BasicTests(TestCase):
         project_hooks = hook_models.Hook.objects.filter(project=self.project)
 
         self.assertEqual(1, project_hooks.count())
+
+    def test_task_post_data(self):
+
+        d = DeliverHook()
+        ret = d.post_data('http://www.example.com', {'junk': 'payload'})
+
+        self.assertEqual(ret.status_code, 200)
+
+    @mock.patch('fabric_bolt.web_hooks.tasks.requests')
+    def test_task_delete_hook(self, mock_requests):
+
+        # post_data deletes hooks when the status code is 410
+        mock_requests.post.return_value.status_code = 410
+
+        h = hook_models.Hook()
+        h.url = 'http://example.com/project/delete/me/'
+        h.project = self.project
+        h.save()
+
+        hook_id = h.pk
+
+        d = DeliverHook()
+        ret = d.post_data('http://example.com/api/123', {'junk': 'payload'}, hook_id)
+
+        def look_up_error(hook_id):
+            hook_models.Hook.objects.get(pk=hook_id)
+
+        self.assertRaises(hook_models.Hook.DoesNotExist, look_up_error, hook_id)
+
+    @mock.patch('fabric_bolt.web_hooks.tasks.requests')
+    def test_task_delete_hook(self, mock_requests):
+
+        # post_data deletes hooks when the status code is 410
+        mock_requests.post.return_value.status_code = 410
+
+        h = hook_models.Hook()
+        h.url = 'http://example.com/project/delete/me/'
+        h.project = self.project
+        h.save()
+
+        d = DeliverHook()
+
+        # We're testing we don't have hook deleted, since we're not passing in the hook id
+        ret = d.post_data('http://example.com/api/123', {'junk': 'payload'})
+
+        hook_models.Hook.objects.get(pk=h.pk)

@@ -48,7 +48,7 @@ def get_module(path):
     return func
 
 
-def serialize_hook(self, instance):
+def serialize_hook(instance):
     """
     Serialize the object down to Python primitives.
 
@@ -62,7 +62,7 @@ def serialize_hook(self, instance):
         return serializer(instance, hook=self)
     # if no user defined serializers, fallback to the django builtin!
     return {
-        'hook': self.dict(),
+        'hook': instance.dict(),
         'data': serializers.serialize('python', [instance])[0]
     }
 
