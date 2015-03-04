@@ -56,10 +56,10 @@ def serialize_hook(instance):
     """
 
     if getattr(instance, 'serialize_hook', None) and callable(instance.serialize_hook):
-        return instance.serialize_hook(hook=self)
+        return instance.serialize_hook(hook=instance)
     if getattr(settings, 'HOOK_SERIALIZER', None):
         serializer = get_module(settings.HOOK_SERIALIZER)
-        return serializer(instance, hook=self)
+        return serializer(instance, hook=instance)
     # if no user defined serializers, fallback to the django builtin!
     return {
         'hook': instance.dict(),
