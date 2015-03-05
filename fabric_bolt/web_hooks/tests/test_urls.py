@@ -77,3 +77,23 @@ class TestURLS(TestCase):
         c = self.client
         result = c.get(reverse('hooks_hook_delete', args=(self.project_hook.pk,)))
         self.assertIn(result.status_code, [200, 302])
+
+    def test_hook_reverse(self):
+        h = hook_models.Hook()
+        h.url = 'http://www.example.com'
+
+        self.assertEqual(reverse('index'), h.get_absolute_url())
+
+    def test_hook_reverse_with_project(self):
+        h = hook_models.Hook()
+        h.url = 'http://www.example.com'
+        h.project = self.project
+
+        self.assertEqual(reverse('projects_project_view', args=(self.project.pk,)), h.get_absolute_url())
+
+    def test_hook_objects_manager(self):
+
+        hooks = hook_models.Hook.objects.hooks(self.project)
+
+        self.assertIn(self.project_hook, hooks)
+

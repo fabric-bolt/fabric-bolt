@@ -105,9 +105,15 @@ class TestHooks(TestCase):
 
         self.assertEqual(self.project.pk, p.pk)
 
+    def test_hook_create_form_clean_project_none(self):
+        hook_form = forms.HookCreateForm(data={'project': self.project.pk, 'url': 'http://www.example.com'})
+
+        hook_form.cleaned_data = { 'project': None}
+        p = hook_form.clean_project()
+
+        self.assertEqual(p, None)
+
     def test_hook_update_form(self):
         hook_form = forms.HookUpdateForm(instance=self.project, data={'project': self.project.pk, 'url': 'http://www.example.com'})
-        if hook_form.is_valid():
-            hook_form.save()
-        else:
-            raise Exception('Form Not Valid')
+        hook_form.is_valid()
+        hook_form.save()

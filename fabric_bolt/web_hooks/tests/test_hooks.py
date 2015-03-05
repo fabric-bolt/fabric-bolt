@@ -6,6 +6,7 @@ Replace this with more appropriate tests for your application.
 """
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 
@@ -121,7 +122,7 @@ class TestHooks(TestCase):
         self.assertEqual(ret.status_code, 200)
 
     @mock.patch('fabric_bolt.web_hooks.tasks.requests')
-    def test_task_delete_hook(self, mock_requests):
+    def test_task_delete_hook_410(self, mock_requests):
 
         # post_data deletes hooks when the status code is 410
         mock_requests.post.return_value.status_code = 410
@@ -158,3 +159,12 @@ class TestHooks(TestCase):
         ret = d.post_data('http://example.com/api/123', {'junk': 'payload'})
 
         hook_models.Hook.objects.get(pk=h.pk)
+
+    # @override_settings(CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
+    #                    CELERY_ALWAYS_EAGER=True,
+    #                    BROKER_BACKEND='memory')
+    # def test_task_wrapper(self):
+    #     from fabric_bolt.web_hooks.tasks import deliver_hook_wrapper
+    #
+    #     deliver_hook_wrapper('http://www.example.com', {'dummy': 'payload'})
+
