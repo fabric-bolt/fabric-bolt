@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group
 
 from model_mommy import mommy
 
-from .models import DeployUser
+from fabric_bolt.accounts.models import DeployUser
 
 
 class ModelsTest(TestCase):
