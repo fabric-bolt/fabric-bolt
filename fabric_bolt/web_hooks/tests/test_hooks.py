@@ -114,7 +114,10 @@ class TestHooks(TestCase):
 
         self.assertEqual(1, project_hooks.count())
 
-    def test_task_post_data(self):
+    @mock.patch('fabric_bolt.web_hooks.tasks.requests')
+    def test_task_post_data(self, mock_requests):
+
+        mock_requests.post.return_value.status_code = 200
 
         d = DeliverHook()
         ret = d.post_data('http://www.example.com', {'junk': 'payload'})
