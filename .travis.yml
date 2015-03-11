@@ -16,7 +16,7 @@ install:
   - pip install django-celery==3.1.16
 before_script:
   - psql -c 'create database fabric_bolt_test;' -U postgres
-   - python manage.py migrate --noinput
+  - python manage.py migrate --noinput
 script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
     - coverage run --source=. fabric_bolt/manage.py test --settings=fabric_bolt.core.settings.test
