@@ -1,17 +1,25 @@
 language: python
 python:
- - "2.7"
-
+  - "2.7"
+services:
+  - postgresql
+env:
+  - DATABASE_URL='postgres://postgres:@localhost:5432/fabric_bolt_test' SECRET_KEY='tT\xd7\xb06\xf7\x9b\xff\x0fZL\xca\xca\x11\xefM\xacr\xfb\xdf\xca\x9b'
 notifications:
-    email: false
-
+  email: false
+addons:
+  postgresql: "9.3"
 install:
-    - pip install -r requirements/local.txt
-    - pip install coveralls
-
+  - pip install -r requirements/local.txt
+  - pip install coveralls
+  - pip install celery==3.1.17
+  - pip install django-celery==3.1.16
+before_script:
+  - psql -c 'create database fabric_bolt_test;' -U postgres
+   - python manage.py migrate --noinput
 script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
-    - coverage run --source=. --omit=*/migrations/* fabric_bolt/manage.py test --settings=fabric_bolt.core.settings.test
+    - coverage run --source=. fabric_bolt/manage.py test --settings=fabric_bolt.core.settings.test
 
 after_success:
     - coveralls

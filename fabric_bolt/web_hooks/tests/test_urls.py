@@ -17,7 +17,7 @@ from fabric_bolt.web_hooks import models as hook_models
 User = get_user_model()
 
 
-class BasicTests(TestCase):
+class TestURLS(TestCase):
 
     project_type = None
     project = None
@@ -44,54 +44,11 @@ class BasicTests(TestCase):
 
         project.save()
 
-        # Bare bones stage
-        stage = models.Stage()
-        stage.project = project
-        stage.name = 'Production'
-        stage.save()
-
-        self.stage = stage
-
-        # Bare bones configuration
-        configuration = models.Configuration()
-        configuration.project = project
-        configuration.stage = stage
-        configuration.key = 'KEY'
-        configuration.value = 'VALUE'
-        configuration.prompt_me_for_input = True
-        configuration.save()
-
-        self.configuration = configuration
-
-        # Bare bones task
-        task = models.Task()
-        task.name = 'TASK_NAME'
-        task.save()
-
-        self.task = task
-
-        # Bare bones deployment
-        deployment = models.Deployment()
-        deployment.user = self.user
-        deployment.stage = stage
-        deployment.comments = 'COMMENTS'
-        deployment.output = 'OUTPUT'
-        deployment.task = task
-        deployment.save()
-
-        # Setup Hook
-        hook = hook_models.Hook()
-        hook.url = 'http://example.com'
-        hook.save()
-
         project_hook = hook_models.Hook()
         project_hook.url = 'http://example.com/project/hook/'
         project_hook.project = project
         project_hook.save()
 
-        self.deployment = deployment
-
-        self.hook = hook
         self.project_hook = project_hook
 
         self.project = project
@@ -121,16 +78,22 @@ class BasicTests(TestCase):
         result = c.get(reverse('hooks_hook_delete', args=(self.project_hook.pk,)))
         self.assertIn(result.status_code, [200, 302])
 
-    def test_web_hooks(self):
+    def test_hook_reverse(self):
+        h = hook_models.Hook()
+        h.url = 'http://www.example.com'
 
-        self.assertEqual(2, self.project.web_hooks().count())
+        self.assertEqual(reverse('index'), h.get_absolute_url())
 
-    def test_global_web_hooks(self):
-        global_hooks = hook_models.Hook.objects.filter(project=None)
+    def test_hook_reverse_with_project(self):
+        h = hook_models.Hook()
+        h.url = 'http://www.example.com'
+        h.project = self.project
 
-        self.assertEqual(1, global_hooks.count())
+        self.assertEqual(reverse('projects_project_view', args=(self.project.pk,)), h.get_absolute_url())
 
-    def test_project_web_hooks(self):
-        project_hooks = hook_models.Hook.objects.filter(project=self.project)
+    def test_hook_objects_manager(self):
 
-        self.assertEqual(1, project_hooks.count())
+        hooks = hook_models.Hook.objects.hooks(self.project)
+
+        self.assertEqual(self.project_hook, hooks[0])
+
