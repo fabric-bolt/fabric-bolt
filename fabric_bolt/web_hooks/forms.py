@@ -7,7 +7,6 @@ from crispy_forms.layout import Layout, ButtonHolder, Submit, HTML
 from fabric_bolt.web_hooks import models
 
 
-
 class HookCreateForm(forms.ModelForm):
 
     button_prefix = "Create"

@@ -1,7 +1,8 @@
 import re
 
 from django.db import models
-from django.core.validators import URLValidator
+from django.core.validators import URLValidator, ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 class SchemelessURLValidator(URLValidator):
     """Old valitador, keeping to migrations work"""
@@ -12,6 +13,7 @@ class SchemelessURLValidator(URLValidator):
     r'\[?[A-F0-9]*:[A-F0-9:]+\]?)'  # ...or ipv6
     r'(?::\d+)?'  # optional port
     r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+
 
 def full_domain_validator(hostname):
     """
@@ -50,4 +52,4 @@ class Host(models.Model):
     )
 
     def __unicode__(self):
-        return self.alias or self.name
+        return u'{}'.format(self.alias or self.name)
