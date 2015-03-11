@@ -22,6 +22,7 @@ if getattr(settings, 'HOOK_THREADING', True):
 else:
     client = requests
 
+
 def get_module(path):
     """
     A modified duplicate from Django's built in backend
@@ -48,7 +49,7 @@ def get_module(path):
     return func
 
 
-def serialize_hook(self, instance):
+def serialize_hook(instance):
     """
     Serialize the object down to Python primitives.
 
@@ -56,13 +57,13 @@ def serialize_hook(self, instance):
     """
 
     if getattr(instance, 'serialize_hook', None) and callable(instance.serialize_hook):
-        return instance.serialize_hook(hook=self)
+        return instance.serialize_hook(hook=instance)
     if getattr(settings, 'HOOK_SERIALIZER', None):
         serializer = get_module(settings.HOOK_SERIALIZER)
-        return serializer(instance, hook=self)
+        return serializer(instance, hook=instance)
     # if no user defined serializers, fallback to the django builtin!
     return {
-        'hook': self.dict(),
+        'hook': instance.dict(),
         'data': serializers.serialize('python', [instance])[0]
     }
 
@@ -74,7 +75,7 @@ def deliver_hook(instance, target, payload_override=None):
     By default it serializes to JSON and POSTs.
     """
     payload = payload_override or serialize_hook(instance)
-    if getattr(settings, 'HOOK_DELIVERER', None):
+    if hasattr(settings, 'HOOK_DELIVERER'):
         deliverer = get_module(settings.HOOK_DELIVERER)
         deliverer(target, payload, instance=instance)
     else:
@@ -117,7 +118,7 @@ def get_payload(deployment):
     }
 
 
-if getattr(settings, 'DEPLOYMENT_FINISHED_PAYLOAD_GENERATOR', False):
+if hasattr(settings, 'DEPLOYMENT_FINISHED_PAYLOAD_GENERATOR'):
     payload_generator = settings.DEPLOYMENT_FINISHED_PAYLOAD_GENERATOR
 else:
     payload_generator = get_payload

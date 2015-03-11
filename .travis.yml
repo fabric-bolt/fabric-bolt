@@ -8,10 +8,12 @@ notifications:
 install:
     - pip install -r requirements/local.txt
     - pip install coveralls
+    - pip install celery==3.1.17
+    - pip install django-celery==3.1.16
 
 script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
-    - coverage run --source=. --omit=*/migrations/* fabric_bolt/manage.py test --settings=fabric_bolt.core.settings.test
+    - coverage run --source=. fabric_bolt/manage.py test --settings=fabric_bolt.core.settings.test
 
 after_success:
     - coveralls
