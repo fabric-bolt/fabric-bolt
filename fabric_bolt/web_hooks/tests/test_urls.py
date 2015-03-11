@@ -95,5 +95,5 @@ class TestURLS(TestCase):
 
         hooks = hook_models.Hook.objects.hooks(self.project)
 
-        self.assertIn(self.project_hook, hooks)
+        self.assertEqual(self.project_hook, hooks[0])
 
