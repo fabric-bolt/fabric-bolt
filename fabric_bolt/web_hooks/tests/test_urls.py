@@ -91,9 +91,9 @@ class TestURLS(TestCase):
 
         self.assertEqual(reverse('projects_project_view', args=(self.project.pk,)), h.get_absolute_url())
 
-    def test_hook_objects_manager(self):
-
-        hooks = hook_models.Hook.objects.hooks(self.project)
-
-        self.assertEqual(self.project_hook, hooks[0])
+    # def test_hook_objects_manager(self):
+    #
+    #     hooks = hook_models.Hook.objects.hooks(self.project)
+    #
+    #     self.assertEqual(self.project_hook, hooks[0])
 
