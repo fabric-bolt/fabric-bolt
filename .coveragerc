@@ -1,0 +1,16 @@
+# .coveragerc to control coverage.py
+[paths]
+source =
+    /
+
+[run]
+omit =
+    */migrations/*
+    */docs/*
+    setup.py
+    fabric_bolt/core/wsgi.py
+    fabric_bolt/wsgi.py
+    fabric_bolt/fabfile.py
+    fabric_bolt/manage.py
+    fabric_bolt/core/settings/*
+    */tests/*
