@@ -4,9 +4,7 @@ python:
 services:
   - postgresql
 env:
-  - DATABASE_URL='postgres://postgres:@localhost:5432/fabric_bolt_test'
-  - SECRET_KEY='tT\xd7\xb06\xf7\x9b\xff\x0fZL\xca\xca\x11\xefM\xacr\xfb\xdf\xca\x9b'
-  - DJANGO_SETTINGS_MODULE='fabric_bolt.core.settings.test'
+  - DATABASE_URL='postgres://postgres:@localhost:5432/fabric_bolt_test' SECRET_KEY='tT\xd7\xb06\xf7\x9b\xff\x0fZL\xca\xca\x11\xefM\xacr\xfb\xdf\xca\x9b' DJANGO_SETTINGS_MODULE='fabric_bolt.core.settings.test'
 notifications:
   email: false
 addons:
