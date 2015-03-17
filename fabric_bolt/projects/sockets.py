@@ -6,6 +6,8 @@ import time
 import fcntl
 import os
 
+from django.conf import settings
+
 from socketio.namespace import BaseNamespace
 from socketio.mixins import RoomsMixin, BroadcastMixin
 from socketio.sdjango import namespace
@@ -51,7 +53,8 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             build_command(self.deployment, self.request.session, False),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            stdin=subprocess.PIPE
+            stdin=subprocess.PIPE,
+            executable=getattr(settings, 'SHELL', '/bin/sh'),
         )
 
         fd = self.process.stdout.fileno()

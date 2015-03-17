@@ -446,7 +446,8 @@ class DeploymentOutputStream(View):
                 build_command(self.object, self.request.session),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
-                shell=True
+                shell=True,
+                executable=getattr(settings, 'SHELL', '/bin/sh'),
             )
 
             all_output = ''
