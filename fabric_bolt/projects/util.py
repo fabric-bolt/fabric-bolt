@@ -6,8 +6,6 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.core.cache import cache
 
-from virtualenv import create_environment
-
 # These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
 fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',
                           'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
@@ -41,7 +39,7 @@ def setup_virtual_env_if_needed(repo_dir):
     env_dir = os.path.join(repo_dir, 'env')
     if not os.path.exists(env_dir):
         os.makedirs(env_dir)
-        create_environment(env_dir)
+        check_output("virtualenv {}".format(env_dir))
 
 
 def update_project_requirements(project, repo_dir, activate_loc):
