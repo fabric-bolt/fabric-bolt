@@ -4,7 +4,6 @@ import subprocess
 
 from django.utils.text import slugify
 from django.conf import settings
-from django.contrib import messages
 from django.core.cache import cache
 
 from virtualenv import create_environment
