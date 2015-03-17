@@ -40,7 +40,7 @@ def setup_virtual_env_if_needed(repo_dir):
     env_dir = os.path.join(repo_dir, 'env')
     if not os.path.exists(env_dir):
         os.makedirs(env_dir)
-        check_output("virtualenv {}".format(env_dir))
+        check_output("virtualenv {}".format(env_dir), shell=True)
 
 
 def update_project_requirements(project, repo_dir, activate_loc):
