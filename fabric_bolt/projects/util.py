@@ -15,15 +15,15 @@ fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-
                           'command-timeout', 'user', 'warn-only', 'pool-size']
 
 
+def check_output(command):
+    return subprocess.check_output(command, shell=True, executable=getattr(settings, 'SHELL', '/bin/sh'))
+
+
 def check_output_with_ssh_key(command):
     if getattr(settings, 'GIT_SSH_KEY_LOCATION', None):
-        return subprocess.check_output(
-            'ssh-agent bash -c "ssh-add {};{}"'.format(settings.GIT_SSH_KEY_LOCATION, command),
-            shell=True
-        )
+        return check_output('ssh-agent bash -c "ssh-add {};{}"'.format(settings.GIT_SSH_KEY_LOCATION, command))
     else:
-        out = subprocess.check_output([command], shell=True)
-        return out
+        return check_output(command)
 
 
 def update_project_git(project, cache_dir, repo_dir):
