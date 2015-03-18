@@ -4,10 +4,7 @@ import subprocess
 
 from django.utils.text import slugify
 from django.conf import settings
-from django.contrib import messages
 from django.core.cache import cache
-
-from virtualenv import create_environment
 
 # These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
 fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',
@@ -15,15 +12,19 @@ fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-
                           'command-timeout', 'user', 'warn-only', 'pool-size']
 
 
+def check_output(command, shell=False):
+    executable = None
+    if shell:
+        executable = getattr(settings, 'SHELL', '/bin/sh')
+    return subprocess.check_output(command, shell=shell, executable=executable)
+
+
 def check_output_with_ssh_key(command):
     if getattr(settings, 'GIT_SSH_KEY_LOCATION', None):
-        return subprocess.check_output(
-            'ssh-agent bash -c "ssh-add {};{}"'.format(settings.GIT_SSH_KEY_LOCATION, command),
-            shell=True
-        )
+        return check_output('ssh-agent bash -c "ssh-add {};{}"'.format(settings.GIT_SSH_KEY_LOCATION, command),
+                            shell=True)
     else:
-        out = subprocess.check_output([command], shell=True)
-        return out
+        return check_output([command], shell=True)
 
 
 def update_project_git(project, cache_dir, repo_dir):
@@ -42,7 +43,7 @@ def setup_virtual_env_if_needed(repo_dir):
     env_dir = os.path.join(repo_dir, 'env')
     if not os.path.exists(env_dir):
         os.makedirs(env_dir)
-        create_environment(env_dir)
+        check_output("virtualenv {}".format(env_dir), shell=True)
 
 
 def update_project_requirements(project, repo_dir, activate_loc):
@@ -118,21 +119,21 @@ def get_fabric_tasks(project):
         fabfile_path, activate_loc = get_fabfile_path(project)
 
         if activate_loc:
-            output = subprocess.check_output('source {};fab --list --list-format=short --fabfile={}'.format(activate_loc, fabfile_path), shell=True)
+            output = check_output('source {};fab --list --list-format=short --fabfile={}'.format(activate_loc, fabfile_path), shell=True)
         else:
-            output = subprocess.check_output(['fab', '--list', '--list-format=short', '--fabfile={}'.format(fabfile_path)])
+            output = check_output(['fab', '--list', '--list-format=short', '--fabfile={}'.format(fabfile_path)])
 
         lines = output.splitlines()
         tasks = []
         for line in lines:
             name = line.strip()
             if activate_loc:
-                o = subprocess.check_output(
+                o = check_output(
                     'source {};fab --display={} --fabfile={}'.format(activate_loc, name, fabfile_path),
                     shell=True
                 )
             else:
-                o = subprocess.check_output(
+                o = check_output(
                     ['fab', '--display={}'.format(name), '--fabfile={}'.format(fabfile_path)]
                 )
 
