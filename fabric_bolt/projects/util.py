@@ -13,7 +13,10 @@ fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-
 
 
 def check_output(command, shell=False):
-    return subprocess.check_output(command, shell=shell, executable=getattr(settings, 'SHELL', '/bin/sh'))
+    executable = None
+    if shell:
+        executable = getattr(settings, 'SHELL', '/bin/sh')
+    return subprocess.check_output(command, shell=shell, executable=executable)
 
 
 def check_output_with_ssh_key(command):
