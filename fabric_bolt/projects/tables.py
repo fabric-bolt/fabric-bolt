@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django_tables2.columns import LinkColumn
 
 from fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable
 from fabric_bolt.hosts.models import Host
@@ -105,7 +106,15 @@ class DeploymentTable(PaginateTable):
 
     task_name = tables.Column(accessor='task.name', verbose_name='Task')
 
-    #Prettify the status
+    user = LinkColumn('accounts_user_view',
+                      accessor='user.email',
+                      args=[tables.A('pk')],
+                      attrs={'data-toggle': 'tooltip',
+                             'title': 'View user details',
+                             'data-delay': '{ "show": 300, "hide": 0 }'},
+                      verbose_name=('Deployer'))
+
+    # Prettify the status
     status = tables.TemplateColumn('<span style="font-size:13px;" class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}"><i class="glyphicon glyphicon-{% if record.status == "success" %}ok{% elif record.status == "failed" %}warning-sign{% else %}time{% endif %}"></i> &#160;{{ record.get_status_display }}</span>')
 
     class Meta:
@@ -113,10 +122,11 @@ class DeploymentTable(PaginateTable):
         attrs = {"class": "table table-striped"}
         sequence = fields = (
             'date_created',
+            'user',
             'stage',
             'task_name',
             'status',
-            'actions'
+            'actions',
         )
 
 
