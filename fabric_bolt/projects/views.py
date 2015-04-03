@@ -3,11 +3,10 @@ Views for the Projects App
 """
 
 import datetime
-import subprocess
-import sys
+import json
 from copy import deepcopy
 
-from django.http import HttpResponseRedirect, StreamingHttpResponse
+from django.http import HttpResponseRedirect
 from django.db.models.aggregates import Count
 from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, RedirectView, View
@@ -20,11 +19,11 @@ from django.core.cache import cache
 from django_tables2 import RequestConfig, SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
+from fabric_bolt.core.tasks import deploy
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
-from fabric_bolt.projects.util import get_fabric_tasks, build_command, get_task_details
+from fabric_bolt.projects.util import get_fabric_tasks, get_task_details
 from fabric_bolt.web_hooks.tables import HookTable
-from fabric_bolt.projects.signals import deployment_finished
 
 
 class BaseGetProjectCreateView(CreateView):
@@ -33,7 +32,6 @@ class BaseGetProjectCreateView(CreateView):
     """
 
     def dispatch(self, request, *args, **kwargs):
-
         # Lets set the project so we can use it later
         project_id = kwargs.get('project_id')
         self.project = models.Project.objects.get(pk=project_id)
@@ -69,6 +67,7 @@ class ProjectCreate(MultipleGroupRequiredMixin, CreateView):
         messages.add_message(self.request, messages.SUCCESS, 'Project %s created' % self.object.name)
 
         return ret
+
 
 class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
     """
@@ -135,7 +134,7 @@ class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
         for stage in stages:
             new_stage = deepcopy(stage)
             new_stage.id = None
-            new_stage.project=self.object
+            new_stage.project = self.object
             new_stage.save()
             new_stage.hosts = stage.hosts.all()
             self.copy_configurations(stages=[stage, new_stage])
@@ -151,6 +150,7 @@ class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
         messages.add_message(self.request, messages.SUCCESS, 'Project %s copied' % self.object.name)
 
         return ret
+
 
 class ProjectDetail(DetailView):
     """
@@ -179,7 +179,8 @@ class ProjectDetail(DetailView):
         RequestConfig(self.request).configure(stage_table)
         context['stage_table'] = stage_table
 
-        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
+        deployment_table = tables.DeploymentTable(
+            models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
         context['deployment_table'] = deployment_table
 
@@ -249,7 +250,6 @@ class ProjectConfigurationCreate(MultipleGroupRequiredMixin, BaseGetProjectCreat
         if self.object.stage:
             success_url = reverse('projects_stage_view', args=(self.object.project.id, self.object.stage.pk))
 
-
         return success_url
 
 
@@ -276,7 +276,7 @@ class ProjectConfigurationDelete(MultipleGroupRequiredMixin, DeleteView):
 
     def get_success_url(self):
         """Get the url depending on what type of configuration I deleted."""
-        
+
         if self.stage_id:
             url = reverse('projects_stage_view', args=(self.project_id, self.stage_id))
         else:
@@ -305,14 +305,15 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
     form_class = forms.DeploymentForm
 
     def dispatch(self, request, *args, **kwargs):
-        #save the stage for later
+        # save the stage for later
         self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
 
         task_details = get_task_details(self.stage.project, self.kwargs['task_name'])
 
         if task_details is None:
-            messages.error(self.request, '"{}" is not a valid task.'. format(self.kwargs['task_name']))
-            return HttpResponseRedirect(reverse('projects_stage_view', kwargs={'project_id': self.stage.project_id, 'pk': self.stage.pk }))
+            messages.error(self.request, '"{}" is not a valid task.'.format(self.kwargs['task_name']))
+            return HttpResponseRedirect(
+                reverse('projects_stage_view', kwargs={'project_id': self.stage.project_id, 'pk': self.stage.pk}))
 
         self.task_name = task_details[0]
         self.task_description = task_details[1]
@@ -341,7 +342,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
 
             if config.data_type == config.BOOLEAN_TYPE:
                 field = BooleanField(widget=Select(choices=((False, 'False'), (True, 'True'))))
-                field.coerce=lambda x: x == 'True',
+                field.coerce = lambda x: x == 'True',
             elif config.data_type == config.NUMBER_TYPE:
                 field = FloatField()
             else:
@@ -357,7 +358,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
             field.initial = config.value
 
             form.fields[str_config_key] = field
-            form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
+            form.helper.layout.fields.insert(len(form.helper.layout.fields) - 1, str_config_key)
 
         task_details = get_task_details(self.stage.project, self.task_name)
 
@@ -375,7 +376,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
             field = CharField(label='Argument value for ' + name, initial=default)
 
             form.fields[str_config_key] = field
-            form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
+            form.helper.layout.fields.insert(len(form.helper.layout.fields) - 1, str_config_key)
 
         return form
 
@@ -394,15 +395,17 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
             self.object.task.save()
 
         self.object.user = self.request.user
-        self.object.save()
+
 
         configuration_values = {}
         for key, value in form.cleaned_data.iteritems():
             if key.startswith('configuration_value_for_'):
                 configuration_values[key.replace('configuration_value_for_', '')] = value
 
-        self.request.session['configuration_values'] = configuration_values
+        self.object.configuration = json.dumps(configuration_values)
+        self.object.save()
 
+        deploy.spool(deployment_id=str(self.object.id))
         return super(DeploymentCreate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -430,55 +433,6 @@ class DeploymentDetail(DetailView):
             return ['projects/deployment_detail_socketio.html']
         else:
             return ['projects/deployment_detail.html']
-
-
-class DeploymentOutputStream(View):
-    """
-    Deployment view does the heavy lifting of calling Fabric Task for a Project Stage
-    """
-
-    def output_stream_generator(self):
-        if get_task_details(self.object.stage.project, self.object.task.name) is None:
-            return
-
-        try:
-            process = subprocess.Popen(
-                build_command(self.object, self.request.session),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                shell=True,
-                executable=getattr(settings, 'SHELL', '/bin/sh'),
-            )
-
-            all_output = ''
-            while True:
-                nextline = process.stdout.readline()
-                if nextline == '' and process.poll() != None:
-                    break
-
-                all_output += nextline
-
-                yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(nextline, ' '*1024)
-                sys.stdout.flush()
-
-            self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
-
-            yield '<span id="finished" style="display:none;">{}</span> {}'.format(self.object.status, ' '*1024)
-
-            self.object.output = all_output
-            self.object.save()
-
-            deployment_finished.send(self.object, deployment_id=self.object.pk)
-
-        except Exception as e:
-            message = "An error occurred: " + e.message
-            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(message, ' '*1024)
-            yield '<span id="finished" style="display:none;">failed</span> {}'.format('*1024')
-
-    def get(self, request, *args, **kwargs):
-        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']), status=models.Deployment.PENDING)
-        resp = StreamingHttpResponse(self.output_stream_generator())
-        return resp
 
 
 class ProjectStageCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
@@ -521,7 +475,6 @@ class ProjectStageView(DetailView):
     model = models.Stage
 
     def get_context_data(self, **kwargs):
-
         context = super(ProjectStageView, self).get_context_data(**kwargs)
 
         # Hosts Table (Stage->Host Through table)
@@ -538,8 +491,9 @@ class ProjectStageView(DetailView):
         RequestConfig(self.request).configure(configuration_table)
         context['configurations'] = configuration_table
 
-        #deployment table
-        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage=self.object).select_related('stage', 'task'), prefix='deploy_')
+        # deployment table
+        deployment_table = tables.DeploymentTable(
+            models.Deployment.objects.filter(stage=self.object).select_related('stage', 'task'), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
         context['deployment_table'] = deployment_table
 
@@ -584,7 +538,7 @@ class ProjectStageMapHost(MultipleGroupRequiredMixin, RedirectView):
     """
     Map a Project Stage to a Host
     """
-    group_required = ['Admin',]
+    group_required = ['Admin', ]
     permanent = False
 
     def get(self, request, *args, **kwargs):

@@ -25,6 +25,7 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.signals.SignalsPanel',
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
+    'django_uwsgi.panels.uWSGIPanel',
 )
 
 
@@ -34,7 +35,7 @@ DEBUG_TOOLBAR_PANELS = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(PROJECT_DIR, 'core.db'), # Or path to database file if using sqlite3.
+        'NAME': os.path.abspath(os.path.join(PROJECT_DIR, 'core.db')), # Or path to database file if using sqlite3.
         'USER': '', # Not used with sqlite3.
         'PASSWORD': '', # Not used with sqlite3.
         'HOST': '', # Set to empty string for localhost. Not used with sqlite3.
