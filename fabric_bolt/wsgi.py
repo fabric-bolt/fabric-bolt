@@ -5,7 +5,7 @@ from django.utils import autoreload
 
 try:
     from uwsgidecorators import *
-except:
+except ImportError:
     def timer(f): return f
 
 try:

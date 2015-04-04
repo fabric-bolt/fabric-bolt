@@ -8,7 +8,7 @@ from fabric_bolt.projects.util import build_command
 
 try:
     from uwsgidecorators import *
-except:
+except ImportError:
     def spool(f): return f
 
 @spool
