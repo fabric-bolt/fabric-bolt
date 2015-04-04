@@ -1,9 +1,12 @@
 import os
 import os.path
-import sys
 from django.conf import settings
 from django.utils import autoreload
-from uwsgidecorators import timer
+
+try:
+    from uwsgidecorators import *
+except:
+    def timer(f): return f
 
 try:
     import uwsgi

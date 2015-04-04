@@ -2,10 +2,14 @@
 import json
 import subprocess
 from django.conf import settings
-from uwsgidecorators import spool
 from fabric_bolt.projects.models import Deployment
 from fabric_bolt.projects.util import build_command
 
+
+try:
+    from uwsgidecorators import *
+except:
+    def spool(f): return f
 
 @spool
 def deploy(args):
