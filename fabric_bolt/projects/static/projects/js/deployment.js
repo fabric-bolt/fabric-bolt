@@ -16,6 +16,9 @@ $(function () {
                         iconElement.attr('class', '').addClass('glyphicon').addClass('glyphicon-ok').addClass('text-success');
                     }
                     clearInterval(output_updater)
+                } else {
+                    var height = outputElement[0].scrollHeight;
+                    outputElement.scrollTop(height);
                 }
             });
         }, 500);
