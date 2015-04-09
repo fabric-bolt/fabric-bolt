@@ -61,7 +61,7 @@
 
     {% addtoblock "js" %}
         <script>
-            var deployment_url = '/api/deployment/{{ object.pk  }}'; {# TODO: reverse the url#}
+            var deployment_url = '/api/deployment/{{ object.pk  }}/'; {# TODO: reverse the url#}
             var deployment_pending = {% if object.is_finished %}false{% else %}true{% endif %};
             var deployment_id = {{ object.pk }};
          </script>
