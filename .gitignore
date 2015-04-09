@@ -69,3 +69,4 @@ core.db
 build/
 dist/
 *.egg-info/
+uwsgi.ini
