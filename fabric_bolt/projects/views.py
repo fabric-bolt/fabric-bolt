@@ -402,7 +402,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
             if key.startswith('configuration_value_for_'):
                 configuration_values[key.replace('configuration_value_for_', '')] = value
 
-        self.object.configuration = json.dumps(configuration_values)
+        self.object.configuration = json.dumps({"configuration_values":configuration_values})
         self.object.save()
 
         deploy.spool(deployment_id=str(self.object.id))
