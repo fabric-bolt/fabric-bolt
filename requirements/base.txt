@@ -14,3 +14,4 @@ GitPython
 gevent-socketio>=0.3.6,<0.4
 requests>=2.4.0,<2.5
 virtualenv>=1.11.6,<1.12
+django-grappelli>=2.5.3,<2.6
