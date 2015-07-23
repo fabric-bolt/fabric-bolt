@@ -9,7 +9,7 @@ from django.core.cache import cache
 # These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
 fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',
                           'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
-                          'command-timeout', 'user', 'warn-only', 'pool-size']
+                          'command-timeout', 'user', 'warn-only', 'pool-size', 'key_filename']
 
 
 def check_output(command, shell=False):
@@ -247,7 +247,10 @@ def build_command(deployment, session, abort_on_prompts=True):
 
     if special_task_configs:
         for key in special_task_configs:
-            command += ' --' + get_key_value_string(command_to_config[key], configs[key])
+            if key == 'key_filename':
+                command += ' -i ' + configs[key].get_value()
+            else:
+                command += ' --' + get_key_value_string(command_to_config[key], configs[key])
 
     if abort_on_prompts:
         command += ' --abort-on-prompts'
