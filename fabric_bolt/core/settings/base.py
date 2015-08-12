@@ -170,6 +170,8 @@ INSTALLED_APPS = (
     'stronghold',
     'django_tables2',
     'bootstrapform',
+    'django_uwsgi',
+    'rest_framework',
 
     # Project
     'fabric_bolt.accounts',
@@ -256,3 +258,9 @@ CACHES = {
 
 
 FABRIC_TASK_CACHE_TIMEOUT = 60 * 60 * 24  # one day
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}

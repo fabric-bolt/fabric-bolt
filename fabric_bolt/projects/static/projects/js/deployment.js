@@ -1,29 +1,28 @@
+$(function () {
+    var outputElement = $('#deployment_output').find('pre');
+    var legendElement = $('#status_section').find('legend');
+    var iconElement = $('#status_section').find('.glyphicon');
 
-
-
-$(function(){
-    if(deployment_pending){
-
-        var scroll_iframe_ticker = setInterval(function(){
-            var $contents = $('#deployment_output').contents();
-
-            $contents.scrollTop($contents.height());
-            if($contents.find('#finished').length > 0){
-                status = $contents.find('#finished').html();
-                if(status == 'failed'){
-                    $('#status_section legend').html('Status: Failed!');
-                    $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-warning-sign').addClass('text-danger');
-                }else if(status == 'success') {
-                    $('#status_section legend').html('Status: Success!');
-                    $('#status_section .glyphicon').attr('class', '').addClass('glyphicon').addClass('glyphicon-ok').addClass('text-success');
+    if (deployment_pending) {
+        var output_updater = setInterval(function () {
+            $.getJSON(deployment_url, function (deployment) {
+                outputElement.text(deployment.output);
+                if (deployment.is_finished) {
+                    if (deployment.status == 'failed') {
+                        legendElement.html('Status: Failed!');
+                        iconElement.attr('class', '').addClass('glyphicon').addClass('glyphicon-warning-sign').addClass('text-danger');
+                    } else if (deployment.status == 'success') {
+                        legendElement.html('Status: Success!');
+                        iconElement.attr('class', '').addClass('glyphicon').addClass('glyphicon-ok').addClass('text-success');
+                    }
+                    clearInterval(output_updater)
+                } else {
+                    var height = outputElement[0].scrollHeight;
+                    outputElement.scrollTop(height);
                 }
-
-                clearInterval(scroll_iframe_ticker);
-            }
-        }, 100);
-
-
-    }else{
-        $('#deployment_output pre').scrollTop($('#deployment_output pre')[0].scrollHeight);
+            });
+        }, 500);
+    } else {
+        outputElement.scrollTop(outputElement[0].scrollHeight);
     }
 });

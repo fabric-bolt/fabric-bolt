@@ -38,7 +38,7 @@
         <div class="col-md-6">
             <div class="well">
                 <fieldset style="text-align: center;margin-bottom:10px;" id="status_section">
-                    {% if object.status == object.PENDING %}
+                    {% if object.status == object.PENDING or object.status == object.RUNNING %}
                         <legend>Status: Working</legend>
                         <i class="glyphicon glyphicon-time text-info" style="font-size:90px;"></i>
                     {% elif object.status == object.SUCCESS %}
@@ -54,18 +54,15 @@
     </div>
     <div class="well">
         {% block output %}
-            {% if object.status == object.PENDING %}
-                <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
-            {% else %}
-                <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
-            {% endif %}
+            <div id="deployment_output"><pre class="prettyprint">{{ object.output|default:"" }}</pre></div>
         {% endblock %}
     </div>
 
 
     {% addtoblock "js" %}
         <script>
-            var deployment_pending = {% if object.status == object.PENDING %}true{% else %}false{% endif %};
+            var deployment_url = '/api/deployment/{{ object.pk  }}/'; {# TODO: reverse the url#}
+            var deployment_pending = {% if object.is_finished %}false{% else %}true{% endif %};
             var deployment_id = {{ object.pk }};
          </script>
         {% block deployment_scripts %}

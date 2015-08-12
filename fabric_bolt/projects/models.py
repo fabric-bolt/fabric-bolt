@@ -20,7 +20,8 @@ class Project(TrackingFields):
 
     use_repo_fabfile = models.BooleanField(default=False, verbose_name='Use repo\'s fabfile?',
                                            help_text='If no, use the default fabfile.')
-    repo_url = models.CharField(max_length=200, null=True, blank=True, help_text='Currently only git repos are supported.')
+    repo_url = models.CharField(max_length=200, null=True, blank=True,
+                                help_text='Currently only git repos are supported.')
     fabfile_requirements = models.TextField(null=True, blank=True, help_text='Pip requirements to install for fabfile. '
                                                                              'Enter one requirement per line.')
 
@@ -48,6 +49,7 @@ class Project(TrackingFields):
     def web_hooks(self, include_global=True):
         """Get all web hooks for this project. Includes global hooks."""
         from fabric_bolt.web_hooks.models import Hook
+
         ors = [Q(project=self)]
 
         if include_global:
@@ -60,7 +62,8 @@ class Project(TrackingFields):
     def get_deployment_count(self):
         """Utility function to get the number of deployments a given project has"""
 
-        ret = self.stage_set.annotate(num_deployments=Count('deployment')).aggregate(total_deployments=Sum('num_deployments'))
+        ret = self.stage_set.annotate(num_deployments=Count('deployment')).aggregate(
+            total_deployments=Sum('num_deployments'))
         return ret['total_deployments']
 
 
@@ -259,8 +262,9 @@ class Deployment(TrackingFields):
     PENDING = 'pending'
     FAILED = 'failed'
     SUCCESS = 'success'
+    RUNNING = 'running'
 
-    STATUS = [(PENDING, 'Pending'), (FAILED, 'Failed'), (SUCCESS, 'Success')]
+    STATUS = [(PENDING, 'Pending'), (FAILED, 'Failed'), (SUCCESS, 'Success'), (RUNNING, 'Running')]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     stage = models.ForeignKey(Stage)
@@ -286,6 +290,9 @@ class Deployment(TrackingFields):
         """Get web hooks from the stage"""
 
         return self.stage.web_hooks
+
+    def is_finished(self):
+        return self.status in (Deployment.FAILED, Deployment.SUCCESS)
 
 
 class Task(models.Model):

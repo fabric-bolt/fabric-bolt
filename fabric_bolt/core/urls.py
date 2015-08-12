@@ -11,8 +11,10 @@ socketio.sdjango.autodiscover()
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^api/', include('fabric_bolt.api.urls')),
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/uwsgi/', include('django_uwsgi.urls')),
     url(r'^', include('fabric_bolt.accounts.urls')),
     url(r'^$', views.Dashboard.as_view(), name='index'),
     url(r'^hosts/', include('fabric_bolt.hosts.urls')),
@@ -26,5 +28,7 @@ urlpatterns = patterns('',
 if settings.DEBUG:
     urlpatterns += patterns('',
         url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, }),
-        url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    )
+    urlpatterns += patterns('django.contrib.staticfiles.views',
+        url(r'^static/(?P<path>.*)$', 'serve'),
     )
