@@ -259,6 +259,18 @@ class UtilTests(TestCase):
             '--abort-on-prompts --fabfile={}'.format(fabfile_path)
         )
 
+        deployment.stage.configuration_set.clear()
+        configuration = mommy.make(models.Configuration, key='key_filename', value='my_ssh_key')
+        deployment.stage.configuration_set.add(configuration)
+
+        command = build_command(deployment, {})
+
+        self.assertEqual(
+            command,
+            'fab test_env -i my_ssh_key '
+            '--abort-on-prompts --fabfile={}'.format(fabfile_path)
+        )
+
     def test_build_command_with_args(self):
         deployment = mommy.make(models.Deployment, task__name='test_env')
 
