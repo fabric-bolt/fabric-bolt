@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
     <h1 style="margin-bottom:30px;">User {{ object }}
@@ -30,11 +31,7 @@
             <div class="well">
                 <fieldset>
                     <legend>Recent Deployments</legend>
-                    {% for deployement in object.deployment_set.all %}
-                        <p>{{ deployement.stage.project }} - {{ deployement.stage }}</p>
-                    {% empty %}
-                        <p>No deployments.</p>
-                    {% endfor %}
+                    {% render_table deployment_table %}
                 </fieldset>
             </div>
         </div>

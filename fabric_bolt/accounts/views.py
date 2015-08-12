@@ -15,6 +15,8 @@ from django_tables2 import SingleTableView
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.accounts import forms, tables
 from fabric_bolt.accounts.models import DeployUser
+from fabric_bolt.projects.models import Deployment
+from fabric_bolt.projects.tables import RecentDeploymentsTable
 
 
 class UserPermissions(TemplateView):
@@ -81,6 +83,16 @@ class UserAdd(MultipleGroupRequiredMixin, CreateView):
 # Admin User Detail
 class UserDetail(DetailView):
     model = DeployUser
+
+    def get_context_data(self, **kwargs):
+
+        context = super(UserDetail, self).get_context_data(**kwargs)
+
+        # recent deployment table (theh 10 most recent)
+        deployment_table = RecentDeploymentsTable(Deployment.objects.order_by('-date_created').select_related('stage', 'task')[:10], prefix='deploy_')
+        context['deployment_table'] = deployment_table
+
+        return context
 
 
 # Admin Delete User
