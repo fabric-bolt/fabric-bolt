@@ -63,6 +63,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255)),
                 ('description', models.TextField(null=True, blank=True)),
                 ('use_repo_fabfile', models.BooleanField(default=False, help_text=b'If no, use the default fabfile.', verbose_name=b"Use repo's fabfile?")),
+                ('link_repo_env', models.BooleanField(default=False, help_text=b'If no, create new virtual environment.', verbose_name=b"Link repo's environment?")),
                 ('repo_url', models.CharField(help_text=b'Currently only git repos are supported.', max_length=200, null=True, blank=True)),
                 ('fabfile_requirements', models.TextField(help_text=b'Pip requirements to install for fabfile. Enter one requirement per line.', null=True, blank=True)),
             ],
