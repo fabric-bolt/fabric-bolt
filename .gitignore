@@ -66,6 +66,7 @@ core.db
 
 # Distribution / Packaging #
 ###############################
+venv/
 build/
 dist/
 *.egg-info/
