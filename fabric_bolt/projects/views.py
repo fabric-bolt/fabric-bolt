@@ -89,6 +89,7 @@ class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
             initial.update({'name': '%s copy' % self.copy_object.name,
                             'description': self.copy_object.description,
                             'use_repo_fabfile': self.copy_object.use_repo_fabfile,
+                            'link_repo_env': self.copy_object.link_repo_env,
                             'fabfile_requirements': self.copy_object.fabfile_requirements,
                             'repo_url': self.copy_object.repo_url})
         return initial
@@ -276,7 +277,7 @@ class ProjectConfigurationDelete(MultipleGroupRequiredMixin, DeleteView):
 
     def get_success_url(self):
         """Get the url depending on what type of configuration I deleted."""
-        
+
         if self.stage_id:
             url = reverse('projects_stage_view', args=(self.project_id, self.stage_id))
         else:
@@ -441,6 +442,7 @@ class DeploymentOutputStream(View):
         if get_task_details(self.object.stage.project, self.object.task.name) is None:
             return
 
+        preyield = True  # Use to balance <ul> tags upon error since we're streaming output
         try:
             process = subprocess.Popen(
                 build_command(self.object, self.request.session),
@@ -451,15 +453,27 @@ class DeploymentOutputStream(View):
             )
 
             all_output = ''
+            yield '<ul class="output">'
+            preyield = False
             while True:
                 nextline = process.stdout.readline()
-                if nextline == '' and process.poll() != None:
+                if nextline == '' and process.poll() is not None:
                     break
+
+                nextline = '<li class="outputline">{}</li>'.format(nextline)
+                if nextline.find('\x1b[32m') != -1:
+                    nextline = nextline.replace('\x1b[32m', '<ul class="outputgreen"><li class="outputline">')
+                elif nextline.find('\x1b[31m') != -1:
+                    nextline = nextline.replace('\x1b[31m', '<ul class="outputred"><li class="outputline">')
+                if nextline.find('\x1b[0m') != -1:
+                    nextline = nextline.replace('\x1b[0m', '</ul></li>')
 
                 all_output += nextline
 
-                yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(nextline, ' '*1024)
+                yield nextline
                 sys.stdout.flush()
+            yield '</ul>'
+            preyield = True
 
             self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
 
@@ -471,8 +485,11 @@ class DeploymentOutputStream(View):
             deployment_finished.send(self.object, deployment_id=self.object.pk)
 
         except Exception as e:
+            if not preyield:
+                yield '</ul>'
             message = "An error occurred: " + e.message
-            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(message, ' '*1024)
+            # yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(message, ' '*1024)
+            yield '<span class="erroroutput">{} </span><br /> {}'.format(message, ' '*1024)
             yield '<span id="finished" style="display:none;">failed</span> {}'.format('*1024')
 
     def get(self, request, *args, **kwargs):

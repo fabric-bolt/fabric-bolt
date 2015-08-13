@@ -8,7 +8,7 @@
   padding: 20px;
   cursor: text;
 }
-#deployment_output pre {
+#deployment_output .outputcontainer {
   width: 100%;
   height: 100%;
   background: none;
@@ -17,4 +17,23 @@
   overflow-y: scroll;
   font-size: 14px;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.output {
+  color:white;
+  font-size: 14px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.output li {
+  list-style:none;
+  background-image:none;
+  background-repeat:none;
+  background-position:0; 
+}
+.outputred {
+  color:red !important;
+  padding-left:0;
+}
+.outputgreen {
+  color:green !important;
+  padding-left:0;
 }

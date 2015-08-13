@@ -3,10 +3,10 @@
 
 {% block output %}
     {% if object.status == object.PENDING %}
-        <div id="deployment_output"><pre class="prettyprint"></pre></div>
+        <div id="deployment_output"><div class="outputcontainer"></div></div>
         <input type="text" class="form-control" id="deployment_input">
     {% else %}
-        <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
+        <div id="deployment_output"><div class="outputcontainer">{{ object.output }}</div></div>
     {% endif %}
 {% endblock %}
 

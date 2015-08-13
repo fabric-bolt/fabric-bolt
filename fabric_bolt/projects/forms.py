@@ -18,6 +18,7 @@ class ProjectCreateForm(forms.ModelForm):
             'name',
             'description',
             'use_repo_fabfile',
+            'link_repo_env',
             'repo_url',
             'fabfile_requirements',
         ]
@@ -28,6 +29,7 @@ class ProjectCreateForm(forms.ModelForm):
             'name',
             'description',
             'use_repo_fabfile',
+            'link_repo_env',
             'repo_url',
             'fabfile_requirements',
             ButtonHolder(

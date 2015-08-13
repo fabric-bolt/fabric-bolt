@@ -59,7 +59,7 @@
             {% if object.status == object.PENDING %}
                 <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
             {% else %}
-                <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
+                <div id="deployment_output"><div class="outputcontainer"><ul class="output">{{ object.output|safe }}</ul></div></div>
             {% endif %}
         {% endblock %}
     </div>
@@ -69,6 +69,15 @@
         <script>
             var deployment_pending = {% if object.status == object.PENDING %}true{% else %}false{% endif %};
             var deployment_id = {{ object.pk }};
+            // Add parent CSS link to deployment iframe
+            $(document).ready(function(){
+                $('#deployment_output').load(function(){
+                    $('#deployment_output')
+                        .contents().find("head")
+                        .append($('<link rel="stylesheet" type="text/css" href="/static/css/main.css">')
+                    );
+                });
+            });
          </script>
         {% block deployment_scripts %}
             <script src="{% static 'projects/js/deployment.js' %}"></script>

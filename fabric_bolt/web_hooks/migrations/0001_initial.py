@@ -37,7 +37,8 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'repo_url': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.ProjectType']", 'null': 'True', 'blank': 'True'}),
-            'use_repo_fabfile': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+            'use_repo_fabfile': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'link_repo_env': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         u'projects.projecttype': {
             'Meta': {'object_name': 'ProjectType'},
