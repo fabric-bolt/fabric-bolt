@@ -8,7 +8,7 @@ To run Fabric Bolt you'll need:
 * python-setuptools, python-dev, libxslt1-dev, libxml2-dev
 * A real database (PostgreSQL is preferred, MySQL also works)
 
-You can run Fabric Bolt on an existing server/host, but this guide will assume that Fabric Bolt is 
+You can run Fabric Bolt on an existing server/host, but this guide will assume that Fabric Bolt is
 the only thing running on the server.
 
 This guide will step you through setting up a virtualenv, installing the required packages,
@@ -74,8 +74,8 @@ Finally, activate your virtualenv:
 Install Fabric Bolt
 -------------------
 
-Once you have the environment setup you can install Fabric Bolt and all its dependencies 
-with ``pip`` (``virtualenv`` comes with a copy of ``pip`` which gets copied into every 
+Once you have the environment setup you can install Fabric Bolt and all its dependencies
+with ``pip`` (``virtualenv`` comes with a copy of ``pip`` which gets copied into every
 new environment you create):
 
 .. code-block:: bash
@@ -100,7 +100,7 @@ Or, optionally, you can provide a path to the settings file:
 .. code-block:: bash
 
     fabric-bolt init /etc/fabric-bolt/settings.py
- 
+
 The settings file will be located at ``~/.fabric-bolt/settings.py``. And should be edited for your database configuration:
 
 .. code-block:: bash
@@ -174,8 +174,6 @@ Next, create a super user by doing the following:
 All schema changes and database upgrades are handled via the ``migrate`` command, and this is the first
 thing you'll want to run when upgrading to future versions of Fabric Bolt.
 
-.. note:: Internally, this uses `South <http://south.aeracode.org>`_ to manage database migrations.
-
 Starting the Web Service
 ------------------------
 
@@ -238,7 +236,7 @@ well as within the Fabric Bolt configuration:
 .. code-block:: python
 
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    
+
 
 
 Running Fabric Bolt as a Service
