@@ -37,16 +37,9 @@ class BasicTests(TestCase):
         self._create_project()
 
     def _create_project(self):
-
-        # Bare bones project type
-        project_type = models.ProjectType()
-        project_type.name = 'Django'
-        self.project_type = project_type.save()
-
         # Bare bones project
         project = models.Project()
         project.name = 'TEST_PROJECT'
-        project.type = project_type
         project.description = 'TEST_DESCRIPTION'
 
         project.save()
@@ -263,6 +256,18 @@ class UtilTests(TestCase):
         self.assertEqual(
             command,
             'fab test_env --set "dummy_key\=blah\,x=dummy_value" '
+            '--abort-on-prompts --fabfile={}'.format(fabfile_path)
+        )
+
+        deployment.stage.configuration_set.clear()
+        configuration = mommy.make(models.Configuration, key='key_filename', value='my_ssh_key')
+        deployment.stage.configuration_set.add(configuration)
+
+        command = build_command(deployment, {})
+
+        self.assertEqual(
+            command,
+            'fab test_env -i my_ssh_key '
             '--abort-on-prompts --fabfile={}'.format(fabfile_path)
         )
 

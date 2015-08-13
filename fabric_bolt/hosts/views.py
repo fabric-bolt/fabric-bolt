@@ -41,7 +41,7 @@ class HostCreate(MultipleGroupRequiredMixin, CreateView):
 
 
 class HostUpdate(GroupRequiredMixin, UpdateView):
-    role_required = 'Admin'
+    group_required = 'Admin'
     model = models.Host
     form_class = forms.HostUpdateForm
     template_name_suffix = '_update'

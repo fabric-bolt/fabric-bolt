@@ -12,7 +12,6 @@ class DeploymentModelAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Project)
-admin.site.register(models.ProjectType)
 admin.site.register(models.Configuration, ConfigurationModelAdmin)
 admin.site.register(models.Stage)
 admin.site.register(models.Deployment, DeploymentModelAdmin)

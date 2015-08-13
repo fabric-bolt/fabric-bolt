@@ -10,20 +10,12 @@ from fabric_bolt.core.mixins.models import TrackingFields
 from fabric_bolt.projects.model_managers import ActiveManager, ActiveDeploymentManager
 
 
-class ProjectType(TrackingFields):
-    name = models.CharField(max_length=255)
-
-    def __unicode__(self):
-        return self.name
-
-
 class Project(TrackingFields):
     """Model for a project (pretty obvious)
 
     Keeps track of the stages and general configurations for deployments"""
 
     name = models.CharField(max_length=255)
-    type = models.ForeignKey(ProjectType, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
     use_repo_fabfile = models.BooleanField(default=False, verbose_name='Use repo\'s fabfile?',

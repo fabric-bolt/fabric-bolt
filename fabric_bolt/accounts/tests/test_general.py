@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group
 
 from model_mommy import mommy
 
-from .models import DeployUser
+from fabric_bolt.accounts.models import DeployUser
 
 
 class ModelsTest(TestCase):
@@ -100,7 +100,11 @@ class ModelsTest(TestCase):
     def test_createsuperuser(self):
         user = DeployUser.objects.create_superuser(email='test@test.com', password='password')
         self.assertTrue(user.user_is_admin())
+        self.assertFalse(user.user_is_deployer())
+        self.assertFalse(user.user_is_historian())
 
     def test_createuser(self):
         user = DeployUser.objects.create_user(email='test@test.com', password='password')
         self.assertTrue(user.user_is_historian())
+        self.assertFalse(user.user_is_deployer())
+        self.assertFalse(user.user_is_admin())

@@ -21,15 +21,18 @@ install_requires = [
     'gevent-socketio>=0.3.6,<0.4',
     'requests>=2.4.0,<2.5',
     'virtualenv>=1.11.6,<1.12',
+<<<<<<< HEAD
     'django-graphos==0.0.2a0',
     'django-activeurl>=0.1.8,<0.2',
+=======
+    'django-grappelli>=2.5.3,<2.6',
+>>>>>>> origin-master
 ]
 
 dev_requires = [
     'django-debug-toolbar>=1.2.1,<1.3',
     'django-debug-toolbar-template-timings>=0.6.4,<0.7',
     'mock>=1.0.1,<1.1',
-    'django-grappelli>=2.5.3,<2.6',
     'model_mommy>=1.2.1,<1.3'
 ]
 
