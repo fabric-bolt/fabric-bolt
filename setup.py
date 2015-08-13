@@ -5,36 +5,36 @@ from setuptools import setup, find_packages
 setup_requires = []
 
 install_requires = [
-    'django>=1.7,<1.8',
-    'pillow>=2.5.3,<2.6',
-    'django-stronghold>=0.2.6,<0.3',
+    'django>=1.8.3,<1.9',
+    'pillow>=2.9.0,<2.10',
+    'django-stronghold>=0.2.7,<0.3',
     'django-crispy-forms>=1.4.0,<1.5',
-    'django-authtools>=1.0.0,<1.1',
-    'django-tables2>=0.15.0,<0.16',
-    'django-braces>=1.4,<1.5',
-    'django-sekizai>=0.7,<0.8',
-    'fabric>=1.10.0,<1.11',
-    'logan>=0.5.10,<0.6',
-    'django-bootstrap-form>=3.1,<3.2',
-    'croniter>=0.3.5,<0.4',
-    'GitPython',
+    'django-authtools>=1.2.0,<1.3',
+    'django-tables2>=1.0.4,<1.1',
+    'django-braces>=1.8.1,<1.9',
+    'django-sekizai>=0.8.2,<0.9',
+    'fabric>=1.10.2,<1.11',
+    'logan>=0.7.1,<0.8',
+    'django-bootstrap-form>=3.2,<3.3',
+    'croniter>=0.3.8,<0.4',
+    'GitPython>=1.0.1,<1.1',
     'gevent-socketio>=0.3.6,<0.4',
-    'requests>=2.4.0,<2.5',
-    'virtualenv>=1.11.6,<1.12',
     'django-graphos==0.0.2a0',
     'django-activeurl>=0.1.8,<0.2',
-    'django-grappelli>=2.5.3,<2.6',
+    'requests>=2.7.0,<2.8',
+    'virtualenv>=13.1.0,<13.2',
+    'django-grappelli>=2.7.1,<2.8',
 ]
 
 dev_requires = [
-    'django-debug-toolbar>=1.2.1,<1.3',
+    'django-debug-toolbar>=1.3.2,<1.4',
     'django-debug-toolbar-template-timings>=0.6.4,<0.7',
-    'mock>=1.0.1,<1.1',
-    'model_mommy>=1.2.1,<1.3'
+    'mock>=1.3.0,<1.4',
+    'model_mommy>=1.2.5,<1.3'
 ]
 
 postgres_requires = [
-    'psycopg2>=2.5.4,<2.6',
+    'psycopg2>=2.6.1,<2.7',
 ]
 
 mysql_requires = [
@@ -46,10 +46,10 @@ setup(
     name='fabric-bolt',
     version='0.1b1',
     author='Dan Dietz, Nathaniel Pardington, Jared Proffitt',
-    url='https://github.com/worthwhile/fabric-bolt',
+    url='https://github.com/fabric-bolt/fabric-bolt',
     description='A web interface to fabric deployments.',
     long_description=open('README.rst').read(),
-    packages=find_packages(exclude=['docs',]),
+    packages=find_packages(exclude=['docs', ]),
     zip_safe=False,
     install_requires=install_requires,
     extras_require={
