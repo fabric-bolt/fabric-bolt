@@ -1,7 +1,7 @@
 import django_tables2 as tables
 from django_tables2.columns import LinkColumn
 
-from fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable
+from fabric_bolt.core.mixins.tables import ActionsColumn, PaginateTable, BooleanColumn
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import models
 
@@ -78,9 +78,9 @@ class ConfigurationTable(PaginateTable):
     value = tables.Column(accessor='get_display_value', orderable=False)
 
     # Clean up the labels a little
-    task_argument = tables.BooleanColumn(verbose_name="Argument?",)
-    prompt_me_for_input = tables.BooleanColumn(verbose_name="Prompt?",)
-    sensitive_value = tables.BooleanColumn(verbose_name="Sensitive?",)
+    task_argument = BooleanColumn(verbose_name="Argument?",)
+    prompt_me_for_input = BooleanColumn(verbose_name="Prompt?",)
+    sensitive_value = BooleanColumn(verbose_name="Sensitive?",)
 
     class Meta:
         model = models.Configuration
@@ -151,12 +151,8 @@ class DeploymentTable(PaginateTable):
 
     task_name = tables.Column(accessor='task.name', verbose_name='Task')
 
-    # Prettify the status
     status = tables.TemplateColumn(
-        '<span style="font-size:13px;" class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}">'
-        '<i class="glyphicon glyphicon-{% if record.status == "success" %}ok{% elif record.status == "failed" %}warning-sign{% else %}time{% endif %}"></i>'
-        ' &#160;{{ record.get_status_display }}'
-        '</span>',
+        template_name='projects/pieces/deployment_status_column.html',
         verbose_name='Status'
     )
 
@@ -190,12 +186,22 @@ class RecentDeploymentsTable(tables.Table):
     project = tables.Column(accessor='stage.project.name', verbose_name='Project', orderable=False)
     stage = tables.Column(accessor='stage.name', verbose_name='Stage', orderable=False)
     task_name = tables.Column(accessor='task.name', verbose_name='Task', orderable=False)
-    status = tables.TemplateColumn('<span style="font-size:13px;" class="label label-{% if record.status == "success" %}success{% elif record.status == "failed" %}danger{% else %}info{% endif %}"><i class="glyphicon glyphicon-{% if record.status == "success" %}ok{% elif record.status == "failed" %}warning-sign{% else %}time{% endif %}"></i></span>', orderable=False)
+    status = tables.TemplateColumn(
+        template_name='projects/pieces/deployment_status_column.html',
+        verbose_name='Status'
+    )
 
-    actions = ActionsColumn([
-        {'title': '<i class="glyphicon glyphicon-file"></i>', 'url': 'projects_deployment_detail', 'args': [tables.A('pk')],
-         'attrs':{'data-toggle': 'tooltip', 'title': 'View Deployment Details', 'data-delay': '{ "show": 300, "hide": 0 }'}},
-    ], delimiter='&#160;&#160;&#160;')
+    actions = ActionsColumn(
+        [
+            {
+                'title': '<i class="glyphicon glyphicon-file"></i>',
+                'url': 'projects_deployment_detail',
+                'args': [tables.A('stage.project_id'), tables.A('stage_id'), tables.A('pk')],
+                'attrs': {'data-toggle': 'tooltip', 'title': 'View Deployment Details', 'data-delay': '{ "show": 300, "hide": 0 }'}
+            },
+        ],
+        delimiter='&#160;&#160;&#160;'
+    )
 
     class Meta:
         model = models.Deployment
