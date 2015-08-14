@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^launch-window/', include('fabric_bolt.launch_window.urls')),
     url(r'^projects/', include('fabric_bolt.projects.urls')),
     url(r'^socket\.io', include(socketio.sdjango.urls)),
-    url(r'^', include('fabric_bolt.accounts.urls')),
+    url(r'^users/', include('fabric_bolt.accounts.urls')),
 ]
 
 # Serve the static files from django
