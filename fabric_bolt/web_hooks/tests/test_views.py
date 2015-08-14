@@ -97,7 +97,7 @@ class TestHooks(TestCase):
 
         self.assertEqual(get_response.status_code, 200)
 
-        self.client.post(view, {'url': 'http://www.lookthisup.com'})
+        self.client.post(view, {'url': 'http://www.lookthisup.com/'})
 
         hooks = hook_models.Hook.objects.filter(url='http://www.lookthisup.com/')
 

@@ -5,9 +5,9 @@ from fabric_bolt.accounts import views
 urlpatterns = [
 
     url(r'^$', views.UserList.as_view(), name='accounts_user_list'),
-    url(r'^(?P<pk>.+)/$', views.UserDetail.as_view(), name='accounts_user_view'),
-    url(r'^(?P<pk>.+)/update/$', views.UserChange.as_view(), name='accounts_user_change'),
-    url(r'^(?P<pk>.+)/delete/$', views.UserDelete.as_view(), name='accounts_user_delete'),
+    url(r'^(?P<pk>\d+)/$', views.UserDetail.as_view(), name='accounts_user_view'),
+    url(r'^(?P<pk>\d+)/update/$', views.UserChange.as_view(), name='accounts_user_change'),
+    url(r'^(?P<pk>\d+)/delete/$', views.UserDelete.as_view(), name='accounts_user_delete'),
 
     url(r'^add/$', views.UserAdd.as_view(), name='accounts_user_add'),
     url(r'^permissions/$', views.UserPermissions.as_view(), name='accounts_user_permissions'),
