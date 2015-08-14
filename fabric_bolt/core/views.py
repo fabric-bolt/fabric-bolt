@@ -58,7 +58,7 @@ class Dashboard(TemplateView):
         deploys = list(Deployment.objects.select_related('stage').order_by('date_created'))
 
         # Get the date range for all the deployments ever done
-        start_date = (timezone.now() - timedelta(days=45)).date()
+        start_date = (timezone.now() - timedelta(days=60)).date()
         end_date = timezone.now().date()
 
         # Step through each day and create an array of deployment counts from each project

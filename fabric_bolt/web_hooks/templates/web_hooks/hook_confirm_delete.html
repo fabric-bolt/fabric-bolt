@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Hooks</a></li>
+        <li><a href="{% url 'hooks_hook_view' object.pk %}">{{ object }}</a></li>
+        <li class="active">Delete</li>
+    </ol>
+{% endblock breadcrumb %}
+
 {% block content %}
     <h1>Delete Hook?</h1>
     <form action="" method="post">{% csrf_token %}

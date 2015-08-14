@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Hooks</a></li>
+        <li><a href="{% url 'hooks_hook_view' object.pk %}">{{ object }}</a></li>
+        <li class="active">Update</li>
+    </ol>
+{% endblock breadcrumb %}
+
 {% block content %}
     <h1>Hook Update</h1>
 

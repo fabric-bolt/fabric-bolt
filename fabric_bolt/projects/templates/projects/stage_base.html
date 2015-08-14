@@ -16,11 +16,26 @@
     <div class="col-md-3" style="margin-top: 25px;">
         {% activeurl menu="no" %}
             <ul class="nav nav-pills nav-stacked">
-                <li><a href="{% url 'projects_project_view' project.pk %}">Project Dashboard <i class="glyphicon glyphicon-arrow-up"></i></a></li>
-                <li><a href="{% url 'projects_stage_view' project.pk stage.pk %}">Dashboard</a></li>
-                <li><a href="{% url 'projects_stage_configuration_list' project.pk stage.pk %}">Configuration</a></li>
-                <li><a href="{% url 'projects_stage_deployment_list' project.pk stage.pk %}">Deployments</a></li>
-
+                <li>
+                    <a href="{% url 'projects_project_view' project.pk %}">
+                        Project Dashboard &#160;&#160;&#160;<i class="glyphicon glyphicon-arrow-up"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'projects_stage_view' project.pk stage.pk %}">
+                        <i class="glyphicon glyphicon-dashboard"></i> &#160;&#160;&#160;Stage
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'projects_stage_configuration_list' project.pk stage.pk %}">
+                        <i class="glyphicon glyphicon-cog"></i> &#160;&#160;&#160;Configuration
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'projects_stage_deployment_list' project.pk stage.pk %}">
+                        <i class="glyphicon glyphicon-play"></i> &#160;&#160;&#160;Deployments
+                    </a>
+                </li>
             </ul>
         {% endactiveurl %}
     </div>

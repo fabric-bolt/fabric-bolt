@@ -1,9 +1,9 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from fabric_bolt.projects import views
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', views.ProjectList.as_view(), name='projects_project_list'),
 
     url(r'^create/$', views.ProjectCreate.as_view(), name='projects_project_create'),
@@ -36,4 +36,4 @@ urlpatterns = patterns('',
     url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\w+)/deployment/$', views.StageDeploymentList.as_view(), name='projects_stage_deployment_list'),
     url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\w+)/host/(?P<host_id>\w+)/map/$', views.ProjectStageMapHost.as_view(), name='projects_stage_maphost'),
     url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\w+)/host/(?P<host_id>\w+)/unmap/$', views.ProjectStageUnmapHost.as_view(), name='projects_stage_unmaphost'),
-)
+]

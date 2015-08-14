@@ -14,23 +14,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-7">
-            <div class="well well-sm">
-                <a href="{% url 'projects_stage_update' object.project.pk object.pk %}" class="btn btn-primary btn-sm">Update</a>
-            </div>
-        </div>
-
-        <div class="col-md-5">
-            <div class="well well-sm" id="task_well">
-                <div class="text-center" style="padding:6px 0;">
-                    Finding tasks... &#160;&#160;<img src="{% static 'images/ajax-loader.gif' %}"/>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4>
@@ -47,11 +31,6 @@
                 <div class="panel-footer">
                     <div class="row">
                         <div class="col-md-8">
-                            <a class="btn btn-default btn-sm js-add-host" href="{% url 'projects_stage_maphost' object.project.pk object.pk 'host_id' %}">
-                                <i class="glyphicon glyphicon-plus-sign"></i>
-                                Add Stage Host
-                            </a>
-
                             <select name="stage_host" id="stage_host" class="form-control input-sm" style="width: 50%; display: inline-block;">
                                 <option value="">Select Host</option>
                                 {% for host in available_hosts %}
@@ -59,9 +38,22 @@
                                 {% endfor %}
                             </select>
 
+                            <a class="btn btn-default btn-sm js-add-host" href="{% url 'projects_stage_maphost' object.project.pk object.pk 'host_id' %}">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                Add Stage Host
+                            </a>
+
                             <span id="select_host_msg" class="text-danger" style="display: none;">Please Select Host</span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="well well-sm" id="task_well">
+                <div class="text-center" style="padding:6px 0;">
+                    Finding tasks... &#160;&#160;<img src="{% static 'images/ajax-loader.gif' %}"/>
                 </div>
             </div>
         </div>

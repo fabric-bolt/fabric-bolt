@@ -17,12 +17,11 @@ from fabric_bolt.web_hooks import forms, tables, models
 
 class HookList(SingleTableView):
     """
-    Project List page
+    Hook List page
     """
 
     table_class = tables.HookTable
     model = models.Hook
-    queryset = models.Project.active_records.all()
 
 
 class HookCreate(MultipleGroupRequiredMixin, CreateView):
