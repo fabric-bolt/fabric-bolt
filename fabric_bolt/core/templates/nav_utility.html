@@ -1,6 +1,7 @@
 {% load staticfiles %}
+{% load activeurl %}
 
-<div class="navbar navbar-default" role="navigation">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="/">Fabric Bolt</a>
@@ -14,10 +15,21 @@
         {% if request.user.is_authenticated %}
 
             <div class="navbar-collapse collapse" id="navbar-main">
+                {% activeurl menu="no" %}
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+                        <li><a href="{% url 'hosts_host_list' %}">Hosts</a></li>
+                        <li><a href="{% url 'accounts_user_list' %}">Users</a></li>
+                        <li><a href="{% url 'hooks_hook_list' %}">Web Hooks</a></li>
+                    </ul>
+                {% endactiveurl %}
+
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{% url 'index' %}">Dashboard</a></li>
                     <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#"><img class="gravatar" src="{{ request.user.gravatar }}"/> &nbsp;{{ request.user.email }} <b class="caret"></b></a>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <img class="gravatar" src="{{ request.user.gravatar }}" style="vertical-align: bottom;"/>
+                            &nbsp;{{ request.user.email }} <b class="caret"></b>
+                        </a>
                         <ul class="dropdown-menu">
                             <li><a href="{% url 'accounts_user_change' user.pk %}">Update Profile</a></li>
                             <li><a href="{% url 'password_change' %}">Change Password</a></li>

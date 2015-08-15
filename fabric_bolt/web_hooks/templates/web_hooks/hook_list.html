@@ -1,0 +1,6 @@
+{% extends 'base_list.html' %}
+{% load render_table from django_tables2 %}
+
+{% block breadcrumb.items %}<li class="active">Hooks</li>{% endblock %}
+
+{% block page_title %}All Web Hooks <a href="{% url 'hooks_hook_create' %}" class="btn btn-default btn-sm pull-right"><i class="glyphicon glyphicon-plus-sign"></i> Add Web Hook</a>{% endblock %}

@@ -228,10 +228,6 @@ class TestWithHooks(TestCase):
 
         self.project = project
 
-    def test_receivers_(self):
-
-        receivers.web_hook_receiver(None, deployment_id=self.deployment.pk)
-
     @override_settings(HOOK_SERIALIZER='fabric_bolt.web_hooks.tests.test_utils.custom_serializer')
     def test_custom_serializer(self):
 

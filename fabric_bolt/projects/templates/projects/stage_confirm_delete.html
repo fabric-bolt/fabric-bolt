@@ -1,4 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'projects/stage_base.html' %}
+
+{% block stage_breadcrumb_links %}
+    <li><a href="{% url 'projects_stage_view' project.pk object.pk %}">{{ object.name }}</a></li>
+    <li class="active">Delete</li>
+{% endblock stage_breadcrumb_links %}
 
 {% block content %}
     <h1>Delete Stage?</h1>

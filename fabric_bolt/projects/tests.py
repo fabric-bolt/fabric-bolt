@@ -111,10 +111,10 @@ class BasicTests(TestCase):
         result = c.get(reverse('projects_configuration_stage_create', args=(self.project.pk, self.stage.pk)))
         self.assertIn(result.status_code, [200, 302])
 
-        result = c.get(reverse('projects_configuration_update', args=(self.configuration.pk,)))
+        result = c.get(reverse('projects_configuration_update', args=(self.configuration.project_id, self.configuration.pk,)))
         self.assertIn(result.status_code, [200, 302])
 
-        result = c.get(reverse('projects_configuration_delete', args=(self.configuration.pk,)))
+        result = c.get(reverse('projects_configuration_delete', args=(self.configuration.project_id, self.configuration.pk,)))
         self.assertIn(result.status_code, [200, 302])
 
     def test_project_deployment_urls(self):
@@ -122,10 +122,10 @@ class BasicTests(TestCase):
         Tests that all views return status code of 200
         """
         c = self.client
-        result = c.get(reverse('projects_deployment_create', args=(self.stage.pk, 'bootstrap')))
+        result = c.get(reverse('projects_deployment_create', args=(self.project.pk, self.stage.pk, 'bootstrap')))
         self.assertIn(result.status_code, [200, 302])
 
-        result = c.get(reverse('projects_deployment_detail', args=(self.deployment.pk,)))
+        result = c.get(reverse('projects_deployment_detail', args=(self.project.pk, self.stage.pk, self.deployment.pk,)))
         self.assertIn(result.status_code, [200, 302])
 
         # result = c.get(reverse('projects_deployment_output', args=(self.deployment.pk,)))

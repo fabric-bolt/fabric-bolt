@@ -19,6 +19,8 @@ install_requires = [
     'croniter>=0.3.8,<0.4',
     'GitPython>=1.0.1,<1.1',
     'gevent-socketio>=0.3.6,<0.4',
+    'django-graphos==0.0.2a0',
+    'django-activeurl>=0.1.8,<0.2',
     'requests>=2.7.0,<2.8',
     'virtualenv>=13.1.0,<13.2',
     'django-grappelli>=2.7.1,<2.8',

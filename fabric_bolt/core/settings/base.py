@@ -170,6 +170,8 @@ INSTALLED_APPS = (
     'stronghold',
     'django_tables2',
     'bootstrapform',
+    'graphos',
+    'django_activeurl',
 
     # Project
     'fabric_bolt.accounts',
@@ -183,7 +185,7 @@ INSTALLED_APPS = (
 FABFILE_PATH = os.path.join(os.path.dirname(PROJECT_DIR), 'fabfile.py')
 
 ########## STRONGHOLD CONFIGURATION
-LOGIN_URL = '/login/'
+LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 STRONGHOLD_PUBLIC_NAMED_URLS = (
     'password_reset',

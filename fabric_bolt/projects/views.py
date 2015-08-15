@@ -27,18 +27,38 @@ from fabric_bolt.web_hooks.tables import HookTable
 from fabric_bolt.projects.signals import deployment_finished
 
 
-class BaseGetProjectCreateView(CreateView):
+class ProjectSubPageMixin(object):
     """
-    Reusable class for create views that need the project pulled in
+    View mixin which adds self.project on the view, and {project} in the template.
+    assumes project_id is defined in url.
     """
 
     def dispatch(self, request, *args, **kwargs):
+        self.project = get_object_or_404(models.Project, id=kwargs['project_id'])
+        return super(ProjectSubPageMixin, self).dispatch(request, *args, **kwargs)
 
-        # Lets set the project so we can use it later
-        project_id = kwargs.get('project_id')
-        self.project = models.Project.objects.get(pk=project_id)
+    def get_context_data(self, **kwargs):
+        context = super(ProjectSubPageMixin, self).get_context_data(**kwargs)
+        context['project'] = self.project
+        return context
 
-        return super(BaseGetProjectCreateView, self).dispatch(request, *args, **kwargs)
+
+class StageSubPageMixin(ProjectSubPageMixin):
+    """
+    View mixin which adds self.project and self.stage on the view, and {project} and {stage} in the template.
+    assumes project_id and stage_id are defined in url.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        self.project = get_object_or_404(models.Project, id=kwargs['project_id'])
+        self.stage = get_object_or_404(models.Stage, id=kwargs['stage_id'], project=self.project)
+        return super(StageSubPageMixin, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(StageSubPageMixin, self).get_context_data(**kwargs)
+        context['stage'] = self.stage
+        context['project'] = self.project
+        return context
 
 
 class ProjectList(SingleTableView):
@@ -168,16 +188,8 @@ class ProjectDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectDetail, self).get_context_data(**kwargs)
 
-        configuration_table = tables.ConfigurationTable(self.object.project_configurations(), prefix='config_')
-        RequestConfig(self.request).configure(configuration_table)
-        context['configurations'] = configuration_table
-
         stages = self.object.get_stages().annotate(deployment_count=Count('deployment'))
         context['stages'] = stages
-
-        stage_table = tables.StageTable(stages, prefix='stage_')
-        RequestConfig(self.request).configure(stage_table)
-        context['stage_table'] = stage_table
 
         deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage__in=stages).select_related('stage', 'task'), prefix='deploy_')
         RequestConfig(self.request).configure(deployment_table)
@@ -217,7 +229,19 @@ class ProjectDelete(MultipleGroupRequiredMixin, DeleteView):
         return HttpResponseRedirect(reverse('projects_project_list'))
 
 
-class ProjectConfigurationCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
+class ProjectConfigurationList(ProjectSubPageMixin, SingleTableView):
+    """
+    Project Configuration List page
+    """
+
+    table_class = tables.ConfigurationTable
+    model = models.Configuration
+
+    def get_queryset(self):
+        return self.project.project_configurations()
+
+
+class ProjectConfigurationCreate(MultipleGroupRequiredMixin, ProjectSubPageMixin, CreateView):
     """
     Create a Project Configuration. These are used to set the Fabric env object for a task.
     """
@@ -253,7 +277,7 @@ class ProjectConfigurationCreate(MultipleGroupRequiredMixin, BaseGetProjectCreat
         return success_url
 
 
-class ProjectConfigurationUpdate(MultipleGroupRequiredMixin, UpdateView):
+class ProjectConfigurationUpdate(MultipleGroupRequiredMixin, ProjectSubPageMixin, UpdateView):
     """
     Update a Project Configuration
     """
@@ -263,7 +287,7 @@ class ProjectConfigurationUpdate(MultipleGroupRequiredMixin, UpdateView):
     form_class = forms.ConfigurationUpdateForm
 
 
-class ProjectConfigurationDelete(MultipleGroupRequiredMixin, DeleteView):
+class ProjectConfigurationDelete(MultipleGroupRequiredMixin, ProjectSubPageMixin, DeleteView):
     """
     Delete a project configuration from a project
     """
@@ -296,6 +320,18 @@ class ProjectConfigurationDelete(MultipleGroupRequiredMixin, DeleteView):
         return super(ProjectConfigurationDelete, self).delete(self, request, *args, **kwargs)
 
 
+class ProjectDeploymentList(ProjectSubPageMixin, SingleTableView):
+    """
+    Project Deployment List page
+    """
+
+    table_class = tables.DeploymentTable
+    model = models.Deployment
+
+    def get_queryset(self):
+        return models.Deployment.objects.filter(stage__project=self.project).select_related('stage', 'task')
+
+
 class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
     """
     Form to create a new Deployment for a Project Stage. POST will kick off the DeploymentOutputStream view.
@@ -305,14 +341,15 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
     form_class = forms.DeploymentForm
 
     def dispatch(self, request, *args, **kwargs):
-        #save the stage for later
-        self.stage = get_object_or_404(models.Stage, pk=int(kwargs['pk']))
-
-        task_details = get_task_details(self.stage.project, self.kwargs['task_name'])
+        self.project = get_object_or_404(models.Project, id=kwargs['project_id'])
+        self.stage = get_object_or_404(models.Stage, id=self.kwargs['stage_id'], project=self.project)
+        task_details = get_task_details(self.project, self.kwargs['task_name'])
 
         if task_details is None:
             messages.error(self.request, '"{}" is not a valid task.'. format(self.kwargs['task_name']))
-            return HttpResponseRedirect(reverse('projects_stage_view', kwargs={'project_id': self.stage.project_id, 'pk': self.stage.pk }))
+            return HttpResponseRedirect(
+                reverse('projects_stage_view', kwargs={'project_id': self.stage.project_id, 'pk': self.stage.pk})
+            )
 
         self.task_name = task_details[0]
         self.task_description = task_details[1]
@@ -408,18 +445,19 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(DeploymentCreate, self).get_context_data(**kwargs)
 
-        context['configs'] = self.stage.get_queryset_configurations(prompt_me_for_input=False)
         context['stage'] = self.stage
+        context['project'] = self.project
+        context['configs'] = self.stage.get_queryset_configurations(prompt_me_for_input=False)
         context['task_name'] = self.task_name
         context['task_description'] = self.task_description
         return context
 
     def get_success_url(self):
+        return reverse('projects_deployment_detail', kwargs={'project_id': self.project.pk, 'stage_id': self.stage.id,
+                                                             'pk': self.object.pk})
 
-        return reverse('projects_deployment_detail', kwargs={'pk': self.object.pk})
 
-
-class DeploymentDetail(DetailView):
+class DeploymentDetail(StageSubPageMixin, DetailView):
     """
     Display the detail/summary of a deployment
     """
@@ -432,13 +470,13 @@ class DeploymentDetail(DetailView):
             return ['projects/deployment_detail.html']
 
 
-class DeploymentOutputStream(View):
+class DeploymentOutputStream(StageSubPageMixin, View):
     """
     Deployment view does the heavy lifting of calling Fabric Task for a Project Stage
     """
 
     def output_stream_generator(self):
-        if get_task_details(self.object.stage.project, self.object.task.name) is None:
+        if get_task_details(self.project, self.object.task.name) is None:
             return
 
         try:
@@ -476,12 +514,29 @@ class DeploymentOutputStream(View):
             yield '<span id="finished" style="display:none;">failed</span> {}'.format('*1024')
 
     def get(self, request, *args, **kwargs):
-        self.object = get_object_or_404(models.Deployment, pk=int(kwargs['pk']), status=models.Deployment.PENDING)
+        self.object = get_object_or_404(
+            models.Deployment,
+            stage=self.stage,
+            pk=int(kwargs['pk']),
+            status=models.Deployment.PENDING
+        )
         resp = StreamingHttpResponse(self.output_stream_generator())
         return resp
 
 
-class ProjectStageCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
+class ProjectStageList(ProjectSubPageMixin, SingleTableView):
+    """
+    Project Stage List page
+    """
+
+    table_class = tables.StageTable
+    model = models.Stage
+
+    def get_queryset(self):
+        return self.project.get_stages().annotate(deployment_count=Count('deployment'))
+
+
+class ProjectStageCreate(MultipleGroupRequiredMixin, ProjectSubPageMixin, CreateView):
     """
     Create/Add a Stage to a Project
     """
@@ -503,7 +558,7 @@ class ProjectStageCreate(MultipleGroupRequiredMixin, BaseGetProjectCreateView):
         return super(ProjectStageCreate, self).form_valid(form)
 
 
-class ProjectStageUpdate(MultipleGroupRequiredMixin, UpdateView):
+class ProjectStageUpdate(MultipleGroupRequiredMixin, ProjectSubPageMixin, UpdateView):
     """
     Project Stage Update form
     """
@@ -513,7 +568,7 @@ class ProjectStageUpdate(MultipleGroupRequiredMixin, UpdateView):
     form_class = forms.StageUpdateForm
 
 
-class ProjectStageView(DetailView):
+class ProjectStageView(ProjectSubPageMixin, DetailView):
     """
     Display the details on a project stage: List Hosts, Configurations, and Tasks available to run
     """
@@ -533,20 +588,10 @@ class ProjectStageView(DetailView):
 
         context['available_hosts'] = Host.objects.exclude(id__in=[host.pk for host in stage_hosts]).all()
 
-        # Configuration Table
-        configuration_table = tables.ConfigurationTable(self.object.stage_configurations())
-        RequestConfig(self.request).configure(configuration_table)
-        context['configurations'] = configuration_table
-
-        #deployment table
-        deployment_table = tables.DeploymentTable(models.Deployment.objects.filter(stage=self.object).select_related('stage', 'task'), prefix='deploy_')
-        RequestConfig(self.request).configure(deployment_table)
-        context['deployment_table'] = deployment_table
-
         return context
 
 
-class ProjectStageTasksAjax(DetailView):
+class ProjectStageTasksAjax(ProjectSubPageMixin, DetailView):
     model = models.Stage
     template_name = 'projects/stage_tasks_snippet.html'
 
@@ -564,12 +609,15 @@ class ProjectStageTasksAjax(DetailView):
         return context
 
 
-class ProjectStageDelete(MultipleGroupRequiredMixin, DeleteView):
+class ProjectStageDelete(MultipleGroupRequiredMixin, ProjectSubPageMixin, DeleteView):
     """
     Delete a project stage
     """
     group_required = ['Admin', ]
     model = models.Stage
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProjectStageDelete, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -580,7 +628,38 @@ class ProjectStageDelete(MultipleGroupRequiredMixin, DeleteView):
         return HttpResponseRedirect(reverse('projects_project_view', args=(self.object.project.pk,)))
 
 
-class ProjectStageMapHost(MultipleGroupRequiredMixin, RedirectView):
+class StageDeploymentList(StageSubPageMixin, SingleTableView):
+    """
+    Project Deployment List page
+    """
+
+    table_class = tables.DeploymentTable
+    model = models.Deployment
+    template_name_suffix = '_stage_list'
+
+    def get_queryset(self):
+        return models.Deployment.objects.filter(stage=self.stage).select_related('stage', 'task')
+
+    def get_table(self, **kwargs):
+        table = super(StageDeploymentList, self).get_table(**kwargs)
+        table.base_columns['stage'].visible = False
+        return table
+
+
+class StageConfigurationList(StageSubPageMixin, SingleTableView):
+    """
+    Stage Configuration List page
+    """
+
+    table_class = tables.ConfigurationTable
+    model = models.Configuration
+    template_name_suffix = '_stage_list'
+
+    def get_queryset(self):
+        return self.stage.stage_configurations()
+
+
+class ProjectStageMapHost(MultipleGroupRequiredMixin, StageSubPageMixin, RedirectView):
     """
     Map a Project Stage to a Host
     """
@@ -588,20 +667,17 @@ class ProjectStageMapHost(MultipleGroupRequiredMixin, RedirectView):
     permanent = False
 
     def get(self, request, *args, **kwargs):
-        self.project_id = kwargs.get('project_id')
-        self.stage_id = kwargs.get('pk')
         host_id = kwargs.get('host_id')
 
-        stage = models.Stage.objects.get(pk=self.stage_id)
-        stage.hosts.add(Host.objects.get(pk=host_id))
+        self.stage.hosts.add(Host.objects.get(pk=host_id))
 
         return super(ProjectStageMapHost, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        return reverse('projects_stage_view', args=(self.project_id, self.stage_id,))
+        return reverse('projects_stage_view', args=(self.project.pk, self.stage.pk,))
 
 
-class ProjectStageUnmapHost(MultipleGroupRequiredMixin, RedirectView):
+class ProjectStageUnmapHost(MultipleGroupRequiredMixin, StageSubPageMixin, RedirectView):
     """
     Unmap a Project Stage from a Host (deletes the Stage->Host through table record)
     """
@@ -609,17 +685,15 @@ class ProjectStageUnmapHost(MultipleGroupRequiredMixin, RedirectView):
     permanent = False
 
     def get(self, request, *args, **kwargs):
-        self.stage_id = kwargs.get('pk')
         host_id = kwargs.get('host_id')
 
-        self.stage = models.Stage.objects.get(pk=self.stage_id)
         host = Host.objects.get(pk=int(host_id))
         self.stage.hosts.remove(host)
 
         return super(ProjectStageUnmapHost, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        return reverse('projects_stage_view', args=(self.stage.project.pk, self.stage_id,))
+        return reverse('projects_stage_view', args=(self.project.pk, self.stage.pk,))
 
 
 class ProjectInvalidateCache(RedirectView):

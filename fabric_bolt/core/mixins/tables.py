@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django.core.paginator import Paginator
 from django.core import urlresolvers
-from django.utils.html import mark_safe, escape
+from django.utils.html import mark_safe
 
 import django_tables2 as tables
 from django_tables2.tables import Table
@@ -55,6 +55,18 @@ class ActionsColumn(tables.Column):
             ))
 
         return mark_safe(self.delimiter.join(links))
+
+
+class BooleanColumn(tables.BooleanColumn):
+    def render(self, value):
+        value = bool(value)
+
+        if value:
+            html = '<i class="glyphicon glyphicon-ok"></i>'
+        else:
+            html = '<i class="glyphicon glyphicon-remove"></i>'
+
+        return mark_safe(html)
 
 
 class PaginateTable(Table):

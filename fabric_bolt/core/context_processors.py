@@ -10,5 +10,4 @@ def sidebar_lists(request):
     context['sidebar_hosts'] = Host.objects.all()
     context['sidebar_projects'] = Project.active_records.all()
     context['sidebar_users'] = get_user_model().objects.all()
-    context['system_hooks'] = Hook.objects.filter(project=None)
     return context
