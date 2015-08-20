@@ -38,6 +38,18 @@ class TestAccountViews(TestCase):
 
         self.assertEqual(u.first_name, 'sue')
 
+    def test_accounts_user_change(self):
+
+        self.assertEqual(User.objects.all().count(), 2)
+
+        view = reverse('accounts_user_delete', args=(self.user_john.pk,))
+
+        post_response = self.client.post(view)
+
+        self.assertTrue(get_response.status_code, 302)
+
+        self.assertEqual(User.objects.all().count(), 1)
+
 
     def test_accounts_user_view(self):
         view = reverse('accounts_user_view', args=(self.user_john.pk,))
