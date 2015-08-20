@@ -17,7 +17,7 @@ from fabric_bolt.web_hooks import models as hook_models
 User = get_user_model()
 
 
-class TestURLS(TestCase):
+class TestHooksURLS(TestCase):
 
     project_type = None
     project = None
