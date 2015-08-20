@@ -1,11 +1,11 @@
 Fabric Bolt
 ===========
 
-.. image:: https://travis-ci.org/worthwhile/fabric-bolt.png?branch=master
-        :target: https://travis-ci.org/worthwhile/fabric-bolt
+.. image:: https://travis-ci.org/fabric-bolt/fabric-bolt.png?branch=master
+        :target: https://travis-ci.org/fabric-bolt/fabric-bolt
 
-.. image:: https://coveralls.io/repos/worthwhile/fabric-bolt/badge.svg?branch=master
-        :target: https://coveralls.io/r/worthwhile/fabric-bolt?branch=master
+.. image:: https://coveralls.io/repos/fabric-bolt/fabric-bolt/badge.svg?branch=master
+        :target: https://coveralls.io/r/fabric-bolt/fabric-bolt?branch=master
 
 | **tl;dr**
 | A web interface for fabric deployments.
@@ -16,7 +16,7 @@ logs are stored so that you know who, what, where, when, and why something was d
 
 Documentation found at http://fabric-bolt.readthedocs.org/en/latest/
 
-.. image:: https://raw.github.com/worthwhile/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.18%20PM.png
+.. image:: https://raw.github.com/fabric-bolt/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.18%20PM.png
 
 Quickstart
 ----------
