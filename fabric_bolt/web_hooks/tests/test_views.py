@@ -10,7 +10,7 @@ from django.forms.models import model_to_dict
 User = get_user_model()
 
 
-class TestHooks(TestCase):
+class TestHooksViews(TestCase):
 
     project_type = None
     project = None

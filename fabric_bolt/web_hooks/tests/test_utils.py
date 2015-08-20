@@ -34,7 +34,7 @@ def custom_payload_generator(*args, **kwargs):
     raise CustomError('Error Raised')
 
 
-class TestHooks(TestCase):
+class TestHooksUtils(TestCase):
 
     project_type = None
     project = None

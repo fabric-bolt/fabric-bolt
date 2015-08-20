@@ -14,7 +14,7 @@ from fabric_bolt.web_hooks import forms
 User = get_user_model()
 
 
-class TestHooks(TestCase):
+class TestHooksForms(TestCase):
 
     project_type = None
     project = None
