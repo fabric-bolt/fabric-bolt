@@ -46,7 +46,7 @@ class TestAccountViews(TestCase):
 
         post_response = self.client.post(view)
 
-        self.assertTrue(get_response.status_code, 302)
+        self.assertTrue(post_response.status_code, 302)
 
         self.assertEqual(User.objects.all().count(), 1)
 
