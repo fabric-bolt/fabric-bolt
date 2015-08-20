@@ -213,6 +213,7 @@ class RecentDeploymentsTable(tables.Table):
             'status',
             'actions',
         )
+        empty_text = "This user hasn't made any deployments."
 
 
 class StageHostTable(PaginateTable):
