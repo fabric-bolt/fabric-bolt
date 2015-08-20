@@ -142,7 +142,7 @@ class DeploymentTable(PaginateTable):
     user = LinkColumn(
         'accounts_user_view',
         accessor='user.email',
-        args=[tables.A('pk')],
+        args=[tables.A('user.pk')],
         attrs={'data-toggle': 'tooltip','title': 'View user details','data-delay': '{ "show": 300, "hide": 0 }'},
         verbose_name='Deployer'
     )
