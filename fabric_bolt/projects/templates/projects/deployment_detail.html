@@ -20,11 +20,11 @@
                     <dt>Date Started</dt>
                     <dd>{{ object.date_created }}</dd>
                     <dt>Deployer</dt>
-                    <dd>{{ object.user.email }}</dd>
+                    <dd><a href="{% url "accounts_user_view" object.user.pk %}">{{ object.user.email }}</a></dd>
                     <dt>Project</dt>
-                    <dd>{{ object.stage.project.name }}</dd>
+                    <dd><a href="{% url "projects_project_view" object.stage.project.pk %}">{{ object.stage.project.name }}</a></dd>
                     <dt>Stage</dt>
-                    <dd>{{ object.stage.name }}</dd>
+                    <dd><a href="{% url "projects_stage_view" object.stage.project.pk object.stage.pk %}">{{ object.stage.name }}</a></dd>
                     <dt>Task</dt>
                     <dd>{{ object.task.name }}</dd>
                     <dt>Task Description</dt>
