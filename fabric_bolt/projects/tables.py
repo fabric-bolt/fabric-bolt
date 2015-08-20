@@ -187,7 +187,7 @@ class RecentDeploymentsTable(tables.Table):
     stage = tables.Column(accessor='stage.name', verbose_name='Stage', orderable=False)
     task_name = tables.Column(accessor='task.name', verbose_name='Task', orderable=False)
     status = tables.TemplateColumn(
-        template_name='projects/pieces/deployment_status_column.html',
+        template_name='projects/pieces/recentdeployment_status_column.html',
         verbose_name='Status'
     )
 
@@ -213,6 +213,7 @@ class RecentDeploymentsTable(tables.Table):
             'status',
             'actions',
         )
+        empty_text = "This user hasn't made any deployments."
 
 
 class StageHostTable(PaginateTable):

@@ -89,7 +89,7 @@ class UserDetail(DetailView):
         context = super(UserDetail, self).get_context_data(**kwargs)
 
         # recent deployment table (theh 10 most recent)
-        deployment_table = RecentDeploymentsTable(Deployment.objects.order_by('-date_created').select_related('stage', 'task')[:10], prefix='deploy_')
+        deployment_table = RecentDeploymentsTable(Deployment.objects.filter(user=kwargs['object']).order_by('-date_created').select_related('stage', 'task')[:10], prefix='deploy_')
         context['deployment_table'] = deployment_table
 
         return context
