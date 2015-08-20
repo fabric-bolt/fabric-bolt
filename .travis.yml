@@ -21,6 +21,8 @@ before_script:
 script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
     - coverage run --source=. fabric_bolt/manage.py test
-
+cache:
+  directories
+    - $HOME/virtualenv/python2.7.9/lib/python2.7/site-packages
 after_success:
     - coveralls
