@@ -5,7 +5,7 @@ python:
 services:
   - postgresql
 env:
-  - DATABASE_URL='postgres://postgres:@localhost:5432/fabric_bolt_test' SECRET_KEY='tT\xd7\xb06\xf7\x9b\xff\x0fZL\xca\xca\x11\xefM\xacr\xfb\xdf\xca\x9b' DJANGO_SETTINGS_MODULE='fabric_bolt.core.settings.test'
+  - DATABASE_URL='postgres://postgres:@localhost:5432/fabric_bolt_test' SECRET_KEY='tT\xd7\xb06\xf7\x9b\xff\x0fZL\xca\xca\x11\xefM\xacr\xfb\xdf\xca\x9b' DJANGO_SETTINGS_MODULE='fabric_bolt.core.settings.test' PIP_DOWNLOAD_CACHE=$HOME/.pip-cache
 notifications:
   email: false
 addons:
@@ -23,6 +23,6 @@ script:
     - coverage run --source=. fabric_bolt/manage.py test
 cache:
   directories
-    - $HOME/virtualenv/python2.7.9/lib/python2.7/site-packages
+    - $HOME/.pip-cache/
 after_success:
     - coveralls
