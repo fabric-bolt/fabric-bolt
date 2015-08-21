@@ -172,6 +172,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'graphos',
     'django_activeurl',
+    'authtools',
 
     # Project
     'fabric_bolt.accounts',
@@ -205,9 +206,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap3"
 ########## END CRISPY CONFIGURATION
 
 
-########## EMAIL CONFIGURATION
+########## AUTH_USER_MODEL CONFIGURATION
 AUTH_USER_MODEL = 'accounts.DeployUser'
-########## END EMAIL CONFIGURATION
+########## END AUTH_USER_MODEL CONFIGURATION
 
 
 ########## EMAIL CONFIGURATION
