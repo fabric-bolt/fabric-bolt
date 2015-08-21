@@ -1,19 +1,18 @@
 """
 Tests for accounts app
 """
+from django.contrib.auth import get_user_model
 
 from django.test import TestCase
 from django.contrib.auth.models import Group
 
 from model_mommy import mommy
 
-from fabric_bolt.accounts.models import DeployUser
-
 
 class ModelsTest(TestCase):
     def test_user_get_groups(self):
         group = mommy.make(Group, name=u'test-group')
-        user = mommy.make(DeployUser, groups=[group])
+        user = mommy.make(get_user_model(), groups=[group])
 
         self.assertListEqual(user._get_groups(), [u'test-group'])
 
@@ -21,7 +20,7 @@ class ModelsTest(TestCase):
         self.assertListEqual(user._get_groups(), [u'test-group'])
 
     def test_user_is_admin(self):
-        user = mommy.prepare(DeployUser)
+        user = mommy.prepare(get_user_model())
 
         self.assertFalse(user.user_is_admin())
 
@@ -40,7 +39,7 @@ class ModelsTest(TestCase):
         self.assertTrue(user.user_is_admin())
 
     def test_user_is_deployer(self):
-        user = mommy.prepare(DeployUser)
+        user = mommy.prepare(get_user_model())
 
         self.assertFalse(user.user_is_deployer())
 
@@ -59,7 +58,7 @@ class ModelsTest(TestCase):
         self.assertTrue(user.user_is_deployer())
 
     def test_user_is_historian(self):
-        user = mommy.prepare(DeployUser)
+        user = mommy.prepare(get_user_model())
 
         self.assertFalse(user.user_is_historian())
 
@@ -78,7 +77,7 @@ class ModelsTest(TestCase):
         self.assertTrue(user.user_is_historian())
 
     def test_user_group_strigify(self):
-        user = mommy.make(DeployUser)
+        user = mommy.make(get_user_model())
 
         self.assertEqual(user.group_strigify(), '')
 
@@ -93,18 +92,18 @@ class ModelsTest(TestCase):
         self.assertEqual(user.group_strigify(), 'junk-group/New-Admin')
 
     def test_user_gravatar(self):
-        user = mommy.make(DeployUser, email='email@example.com')
+        user = mommy.make(get_user_model(), email='email@example.com')
 
         self.assertEqual(user.gravatar(30), 'http://www.gravatar.com/avatar/5658ffccee7f0ebfda2b226238b1eb6e?s=30&d=mm')
 
     def test_createsuperuser(self):
-        user = DeployUser.objects.create_superuser(email='test@test.com', password='password')
+        user = get_user_model().objects.create_superuser(email='test@test.com', password='password')
         self.assertTrue(user.user_is_admin())
         self.assertFalse(user.user_is_deployer())
         self.assertFalse(user.user_is_historian())
 
     def test_createuser(self):
-        user = DeployUser.objects.create_user(email='test@test.com', password='password')
+        user = get_user_model().objects.create_user(email='test@test.com', password='password')
         self.assertTrue(user.user_is_historian())
         self.assertFalse(user.user_is_deployer())
         self.assertFalse(user.user_is_admin())

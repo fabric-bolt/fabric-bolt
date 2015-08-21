@@ -1,10 +1,10 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
 from authtools.admin import UserAdmin
 
-from fabric_bolt.accounts.models import DeployUser
 from fabric_bolt.accounts.forms import UserChangeForm, UserCreationForm
 
 
@@ -57,4 +57,5 @@ class DeployUserAdmin(UserAdmin):
         form.set_permissions(obj)
 
 # Register the new DeployUserAdmin
-admin.site.register(DeployUser, DeployUserAdmin)
+
+# admin.site.register(get_user_model(), DeployUserAdmin)
