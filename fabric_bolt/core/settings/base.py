@@ -194,7 +194,7 @@ STRONGHOLD_PUBLIC_NAMED_URLS = (
     'business_redirect_setup',
 )
 STRONGHOLD_PUBLIC_URLS = (
-    r'^/reset/[0-9A-Za-z_\-]+/[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/',
+    r'^/users/reset/[0-9A-Za-z_\-]+/[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/',
     r'^/api/v1/.*'
 )
 ########## END STRONGHOLD CONFIGURATION
