@@ -2,7 +2,8 @@ from django import forms
 from django.core.urlresolvers import reverse
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Submit, HTML
+from crispy_forms.layout import Layout, Submit, HTML
+from crispy_forms.bootstrap import FormActions
 
 from fabric_bolt.web_hooks import models
 
@@ -25,7 +26,7 @@ class HookCreateForm(forms.ModelForm):
             'project',
             'url',
 
-            ButtonHolder(
+            FormActions(
                 Submit('submit', '%s Hook' % self.button_prefix, css_class='button')
             )
         )
@@ -56,7 +57,7 @@ class HookUpdateForm(HookCreateForm):
             'project',
             'url',
 
-            ButtonHolder(
+            FormActions(
                 Submit('submit', '%s Hook' % self.button_prefix, css_class='button'),
                 HTML('<a href="' + delete_url + '" class="btn btn-danger">Delete Hook</a>'),
             )
