@@ -3,7 +3,8 @@ import re
 from django import forms
 from django.core.validators import RegexValidator
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Submit
+from crispy_forms.bootstrap import FormActions
 
 from fabric_bolt.projects import models
 
@@ -30,7 +31,7 @@ class ProjectCreateForm(forms.ModelForm):
             'use_repo_fabfile',
             'repo_url',
             'fabfile_requirements',
-            ButtonHolder(
+            FormActions(
                 Submit('submit', '%s Project' % self.button_prefix, css_class='button')
             )
         )
@@ -77,7 +78,7 @@ class ConfigurationUpdateForm(forms.ModelForm):
             'task_name',
             'prompt_me_for_input',
             'sensitive_value',
-            ButtonHolder(
+            FormActions(
                 Submit('submit', '%s Configuration' % self.button_prefix, css_class='btn')
             )
         )
@@ -143,7 +144,7 @@ class DeploymentForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             'comments',
-            ButtonHolder(
+            FormActions(
                 Submit('submit', 'Go!', css_class='btn btn-success')
             )
         )
@@ -162,7 +163,7 @@ class StageCreateForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             'name',
-            ButtonHolder(
+            FormActions(
                 Submit('submit', '%s Stage' % self.button_prefix, css_class='button')
             )
         )

@@ -1,6 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Submit
+from crispy_forms.bootstrap import FormActions
 
 from fabric_bolt.hosts import models
 
@@ -17,7 +18,7 @@ class HostCreateForm(forms.ModelForm):
     helper.layout = Layout(
         'name',
         'alias',
-        ButtonHolder(
+        FormActions(
             Submit('submit', 'Create Host', css_class='button')
         )
     )
@@ -32,7 +33,7 @@ class HostUpdateForm(HostCreateForm):
     helper.layout = Layout(
         'name',
         'alias',
-        ButtonHolder(
+        FormActions(
             Submit('submit', 'Update Host', css_class='button')
         )
     )
