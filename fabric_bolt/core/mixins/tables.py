@@ -95,7 +95,8 @@ class PaginateTable(Table):
         method and should be handled by the caller.
         """
 
-        self.per_page_options = [20, 50, 100, 200]  # This should probably be a passed in option
+        self.per_page_options = [25, 50, 100, 200]  # This should probably be a passed in option
+
         self.per_page = per_page = per_page or self._meta.per_page
 
         self.paginator = klass(self.rows, per_page, *args, **kwargs)
