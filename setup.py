@@ -44,7 +44,7 @@ mysql_requires = [
 
 setup(
     name='fabric-bolt',
-    version='0.1b1',
+    version='0.1',
     author='Dan Dietz, Nathaniel Pardington, Jared Proffitt',
     url='https://github.com/fabric-bolt/fabric-bolt',
     description='A web interface to fabric deployments.',

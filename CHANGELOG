@@ -1,13 +1,29 @@
-v 0.1 (in development)
-  - Added support for using the fabfile in each project's repo
-  - Added "launch window" feature
-  - Added experimental socket.io support for deployment output. (use SOCKETIO_ENABLED setting)
-  - Fixed an issue where deleted projects showed up in graphs and sidebar (issue #67)
-  - Fixed an issue where admins could not set user's user level. (issue #64)
-  - Added alias to hosts model. (thanks Hedde!)
-  - Added note in README about creating a super user (thanks madazone!)
-  - Fixed injection security bug in fab command
-  - Using virtualenv to run project fabfiles
-  - Added task argument support!
-  - Fabric task lists are now cached per project. Invalidate the cache on the project detail page.
-  - Upgraded to django 1.7. IMPORTANT: run fabric-bolt migrate.
+v 0.1 (8/23/2015)
+    - Added support for using the fabfile in each project's repo
+    - Added "launch window" feature
+    - Added experimental socket.io support for deployment output. (use SOCKETIO_ENABLED setting)
+    - Fixed an issue where deleted projects showed up in graphs and sidebar (issue #67)
+    - Fixed an issue where admins could not set user's user level. (issue #64)
+    - Added alias to hosts model. (thanks Hedde)
+    - Added note in README about creating a super user (thanks madazone)
+    - Fixed injection security bug in fab command
+    - Using virtualenv to run project fabfiles
+    - Added task argument support
+    - Fabric task lists are now cached per project. Invalidate the cache on the project detail page.
+    - Upgraded to django 1.8. IMPORTANT: run fabric-bolt migrate --fake-initial.
+    - Caching fab task list
+    - Add web hooks feature
+    - Much better template layout
+    - Made all urls cleaner
+    - Added "duplicate project" feature. (thanks m-mix)
+    - Fixed some issues in the django admin (#98)
+    - Fixed url validator. (thanks Danilo Chilene)
+    - Create super user now creates an admin user. (#112)
+    - Fixed redirect url when creating a project config (thanks scytlautomation)
+    - Added more unit tests
+    - Added SHELL setting (thanks msurdi)
+    - Added deployer to deployments details (thanks slok)
+    - Added grappelli as a requirement (thanks gvangool)
+    - Fixed key_filename setting (thanks gvangool)
+    - Added a recent deployment table to user page (thanks gvangool)
+    - Fix tables per page option (#119)
