@@ -1,4 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'projects/project_base.html' %}
+
+{% block project_breadcrumb_links %}
+    <li><a href="{% url 'projects_project_view' project.pk %}">{{ project.name }}</a></li>
+    <li><a href="{% url 'projects_configuration_list' project.pk %}">Configurations</a></li>
+    <li class="active">Delete Configuration</li>
+{% endblock project_breadcrumb_links %}
 
 {% block content %}
     <h1>Delete Configuration?</h1>

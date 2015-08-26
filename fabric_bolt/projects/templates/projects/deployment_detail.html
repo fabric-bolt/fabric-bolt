@@ -1,17 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'projects/stage_base.html' %}
 {% load humanize %}
 {% load sekizai_tags %}
 {% load staticfiles %}
 
-
-{% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
-        <li><a href="{% url 'projects_project_view' object.stage.project.pk %}">{{ object.stage.project.name }}</a></li>
-        <li><a href="{% url 'projects_stage_view' object.stage.project.pk object.stage.pk %}">{{ object.stage.name }}</a></li>
-        <li class="active">Deployment started {{ object.date_created|naturaltime }}</li>
-    </ol>
-{% endblock breadcrumb %}
+{% block stage_breadcrumb_links %}
+    <li><a href="{% url 'projects_stage_view' stage.project.pk stage.pk %}">{{ stage.name }}</a></li>
+    <li class="active">Deployment started {{ object.date_created|naturaltime }}</li>
+{% endblock stage_breadcrumb_links %}
 
 {% block content %}
     <h1>Deployment started {{ object.date_created|naturaltime }}</h1><br/>
@@ -24,10 +19,12 @@
                     <dd>{{ object.comments }}</dd>
                     <dt>Date Started</dt>
                     <dd>{{ object.date_created }}</dd>
+                    <dt>Deployer</dt>
+                    <dd><a href="{% url "accounts_user_view" object.user.pk %}">{{ object.user.email }}</a></dd>
                     <dt>Project</dt>
-                    <dd>{{ object.stage.project.name }}</dd>
+                    <dd><a href="{% url "projects_project_view" object.stage.project.pk %}">{{ object.stage.project.name }}</a></dd>
                     <dt>Stage</dt>
-                    <dd>{{ object.stage.name }}</dd>
+                    <dd><a href="{% url "projects_stage_view" object.stage.project.pk object.stage.pk %}">{{ object.stage.name }}</a></dd>
                     <dt>Task</dt>
                     <dd>{{ object.task.name }}</dd>
                     <dt>Task Description</dt>
@@ -55,7 +52,7 @@
     <div class="well">
         {% block output %}
             {% if object.status == object.PENDING %}
-                <iframe src="{% url 'projects_deployment_output' object.pk %}" id="deployment_output"></iframe>
+                <iframe src="{% url 'projects_deployment_output' object.stage.project_id object.stage_id object.pk %}" id="deployment_output"></iframe>
             {% else %}
                 <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
             {% endif %}

@@ -124,10 +124,10 @@ class TestHooks(TestCase):
 
         self.assertEqual(ret.status_code, 200)
 
-    def test_task_post_data_run(self):
-
-        d = DeliverHook()
-        ret = d.run('http://www.example.com', {'junk': 'payload'})
+    # def test_task_post_data_run(self):
+    #
+    #     d = DeliverHook()
+    #     ret = d.run('http://www.example.com', {'junk': 'payload'})
 
     @mock.patch('fabric_bolt.web_hooks.tasks.requests')
     def test_task_delete_hook_410(self, mock_requests):

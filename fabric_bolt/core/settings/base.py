@@ -170,6 +170,9 @@ INSTALLED_APPS = (
     'stronghold',
     'django_tables2',
     'bootstrapform',
+    'graphos',
+    'django_activeurl',
+    'authtools',
 
     # Project
     'fabric_bolt.accounts',
@@ -183,7 +186,7 @@ INSTALLED_APPS = (
 FABFILE_PATH = os.path.join(os.path.dirname(PROJECT_DIR), 'fabfile.py')
 
 ########## STRONGHOLD CONFIGURATION
-LOGIN_URL = '/login/'
+LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 STRONGHOLD_PUBLIC_NAMED_URLS = (
     'password_reset',
@@ -192,7 +195,7 @@ STRONGHOLD_PUBLIC_NAMED_URLS = (
     'business_redirect_setup',
 )
 STRONGHOLD_PUBLIC_URLS = (
-    r'^/reset/[0-9A-Za-z_\-]+/[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/',
+    r'^/users/reset/[0-9A-Za-z_\-]+/[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/',
     r'^/api/v1/.*'
 )
 ########## END STRONGHOLD CONFIGURATION
@@ -203,9 +206,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap3"
 ########## END CRISPY CONFIGURATION
 
 
-########## EMAIL CONFIGURATION
+########## AUTH_USER_MODEL CONFIGURATION
 AUTH_USER_MODEL = 'accounts.DeployUser'
-########## END EMAIL CONFIGURATION
+########## END AUTH_USER_MODEL CONFIGURATION
 
 
 ########## EMAIL CONFIGURATION

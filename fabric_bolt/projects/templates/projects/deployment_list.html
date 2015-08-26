@@ -1,0 +1,19 @@
+{% extends 'projects/project_base.html' %}
+{% load crispy_forms_tags %}
+{% load sekizai_tags %}
+{% load render_table from django_tables2 %}
+
+{% block project_breadcrumb_links %}
+    <li><a href="{% url 'projects_project_view' project.pk %}">{{ project.name }}</a></li>
+    <li class="active">Deployments</li>
+{% endblock project_breadcrumb_links %}
+
+{% block content %}
+
+    <h1>Project Deployments
+        <i class="glyphicon glyphicon-info-sign small" data-toggle="tooltip" data-delay="{ 'show': 300, 'hide': 0 }"
+                           data-original-title="See what was shipped out when, and the status of each attempt."></i>
+    </h1><br/>
+    {% render_table table %}
+
+{% endblock content %}

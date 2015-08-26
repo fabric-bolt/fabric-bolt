@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'projects_project_list' %}">Hooks</a></li>
+        <li class="active">{{ object }}</li>
+    </ol>
+{% endblock breadcrumb %}
+
 {% block content %}
     <h1 style="margin-bottom:30px;">Host {{ object }}
         <span class="pull-right">

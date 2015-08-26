@@ -4,6 +4,7 @@ from django.db import models
 from django.core.validators import URLValidator, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
+
 class SchemelessURLValidator(URLValidator):
     """Old valitador, keeping to migrations work"""
     regex = re.compile(
@@ -25,6 +26,7 @@ def full_domain_validator(hostname):
         - Labels can't start or end with a hyphen.
     """
     HOSTNAME_LABEL_PATTERN = re.compile("(?!-)[A-Z\d-]+(?<!-)$", re.IGNORECASE)
+
     if not hostname:
         return
     if len(hostname) > 255:

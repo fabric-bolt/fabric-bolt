@@ -14,7 +14,9 @@ from django_tables2 import SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.accounts import forms, tables
-from fabric_bolt.accounts.models import DeployUser
+from django.contrib.auth import get_user_model
+from fabric_bolt.projects.models import Deployment
+from fabric_bolt.projects.tables import RecentDeploymentsTable
 
 
 class UserPermissions(TemplateView):
@@ -29,7 +31,7 @@ class UserList(MultipleGroupRequiredMixin, SingleTableView):
     group_required = 'Admin'
     template_name = 'accounts/user_list.html'
     table_class = tables.UserListTable
-    model = DeployUser
+    model = get_user_model()
 
 
 # Admin Change/Edit User (modal)
@@ -37,7 +39,7 @@ class UserChange(UpdateView):
     """
     Change/Edit User view. Used in a modal window.
     """
-    model = DeployUser
+    model = get_user_model()
     success_url = reverse_lazy('accounts_user_list', args=())
     form_class = forms.UserChangeForm
     template_name = 'accounts/deployuser_change.html'
@@ -66,7 +68,7 @@ class UserAdd(MultipleGroupRequiredMixin, CreateView):
     Create User view. Used in a modal window.
     """
     group_required = 'Admin'
-    model = DeployUser
+    model = get_user_model()
     success_url = reverse_lazy('accounts_user_list', args=())
     form_class = forms.UserCreationForm
     template_name = 'accounts/deployuser_create.html'
@@ -80,13 +82,23 @@ class UserAdd(MultipleGroupRequiredMixin, CreateView):
 
 # Admin User Detail
 class UserDetail(DetailView):
-    model = DeployUser
+    model = get_user_model()
+
+    def get_context_data(self, **kwargs):
+
+        context = super(UserDetail, self).get_context_data(**kwargs)
+
+        # recent deployment table (theh 10 most recent)
+        deployment_table = RecentDeploymentsTable(Deployment.objects.filter(user=kwargs['object']).order_by('-date_created').select_related('stage', 'task')[:10], prefix='deploy_')
+        context['deployment_table'] = deployment_table
+
+        return context
 
 
 # Admin Delete User
 class UserDelete(MultipleGroupRequiredMixin, DeleteView):
     group_required = 'Admin'
-    model = DeployUser
+    model = get_user_model()
     success_url = reverse_lazy('accounts_user_list')
 
     def delete(self, request, *args, **kwargs):

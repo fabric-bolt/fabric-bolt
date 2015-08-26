@@ -7,8 +7,6 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.forms import PasswordResetForm
 from django.utils.translation import ugettext_lazy as _
 
-from .models import DeployUser
-
 
 class UserChangeForm(forms.ModelForm):
     """
@@ -18,7 +16,7 @@ class UserChangeForm(forms.ModelForm):
     is_active = forms.ChoiceField(choices=((True, 'Active'), (False, 'Disabled')), label='Status')
 
     class Meta:
-        model = DeployUser
+        model = get_user_model()
         fields = ['email', 'first_name', 'last_name', 'user_level', 'is_active', 'template']
 
     def __init__(self, *args, **kwargs):

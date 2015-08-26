@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django.core.paginator import Paginator
 from django.core import urlresolvers
-from django.utils.html import mark_safe, escape
+from django.utils.html import mark_safe
 
 import django_tables2 as tables
 from django_tables2.tables import Table
@@ -57,6 +57,18 @@ class ActionsColumn(tables.Column):
         return mark_safe(self.delimiter.join(links))
 
 
+class BooleanColumn(tables.BooleanColumn):
+    def render(self, value):
+        value = bool(value)
+
+        if value:
+            html = '<i class="glyphicon glyphicon-ok"></i>'
+        else:
+            html = '<i class="glyphicon glyphicon-remove"></i>'
+
+        return mark_safe(html)
+
+
 class PaginateTable(Table):
     """Generic table class that makes use of Django's built in paginate functionality"""
 
@@ -83,7 +95,8 @@ class PaginateTable(Table):
         method and should be handled by the caller.
         """
 
-        self.per_page_options = [20, 50, 100, 200]  # This should probably be a passed in option
+        self.per_page_options = [25, 50, 100, 200]  # This should probably be a passed in option
+
         self.per_page = per_page = per_page or self._meta.per_page
 
         self.paginator = klass(self.rows, per_page, *args, **kwargs)
