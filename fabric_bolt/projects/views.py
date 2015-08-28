@@ -533,7 +533,7 @@ class ProjectStageList(ProjectSubPageMixin, SingleTableView):
     model = models.Stage
 
     def get_queryset(self):
-        return self.project.get_stages().annotate(deployment_count=Count('deployment'))
+        return self.project.get_stages().annotate(deployment_count=Count('deployment'), host_count=Count('hosts'))
 
 
 class ProjectStageCreate(MultipleGroupRequiredMixin, ProjectSubPageMixin, CreateView):
