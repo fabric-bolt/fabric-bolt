@@ -18,6 +18,7 @@ from django.conf import settings
 from django.core.cache import cache
 
 from django_tables2 import RequestConfig, SingleTableView
+import ansiconv
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
@@ -464,6 +465,11 @@ class DeploymentDetail(StageSubPageMixin, DetailView):
     """
     model = models.Deployment
 
+    def get_context_data(self, **kwargs):
+        context = super(DeploymentDetail, self).get_context_data(**kwargs)
+        context['deploy_output'] = ansiconv.to_html(self.object.output) if self.object.output else ''
+        return context
+
     def get_template_names(self):
         if getattr(settings, 'SOCKETIO_ENABLED', False):
             return ['projects/deployment_detail_socketio.html']
@@ -490,14 +496,16 @@ class DeploymentOutputStream(StageSubPageMixin, View):
             )
 
             all_output = ''
+            yield '<link rel="stylesheet" type="text/css" href="/static/css/console-style.css">'
             while True:
                 nextline = process.stdout.readline()
-                if nextline == '' and process.poll() != None:
+                if nextline == '' and process.poll() is not None:
                     break
 
                 all_output += nextline
+                nextline = '<span class="output-line">{}</span>'.format(ansiconv.to_html(nextline))
+                yield nextline + ' '*1024
 
-                yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(nextline, ' '*1024)
                 sys.stdout.flush()
 
             self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
@@ -511,7 +519,7 @@ class DeploymentOutputStream(StageSubPageMixin, View):
 
         except Exception as e:
             message = "An error occurred: " + e.message
-            yield '<span style="color:rgb(200, 200, 200);font-size: 14px;font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif;">{} </span><br /> {}'.format(message, ' '*1024)
+            yield '<span class="output-line">{}</span>'.format(message) + ' '*1024
             yield '<span id="finished" style="display:none;">failed</span> {}'.format('*1024')
 
     def get(self, request, *args, **kwargs):
@@ -664,7 +672,7 @@ class ProjectStageMapHost(MultipleGroupRequiredMixin, StageSubPageMixin, Redirec
     """
     Map a Project Stage to a Host
     """
-    group_required = ['Admin',]
+    group_required = ['Admin', ]
     permanent = False
 
     def get(self, request, *args, **kwargs):

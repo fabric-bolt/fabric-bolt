@@ -12,7 +12,7 @@ $(function(){
 
         socket.on('output', function (data) {
             if(data.status == 'pending'){
-                $('#deployment_output pre').append(data.lines).scrollTop($('#deployment_output pre')[0].scrollHeight);
+                $('#deployment_output .output').append(data.lines).scrollTop($('#deployment_output .output')[0].scrollHeight);
             }else{
                 socket.disconnect();
                 if(data.status == 'failed'){
@@ -31,12 +31,12 @@ $(function(){
                 var text = $(this).val();
                 $(this).val('');
                 socket.emit('input', text);
-                $('#deployment_output pre').append('\n');
+                $('#deployment_output .output').append('\n');
             }
         });
 
 
     }else{
-        $('#deployment_output pre').scrollTop($('#deployment_output pre')[0].scrollHeight);
+        $('#deployment_output .output').scrollTop($('#deployment_output .output')[0].scrollHeight);
     }
 });

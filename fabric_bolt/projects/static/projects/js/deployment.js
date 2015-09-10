@@ -24,6 +24,6 @@ $(function(){
 
 
     }else{
-        $('#deployment_output pre').scrollTop($('#deployment_output pre')[0].scrollHeight);
+        $('#deployment_output .output').scrollTop($('#deployment_output .output')[0].scrollHeight);
     }
 });
