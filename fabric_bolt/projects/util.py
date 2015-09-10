@@ -119,9 +119,17 @@ def get_fabric_tasks(project):
         fabfile_path, activate_loc = get_fabfile_path(project)
 
         if activate_loc:
-            output = check_output('source {};fab --list --list-format=short --fabfile={}'.format(activate_loc, fabfile_path), shell=True)
+            output = check_output(
+                'source {};fab --list --list-format=short --fabfile={}'.format(activate_loc, fabfile_path),
+                shell=True
+            )
         else:
-            output = check_output(['fab', '--list', '--list-format=short', '--fabfile={}'.format(fabfile_path)])
+            print 'here'
+            output = check_output(
+                'fab --list --list-format=short --fabfile={}'.format(fabfile_path),
+                shell=True
+            )
+            print 'here2'
 
         lines = output.splitlines()
         tasks = []

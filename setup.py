@@ -5,40 +5,40 @@ from setuptools import setup, find_packages
 setup_requires = []
 
 install_requires = [
-    'django>=1.8.3,<1.9',
-    'pillow>=2.9.0,<2.10',
-    'django-stronghold>=0.2.7,<0.3',
+    'django==1.8.4',
+    'pillow==2.9.0',
+    'django-stronghold==0.2.7',
     'django-crispy-forms==1.5.1',
-    'django-authtools>=1.2.0,<1.3',
-    'django-tables2>=1.0.4,<1.1',
-    'django-braces>=1.8.1,<1.9',
-    'django-sekizai>=0.8.2,<0.9',
-    'fabric>=1.10.2,<1.11',
-    'logan>=0.7.1,<0.8',
-    'django-bootstrap-form>=3.2,<3.3',
-    'croniter>=0.3.8,<0.4',
-    'GitPython>=1.0.1,<1.1',
-    'gevent-socketio>=0.3.6,<0.4',
+    'django-authtools==1.2.0',
+    'django-tables2==1.0.4',
+    'django-braces==1.8.1',
+    'django-sekizai==0.8.2',
+    'fabric==1.10.2',
+    'logan==0.7.1',
+    'django-bootstrap-form==3.2',
+    'croniter==0.3.8',
+    'GitPython==1.0.1',
+    'gevent-socketio==0.3.6',
     'django-graphos==0.0.2a0',
-    'django-activeurl>=0.1.8,<0.2',
-    'requests>=2.7.0,<2.8',
-    'virtualenv>=13.1.0,<13.2',
-    'django-grappelli>=2.7.1,<2.8',
+    'django-activeurl==0.1.8',
+    'requests==2.7.0',
+    'virtualenv==13.1.0',
+    'django-grappelli==2.7.1',
 ]
 
 dev_requires = [
-    'django-debug-toolbar>=1.3.2,<1.4',
-    'django-debug-toolbar-template-timings>=0.6.4,<0.7',
-    'mock>=1.3.0,<1.4',
-    'model_mommy>=1.2.5,<1.3'
+    'django-debug-toolbar==1.3.2',
+    'django-debug-toolbar-template-timings==0.6.4',
+    'mock==1.3.0',
+    'model_mommy==1.2.5'
 ]
 
 postgres_requires = [
-    'psycopg2>=2.6.1,<2.7',
+    'psycopg2==2.6.1',
 ]
 
 mysql_requires = [
-    'MySQL-python>=1.2.5,<1.3',
+    'MySQL-python==1.2.5',
 ]
 
 
@@ -66,6 +66,6 @@ setup(
     },
     classifiers=[
         'Framework :: Django',
-        'Programming Language :: Python'
+        'Programming Language :: Python',
     ],
 )
