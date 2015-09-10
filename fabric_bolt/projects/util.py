@@ -124,12 +124,10 @@ def get_fabric_tasks(project):
                 shell=True
             )
         else:
-            print 'here'
             output = check_output(
                 'fab --list --list-format=short --fabfile={}'.format(fabfile_path),
                 shell=True
             )
-            print 'here2'
 
         lines = output.splitlines()
         tasks = []
@@ -213,11 +211,14 @@ def update_config_values_from_session(configs, session):
 def build_command(deployment, session, abort_on_prompts=True):
     # Get the dictionary of configurations for this stage
     configs = deployment.stage.get_configurations()
+
+    # arg_values = {u'comment_text': u'test'}
     configs, arg_values = update_config_values_from_session(configs, session)
 
     task_args = [key for key, config in configs.iteritems() if config.task_argument and config.task_name == deployment.task.name]
     task_configs = [key for key, config in configs.iteritems() if not config.task_argument]
 
+    # {'disable_known_hosts': 'disable-known-hosts', 'no_pty': 'no-pty', 'forward_agent': 'forward-agent', 'key_filename': 'key_filename', 'skip_bad_hosts': 'skip-bad-hosts', 'pool_size': 'pool-size', 'warn_only': 'warn-only', 'reject_unknown_hosts': 'reject-unknown-hosts', 'no_agent': 'no_agent', 'user': 'user', 'timeout': 'timeout', 'command_timeout': 'command-timeout', 'password': 'password', 'config': 'config', 'parallel': 'parallel', 'keepalive': 'keepalive'}
     command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
 
     # Take the special env variables out
@@ -267,6 +268,17 @@ def build_command(deployment, session, abort_on_prompts=True):
     hosts = deployment.stage.hosts.values_list('name', flat=True)
     if hosts:
         command += ' --hosts=' + ','.join(hosts)
+
+    if not configs.get('key_filename'):
+        # Get global SSH
+        from fabric_bolt.hosts.models import SSHConfig
+
+        ssh_config = SSHConfig.objects.first()
+
+        command += ' -i ' + ssh_config.private_key_file.file.name
+
+        if not configs.get('user'):
+            command += ' -u ' + ssh_config.remote_user
 
     fabfile_path, active_loc = get_fabfile_path(deployment.stage.project)
     command += ' --fabfile={}'.format(fabfile_path)
