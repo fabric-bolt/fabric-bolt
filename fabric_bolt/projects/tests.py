@@ -122,7 +122,7 @@ class BasicTests(TestCase):
         Tests that all views return status code of 200
         """
         c = self.client
-        result = c.get(reverse('projects_deployment_create', args=(self.project.pk, self.stage.pk, 'bootstrap')))
+        result = c.get(reverse('projects_deployment_create', args=(self.project.pk, self.stage.pk)) + '?task=bootstrap')
         self.assertIn(result.status_code, [200, 302])
 
         result = c.get(reverse('projects_deployment_detail', args=(self.project.pk, self.stage.pk, self.deployment.pk,)))

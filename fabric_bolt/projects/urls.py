@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^(?P<project_id>\w+)/configuration/(?P<pk>\w+)/delete/$', views.ProjectConfigurationDelete.as_view(), name='projects_configuration_delete'),
 
     url(r'^(?P<project_id>\w+)/deployment/$', views.ProjectDeploymentList.as_view(), name='projects_deployment_list'),
-    url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\d+)/deployment/create/(?P<task_name>\w+)/$', views.DeploymentCreate.as_view(), name='projects_deployment_create'),
+    url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\d+)/deployment/create/$', views.DeploymentCreate.as_view(), name='projects_deployment_create'),
     url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\d+)/deployment/(?P<pk>\d+)/$', views.DeploymentDetail.as_view(), name='projects_deployment_detail'),
     url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\d+)/deployment/(?P<pk>\d+)/output/$', views.DeploymentOutputStream.as_view(), name='projects_deployment_output'),
 

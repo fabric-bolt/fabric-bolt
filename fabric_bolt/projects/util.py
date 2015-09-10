@@ -155,9 +155,10 @@ def get_fabric_tasks(project):
 
 
 def get_task_details(project, task_name):
-    for details in get_fabric_tasks(project):
-        if details[0] == task_name:
-            return details
+    if task_name:
+        for details in get_fabric_tasks(project):
+            if details[0] == task_name:
+                return details
 
     return None
 
