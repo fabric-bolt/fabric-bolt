@@ -300,7 +300,7 @@ class ProjectConfigurationDelete(MultipleGroupRequiredMixin, ProjectSubPageMixin
 
     def get_success_url(self):
         """Get the url depending on what type of configuration I deleted."""
-        
+
         if self.stage_id:
             url = reverse('projects_stage_view', args=(self.project_id, self.stage_id))
         else:
@@ -343,10 +343,11 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.project = get_object_or_404(models.Project, id=kwargs['project_id'])
         self.stage = get_object_or_404(models.Stage, id=self.kwargs['stage_id'], project=self.project)
-        task_details = get_task_details(self.project, self.kwargs['task_name'])
+        task_name = request.GET.get('task', None)
+        task_details = get_task_details(self.project, task_name)
 
         if task_details is None:
-            messages.error(self.request, '"{}" is not a valid task.'. format(self.kwargs['task_name']))
+            messages.error(self.request, '"{}" is not a valid task.'. format(task_name))
             return HttpResponseRedirect(
                 reverse('projects_stage_view', kwargs={'project_id': self.stage.project_id, 'pk': self.stage.pk})
             )

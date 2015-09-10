@@ -1,6 +1,6 @@
 <div class="list-group">
     {% for task in frequent_tasks_run %}
-        <a href="{% url 'projects_deployment_create' project.pk object.pk task.name %}" class="list-group-item">
+        <a href="{% url 'projects_deployment_create' project.pk object.pk %}?task={{ task.name }}" class="list-group-item">
             <span class="badge">{{ task.times_used }}</span>
             {{ task.name }}
             {% if task.description %}
@@ -20,7 +20,7 @@
     <select class="form-control" id="all_tasks_dropdown">
         <option value="">All Tasks</option>
         {% for task_name in all_tasks %}
-            <option value="{% url 'projects_deployment_create' project.pk object.pk task_name %}">{{ task_name }}</option>
+            <option value="{% url 'projects_deployment_create' project.pk object.pk %}?task={{ task_name }}">{{ task_name }}</option>
         {% endfor %}
     </select>
 </div>
