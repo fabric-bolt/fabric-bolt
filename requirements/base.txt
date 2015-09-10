@@ -16,4 +16,3 @@ django-graphos==0.0.2a0
 django-activeurl==0.1.8
 requests==2.7.0
 virtualenv==13.1.0
-django-grappelli==2.7.1

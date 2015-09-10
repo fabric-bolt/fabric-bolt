@@ -23,7 +23,6 @@ install_requires = [
     'django-activeurl==0.1.8',
     'requests==2.7.0',
     'virtualenv==13.1.0',
-    'django-grappelli==2.7.1',
 ]
 
 dev_requires = [

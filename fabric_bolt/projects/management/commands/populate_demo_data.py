@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from fabric_bolt.hosts.models import Host
+from fabric_bolt.hosts.models import Host, SSHConfig
 from fabric_bolt.projects.models import Project, Stage, Configuration
 
 
@@ -36,3 +36,5 @@ class Command(BaseCommand):
             prompt_me_for_input=True,
             task_argument=True,
         )
+
+

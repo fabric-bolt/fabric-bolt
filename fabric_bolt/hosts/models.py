@@ -4,6 +4,8 @@ from django.db import models
 from django.core.validators import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
+from fabric_bolt.core.mixins.storages import FileStorageCHMOD600
+
 
 def full_domain_validator(hostname):
     """
@@ -44,3 +46,16 @@ class Host(models.Model):
 
     def __unicode__(self):
         return u'{}'.format(self.alias or self.name)
+
+
+class SSHConfig(models.Model):
+
+    name = models.CharField(max_length=255)
+    public_key = models.TextField()
+    private_key_file = models.FileField(upload_to='private_keys', storage=FileStorageCHMOD600())
+    remote_user = models.CharField(max_length=100, default='root')
+
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return '{}'.format(self.name)
