@@ -54,7 +54,7 @@
             {% if object.status == object.PENDING %}
                 <iframe src="{% url 'projects_deployment_output' object.stage.project_id object.stage_id object.pk %}" id="deployment_output"></iframe>
             {% else %}
-                <div id="deployment_output"><pre class="prettyprint">{{ object.output }}</pre></div>
+                <div id="deployment_output"><div class="output">{{ deploy_output|safe }}</div></div>
             {% endif %}
         {% endblock %}
     </div>
@@ -69,5 +69,13 @@
             <script src="{% static 'projects/js/deployment.js' %}"></script>
         {% endblock %}
     {% endaddtoblock %}
+
+
+        {% addtoblock 'css' %}
+            {% if object.status != object.PENDING %}
+            <link rel="stylesheet" type="text/css" href="/static/css/console-style.css">
+            {% endif %}
+        {% endaddtoblock %}
+
 
 {% endblock content %}
