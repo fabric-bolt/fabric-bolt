@@ -24,6 +24,7 @@ install_requires = [
     'requests==2.7.0',
     'virtualenv==13.1.0',
     'django-grappelli==2.7.1',
+    'ansiconv==1.0.0',
 ]
 
 dev_requires = [

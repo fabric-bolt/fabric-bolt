@@ -4,6 +4,7 @@ import time
 from tempfile import NamedTemporaryFile
 
 from fabric.api import *
+from fabric import colors
 
 
 @task
@@ -68,6 +69,38 @@ def do_nothing():
         print 'nothing {} - {}'.format(x, input)
         time.sleep(0.2)
 
+
+@task
+def color_test():
+    for x in range(0, 2):
+        print colors.blue('Blue text', bold=False) + '\n'
+        time.sleep(0.2)
+        print colors.cyan('cyan text', bold=False)
+        time.sleep(0.2)
+        print colors.green('green text', bold=False)
+        time.sleep(0.2)
+        print colors.magenta('magenta text', bold=False)
+        time.sleep(0.2)
+        print colors.red('red text', bold=False)
+        time.sleep(0.2)
+        print colors.white('white text', bold=False)
+        time.sleep(0.2)
+        print colors.yellow('yellow text', bold=False)
+        time.sleep(0.2)
+        print colors.blue('Blue text bold', bold=True)
+        time.sleep(0.2)
+        print colors.cyan('cyan text bold', bold=True)
+        time.sleep(0.2)
+        print colors.green('green text bold', bold=True)
+        time.sleep(0.2)
+        print colors.magenta('magenta text bold', bold=True)
+        time.sleep(0.2)
+        print colors.red('red text bold', bold=True)
+        time.sleep(0.2)
+        print colors.white('white text bold', bold=True)
+        time.sleep(0.2)
+        print colors.yellow('yellow text bold', bold=True)
+        time.sleep(0.2)
 
 @task
 def test_env(argument="nothing"):
