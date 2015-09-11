@@ -5,7 +5,8 @@ from django.contrib import messages
 from django_tables2.views import SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin, GroupRequiredMixin
-from fabric_bolt.hosts import models, tables, forms, utils
+from fabric_bolt.hosts import models, tables, forms
+from fabric_bolt.hosts.utils import create_ssh_config
 
 
 class HostList(MultipleGroupRequiredMixin, SingleTableView):
@@ -85,7 +86,7 @@ class SSHConfig(TemplateView):
 
         remote_user = self.request.POST.get('remote_user', 'root')
 
-        utils.create_default_ssh_config(remote_user)
+        create_ssh_config(remote_user=remote_user)
 
         return self.get_view()
 
