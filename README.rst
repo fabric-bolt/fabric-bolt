@@ -1,5 +1,5 @@
-Fabric Bolt
-===========
+FabricBolt
+==========
 
 .. image:: https://travis-ci.org/fabric-bolt/fabric-bolt.png?branch=master
         :target: https://travis-ci.org/fabric-bolt/fabric-bolt
@@ -17,7 +17,7 @@ logs are stored so that you know who, what, where, when, and why something was d
 
 Documentation found at http://fabric-bolt.readthedocs.org/en/latest/
 
-.. image:: https://raw.github.com/fabric-bolt/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.18%20PM.png
+.. image:: http://fabricbolt.io/static/img/screen_deployments.png
 
 Quickstart
 ----------
