@@ -3,18 +3,15 @@ Views for the Projects App
 """
 
 import datetime
-import subprocess
-import sys
 from copy import deepcopy
 
-from django.http import HttpResponseRedirect, StreamingHttpResponse
+from django.http import HttpResponseRedirect
 from django.db.models.aggregates import Count
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, RedirectView, View
+from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, RedirectView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.forms import CharField, PasswordInput, Select, FloatField, BooleanField
-from django.conf import settings
 from django.core.cache import cache
 
 from django_tables2 import RequestConfig, SingleTableView
@@ -23,9 +20,8 @@ import ansiconv
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
 from fabric_bolt.projects import forms, tables, models
-from fabric_bolt.projects.util import get_fabric_tasks, build_command, get_task_details
+from fabric_bolt.task_runners import backend
 from fabric_bolt.web_hooks.tables import HookTable
-from fabric_bolt.projects.signals import deployment_finished
 
 
 class ProjectSubPageMixin(object):
@@ -90,6 +86,7 @@ class ProjectCreate(MultipleGroupRequiredMixin, CreateView):
         messages.add_message(self.request, messages.SUCCESS, 'Project %s created' % self.object.name)
 
         return ret
+
 
 class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
     """
@@ -172,6 +169,7 @@ class ProjectCopy(MultipleGroupRequiredMixin, CreateView):
         messages.add_message(self.request, messages.SUCCESS, 'Project %s copied' % self.object.name)
 
         return ret
+
 
 class ProjectDetail(DetailView):
     """
@@ -345,7 +343,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
         self.project = get_object_or_404(models.Project, id=kwargs['project_id'])
         self.stage = get_object_or_404(models.Stage, id=self.kwargs['stage_id'], project=self.project)
         task_name = request.GET.get('task', None)
-        task_details = get_task_details(self.project, task_name)
+        task_details = backend.get_task_details(self.project, task_name)
 
         if task_details is None:
             messages.error(self.request, '"{}" is not a valid task.'. format(task_name))
@@ -398,7 +396,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
             form.fields[str_config_key] = field
             form.helper.layout.fields.insert(len(form.helper.layout.fields)-1, str_config_key)
 
-        task_details = get_task_details(self.stage.project, self.task_name)
+        task_details = backend.get_task_details(self.stage.project, self.task_name)
 
         for arg in task_details[2]:
             if isinstance(arg, tuple):
@@ -471,66 +469,7 @@ class DeploymentDetail(StageSubPageMixin, DetailView):
         return context
 
     def get_template_names(self):
-        if getattr(settings, 'SOCKETIO_ENABLED', False):
-            return ['projects/deployment_detail_socketio.html']
-        else:
-            return ['projects/deployment_detail.html']
-
-
-class DeploymentOutputStream(StageSubPageMixin, View):
-    """
-    Deployment view does the heavy lifting of calling Fabric Task for a Project Stage
-    """
-
-    def output_stream_generator(self):
-        if get_task_details(self.project, self.object.task.name) is None:
-            return
-
-        try:
-            process = subprocess.Popen(
-                build_command(self.object, self.request.session),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                shell=True,
-                executable=getattr(settings, 'SHELL', '/bin/sh'),
-            )
-
-            all_output = ''
-            yield '<link rel="stylesheet" type="text/css" href="/static/css/console-style.css">'
-            while True:
-                nextline = process.stdout.readline()
-                if nextline == '' and process.poll() is not None:
-                    break
-
-                all_output += nextline
-                nextline = '<span class="output-line">{}</span>'.format(ansiconv.to_html(nextline))
-                yield nextline + ' '*1024
-
-                sys.stdout.flush()
-
-            self.object.status = self.object.SUCCESS if process.returncode == 0 else self.object.FAILED
-
-            yield '<span id="finished" style="display:none;">{}</span> {}'.format(self.object.status, ' '*1024)
-
-            self.object.output = all_output
-            self.object.save()
-
-            deployment_finished.send(self.object, deployment_id=self.object.pk)
-
-        except Exception as e:
-            message = "An error occurred: " + e.message
-            yield '<span class="output-line">{}</span>'.format(message) + ' '*1024
-            yield '<span id="finished" style="display:none;">failed</span> {}'.format('*1024')
-
-    def get(self, request, *args, **kwargs):
-        self.object = get_object_or_404(
-            models.Deployment,
-            stage=self.stage,
-            pk=int(kwargs['pk']),
-            status=models.Deployment.PENDING
-        )
-        resp = StreamingHttpResponse(self.output_stream_generator())
-        return resp
+        return [backend.get_detail_template()]
 
 
 class ProjectStageList(ProjectSubPageMixin, SingleTableView):
@@ -607,7 +546,7 @@ class ProjectStageTasksAjax(ProjectSubPageMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectStageTasksAjax, self).get_context_data(**kwargs)
 
-        all_tasks = get_fabric_tasks(self.object.project)
+        all_tasks = backend.get_fabric_tasks(self.object.project)
         task_names = [x[0] for x in all_tasks]
 
         context['all_tasks'] = task_names

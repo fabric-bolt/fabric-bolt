@@ -13,6 +13,6 @@ if __name__ == '__main__':
 
     from django.conf import settings
 
-    if getattr(settings, 'SOCKETIO_ENABLED', False):
+    if settings.TASK_RUNNER_BACKEND == 'fabric_bolt.task_runners.socketio.SocketIOBackend':
         from gevent import monkey
         monkey.patch_all()

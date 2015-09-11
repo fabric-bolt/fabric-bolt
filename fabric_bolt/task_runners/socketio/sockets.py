@@ -12,7 +12,6 @@ from socketio.namespace import BaseNamespace
 from socketio.mixins import RoomsMixin, BroadcastMixin
 from socketio.sdjango import namespace
 
-from .util import build_command
 from fabric_bolt.projects.models import Deployment
 
 
@@ -22,10 +21,10 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def initialize(self):
         self.logger = logging.getLogger("socketio.deployment")
         self.log("Socketio session started")
-        
+
     def log(self, message):
         self.logger.info("[{0}] {1}".format(self.socket.sessid, message))
-    
+
     def on_join(self, deployment_id):
         self.deployment = Deployment.objects.get(pk=deployment_id)
         if self.deployment.status != self.deployment.PENDING:
@@ -49,12 +48,16 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         return True
 
     def output_stream_generator(self, *args, **kwargs):
+        from fabric_bolt.task_runners import backend
+
         self.process = subprocess.Popen(
-            build_command(self.deployment, self.request.session, False),
+            backend.build_command(self.deployment.stage.project, self.deployment, self.request.session, False),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             stdin=subprocess.PIPE,
+            shell=True,
             executable=getattr(settings, 'SHELL', '/bin/sh'),
+            close_fds=True,
         )
 
         fd = self.process.stdout.fileno()
@@ -65,7 +68,8 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         while True:
             try:
                 nextline = self.process.stdout.read()
-            except IOError:
+            except IOError as e:
+                print e
                 nextline = ''
 
             if nextline == '' and self.process.poll() != None:
@@ -80,7 +84,6 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             sys.stdout.flush()
 
         self.deployment.status = self.deployment.SUCCESS if self.process.returncode == 0 else self.deployment.FAILED
-
 
         self.deployment.output = all_output
         self.deployment.save()
