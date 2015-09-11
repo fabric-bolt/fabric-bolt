@@ -39,7 +39,7 @@ class BackendTests(TestCase):
         configuration = mommy.make(models.Configuration, key='dummy_key', value='dummy_value')
         deployment.stage.configuration_set.add(configuration)
 
-        command = backend.build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -51,7 +51,7 @@ class BackendTests(TestCase):
         configuration = mommy.make(models.Configuration, key='dummy_key=test" | ls #', value='dummy_value')
         deployment.stage.configuration_set.add(configuration)
 
-        command = backend.build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -63,7 +63,7 @@ class BackendTests(TestCase):
         configuration = mommy.make(models.Configuration, key='dummy_key', value='dummy_value,x=y')
         deployment.stage.configuration_set.add(configuration)
 
-        command = backend.build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -75,7 +75,7 @@ class BackendTests(TestCase):
         configuration = mommy.make(models.Configuration, key='dummy_key=blah,x', value='dummy_value')
         deployment.stage.configuration_set.add(configuration)
 
-        command = backend.build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -87,7 +87,7 @@ class BackendTests(TestCase):
         configuration = mommy.make(models.Configuration, key='key_filename', value='my_ssh_key')
         deployment.stage.configuration_set.add(configuration)
 
-        command = backend.build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
