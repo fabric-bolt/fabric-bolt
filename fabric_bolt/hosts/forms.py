@@ -37,3 +37,25 @@ class HostUpdateForm(HostCreateForm):
             Submit('submit', 'Update Host', css_class='button')
         )
     )
+
+
+class CreateSSHConfig(forms.Form):
+
+    name = forms.CharField(max_length=255)
+    public_key = forms.CharField(widget=forms.Textarea())
+    private_key = forms.CharField(widget=forms.Textarea())
+    remote_user = forms.CharField(max_length=255)
+
+    helper = FormHelper()
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-lg-2'
+    helper.field_class = 'col-lg-8'
+    helper.layout = Layout(
+        'name',
+        'public_key',
+        'private_key',
+        'remote_user',
+        FormActions(
+            Submit('submit', 'Create SSH Key', css_class='button')
+        )
+    )

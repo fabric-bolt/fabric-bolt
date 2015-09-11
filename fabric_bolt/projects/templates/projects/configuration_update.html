@@ -10,19 +10,26 @@
 
 {% block content %}
     <h1>{% block action %}Update{% endblock action %} Configuration</h1><br/>
-
+    <style>
+        #div_id_value_boolean, #div_id_value_number, #div_id_value_ssh_key {
+            display: none;
+        }
+    </style>
     {% crispy form %}
 
     {% addtoblock 'js' %}
         <script>
             function set_data_type_field(){
                 var data_type = $('#id_data_type').val();
-                $('#div_id_value_boolean, #div_id_value, #div_id_value_number').hide();
-
+                $('#div_id_value_boolean, #div_id_value, #div_id_value_number, #div_id_value_ssh_key').hide();
+                $('#id_key').attr('readonly', false);
                 if(data_type == 'boolean'){
                     $('#div_id_value_boolean').show();
                 }else if(data_type == 'number'){
                     $('#div_id_value_number').show();
+                }else if(data_type == 'ssk_key'){
+                    $('#div_id_value_ssh_key').show();
+                    $('#id_key').val('key_filename').attr('readonly', true);
                 }else{
                     $('#div_id_value').show();
                 }

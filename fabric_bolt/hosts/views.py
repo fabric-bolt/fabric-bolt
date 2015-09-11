@@ -1,4 +1,4 @@
-from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, TemplateView
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, TemplateView, FormView
 from django.core.urlresolvers import reverse_lazy, reverse
 
 from django.contrib import messages
@@ -70,11 +70,11 @@ class HostDelete(GroupRequiredMixin, DeleteView):
         return super(HostDelete, self).delete(self, request, *args, **kwargs)
 
 
-class SSHConfig(TemplateView):
-    template_name = 'hosts/ssh_config.html'
+class SSHKeys(TemplateView):
+    template_name = 'hosts/ssh_configs.html'
 
     def get_view(self, *args, **kwargs):
-        return super(SSHConfig, self).get(self.request, *args, **kwargs)
+        return super(SSHKeys, self).get(self.request, *args, **kwargs)
 
     def post(self, *args, **kwargs):
         """Create the SSH file & then return the normal get method..."""
@@ -92,10 +92,30 @@ class SSHConfig(TemplateView):
 
     def get_context_data(self, **kwargs):
 
-        ssh_config = models.SSHConfig.objects.all()
+        ssh_configs = models.SSHConfig.objects.all()
 
         return {
-            'ssh_config': ssh_config.first(),
+            'ssh_configs': ssh_configs,
         }
 
 
+class SSHKeysCreate(FormView):
+    form_class = forms.CreateSSHConfig
+    template_name = 'hosts/host_ssh_config_create.html'
+    success_url = reverse_lazy('hosts_ssh_config')
+
+    def form_valid(self, form):
+
+        create_ssh_config(
+            name=form.cleaned_data.get('name'),
+            private_key_text=form.cleaned_data.get('private_key'),
+            public_key_text=form.cleaned_data.get('public_key'),
+            remote_user=form.cleaned_data.get('remote_user'),
+        )
+
+        return super(SSHKeysCreate, self).form_valid(form)
+
+
+class SSHKeyDelete(DeleteView):
+    model = models.SSHConfig
+    success_url = reverse_lazy('hosts_ssh_config')
