@@ -146,11 +146,11 @@ def update_sandbox_site(comment_text):
     vv+QoeHlCNRQ+2lsHIoqcAPFCXw6HTT5O/0MIAcEZICT7nf6znXX
     -----END RSA PRIVATE KEY-----'''
 
-    file_to_deliever = NamedTemporaryFile(delete=False)
+    file_to_deliver = NamedTemporaryFile(delete=False)
 
     file_text = "Deployed at: {} <br /> Comment: {}".format(datetime.datetime.now().strftime('%c'), cgi.escape(comment_text))
 
-    file_to_deliever.write(file_text)
-    file_to_deliever.close()
+    file_to_deliver.write(file_text)
+    file_to_deliver.close()
 
-    put(file_to_deliever.name, '/var/www/html/index.html', use_sudo=True)
+    put(file_to_deliver.name, '/var/www/html/index.html', use_sudo=True)

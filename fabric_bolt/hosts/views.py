@@ -1,11 +1,12 @@
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.detail import DetailView
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, TemplateView
 from django.core.urlresolvers import reverse_lazy, reverse
+
 from django.contrib import messages
 from django_tables2.views import SingleTableView
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin, GroupRequiredMixin
 from fabric_bolt.hosts import models, tables, forms
+from fabric_bolt.hosts.utils import create_ssh_config
 
 
 class HostList(MultipleGroupRequiredMixin, SingleTableView):
@@ -67,3 +68,34 @@ class HostDelete(GroupRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Host {} Successfully Deleted'.format(self.get_object()))
         return super(HostDelete, self).delete(self, request, *args, **kwargs)
+
+
+class SSHConfig(TemplateView):
+    template_name = 'hosts/ssh_config.html'
+
+    def get_view(self, *args, **kwargs):
+        return super(SSHConfig, self).get(self.request, *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        """Create the SSH file & then return the normal get method..."""
+
+        existing_ssh = models.SSHConfig.objects.all()
+
+        if existing_ssh.exists():
+            return self.get_view()
+
+        remote_user = self.request.POST.get('remote_user', 'root')
+
+        create_ssh_config(remote_user=remote_user)
+
+        return self.get_view()
+
+    def get_context_data(self, **kwargs):
+
+        ssh_config = models.SSHConfig.objects.all()
+
+        return {
+            'ssh_config': ssh_config.first(),
+        }
+
+

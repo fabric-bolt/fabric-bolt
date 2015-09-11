@@ -6,6 +6,8 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.core.cache import cache
 
+from fabric_bolt.hosts.models import SSHConfig
+
 # These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
 fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',
                           'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
@@ -124,12 +126,10 @@ def get_fabric_tasks(project):
                 shell=True
             )
         else:
-            print 'here'
             output = check_output(
                 'fab --list --list-format=short --fabfile={}'.format(fabfile_path),
                 shell=True
             )
-            print 'here2'
 
         lines = output.splitlines()
         tasks = []
@@ -213,6 +213,7 @@ def update_config_values_from_session(configs, session):
 def build_command(deployment, session, abort_on_prompts=True):
     # Get the dictionary of configurations for this stage
     configs = deployment.stage.get_configurations()
+
     configs, arg_values = update_config_values_from_session(configs, session)
 
     task_args = [key for key, config in configs.iteritems() if config.task_argument and config.task_name == deployment.task.name]
@@ -267,6 +268,16 @@ def build_command(deployment, session, abort_on_prompts=True):
     hosts = deployment.stage.hosts.values_list('name', flat=True)
     if hosts:
         command += ' --hosts=' + ','.join(hosts)
+
+    if not configs.get('key_filename'):
+        # Get global SSH
+        ssh_config = SSHConfig.objects.first()
+
+        if ssh_config:
+            command += ' -i ' + ssh_config.private_key_file.file.name
+
+            if not configs.get('user'):
+                command += ' -u ' + ssh_config.remote_user
 
     fabfile_path, active_loc = get_fabfile_path(deployment.stage.project)
     command += ' --fabfile={}'.format(fabfile_path)

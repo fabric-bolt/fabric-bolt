@@ -70,3 +70,5 @@ core.db
 build/
 dist/
 *.egg-info/
+
+fabric_bolt/core/public/

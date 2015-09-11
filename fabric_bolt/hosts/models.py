@@ -1,19 +1,10 @@
 import re
 
 from django.db import models
-from django.core.validators import URLValidator, ValidationError
+from django.core.validators import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-
-class SchemelessURLValidator(URLValidator):
-    """Old valitador, keeping to migrations work"""
-    regex = re.compile(
-    r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
-    r'localhost|'  # localhost...
-    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|'  # ...or ipv4
-    r'\[?[A-F0-9]*:[A-F0-9:]+\]?)'  # ...or ipv6
-    r'(?::\d+)?'  # optional port
-    r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+from fabric_bolt.core.mixins.storages import FileStorageCHMOD600
 
 
 def full_domain_validator(hostname):
@@ -55,3 +46,16 @@ class Host(models.Model):
 
     def __unicode__(self):
         return u'{}'.format(self.alias or self.name)
+
+
+class SSHConfig(models.Model):
+
+    name = models.CharField(max_length=255)
+    public_key = models.TextField()
+    private_key_file = models.FileField(upload_to='private_keys', storage=FileStorageCHMOD600())
+    remote_user = models.CharField(max_length=100, default='root')
+
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return '{}'.format(self.name)
