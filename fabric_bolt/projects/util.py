@@ -6,6 +6,8 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.core.cache import cache
 
+from fabric_bolt.hosts.models import SSHConfig
+
 # These options are passed to Fabric as: fab task --abort-on-prompts=True --user=root ...
 fabric_special_options = ['no_agent', 'forward-agent', 'config', 'disable-known-hosts', 'keepalive',
                           'password', 'parallel', 'no-pty', 'reject-unknown-hosts', 'skip-bad-hosts', 'timeout',
@@ -271,14 +273,13 @@ def build_command(deployment, session, abort_on_prompts=True):
 
     if not configs.get('key_filename'):
         # Get global SSH
-        from fabric_bolt.hosts.models import SSHConfig
-
         ssh_config = SSHConfig.objects.first()
 
-        command += ' -i ' + ssh_config.private_key_file.file.name
+        if ssh_config:
+            command += ' -i ' + ssh_config.private_key_file.file.name
 
-        if not configs.get('user'):
-            command += ' -u ' + ssh_config.remote_user
+            if not configs.get('user'):
+                command += ' -u ' + ssh_config.remote_user
 
     fabfile_path, active_loc = get_fabfile_path(deployment.stage.project)
     command += ' --fabfile={}'.format(fabfile_path)
