@@ -162,7 +162,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
 
     # 3rd Party
-    'grappelli',
     'django.contrib.admin',
     'sekizai',
     'crispy_forms',

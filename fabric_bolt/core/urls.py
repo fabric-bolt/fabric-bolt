@@ -10,7 +10,6 @@ socketio.sdjango.autodiscover()
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.Dashboard.as_view(), name='index'),
     url(r'^hosts/', include('fabric_bolt.hosts.urls')),

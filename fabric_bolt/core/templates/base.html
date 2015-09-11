@@ -13,9 +13,11 @@
             </div>
 
         </div>
+
         <div class="row">
 
             {% block sidebar %}
+                {% comment %}
                 <div class="col-md-3">
 
                     <div class="panel panel-default">
@@ -60,12 +62,11 @@
 
                     {% endif %}
                 </div>
+                {% endcomment %}
             {% endblock sidebar %}
 
             {% block wrapper %}
-                <div class="col-md-9">
-
-
+                <div class="{% block wrapper-class %}col-md-12{% endblock wrapper-class %}">
                     {% block messages %}
                         {% for message in messages %}
                             <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissable">

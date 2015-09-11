@@ -1,15 +1,6 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from django.core.cache import cache
-
-from model_mommy import mommy
 
 from fabric_bolt.projects import models
 

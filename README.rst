@@ -1,5 +1,5 @@
-Fabric Bolt
-===========
+FabricBolt
+==========
 
 .. image:: https://travis-ci.org/fabric-bolt/fabric-bolt.png?branch=master
         :target: https://travis-ci.org/fabric-bolt/fabric-bolt
@@ -10,13 +10,14 @@ Fabric Bolt
 | **tl;dr**
 | A web interface for fabric deployments.
 
+
 Fabric Bolt is a Python/Django project that allows you to deploy code stored in source control (a project) to a target server (host).
 Fabric Bolt provides convenient web interfaces to configure both the projects and the hosts. Additionally, deployment history and
 logs are stored so that you know who, what, where, when, and why something was deployed.
 
 Documentation found at http://fabric-bolt.readthedocs.org/en/latest/
 
-.. image:: https://raw.github.com/fabric-bolt/fabric-bolt/master/docs/images/Screen%20Shot%202013-09-29%20at%207.42.18%20PM.png
+.. image:: http://fabricbolt.io/static/img/screen_deployments.png
 
 Quickstart
 ----------

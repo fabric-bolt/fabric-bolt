@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'hosts_host_list' %}">Hosts</a></li>
+        <li class="active">SSH Configs</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% if ssh_configs %}
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>SSH Keys</h2>
+
+                <p>
+                    To install the public keys on you remote machine copy the above public key and place it in <code>~/.ssh/authorized_keys</code> file.
+                </p>
+
+                <p>
+                    This key has been configured for the <code>{{ ssh_config.remote_user }}</code>.
+                </p>
+            </div>
+        </div>
+
+        {% for ssh_config in ssh_configs %}
+            <div class="row">
+                <div class="col-xs-11 ssh_config">
+
+                    <h2>{{ ssh_config.name }}</h2>
+
+                    <div class="highlight"><pre><code data-lang="html" class="language-html">{{ ssh_config.public_key }}</code></pre></div>
+
+                    <div>
+                        <a class="btn btn-default btn-md" href="{% url 'hosts_ssh_config_delete' ssh_config.pk %}">Delete SSH Config</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="row">
+            <div class="col-xs-12" style="margin-top:20px;">
+                <a class="btn btn-default btn-md" href="{% url 'hosts_ssh_config_create' %}">Create SSH Config</a>
+            </div>
+        </div>
+
+        <style>
+            .ssh_config {
+                border-left:4px solid #000;
+                margin-left:18px;
+                margin-bottom:25px;
+            }
+        </style>
+    {% else %}
+
+        <div class="col-md-5">
+            By default, FabricBolt will use whatever underlying SSH keys the machine has. Clicking create will display
+            a public key you can use on your different hosts, enabling FabricBolt to connect.
+        </div>
+
+        <div class="col-md-5">
+            <form method="post">{% csrf_token %}
+
+                <div class="form-group">
+                    <label for="remote_user">Remote Username</label>
+                    <input type="text" name="remote_user" class="form-control" id="remote_user" placeholder="Remote User" value="fabricbolt">
+                </div>
+
+                <button type="submit" class="btn btn-default btn-sm" >
+                    <i class="glyphicon glyphicon-plus-sign"></i> Create SSH Key
+                </button>
+            </form>
+        </div>
+
+    {% endif %}
+{% endblock content %}

@@ -56,6 +56,7 @@ atlassian-ide-plugin.xml
 ###############################
 /core/public/static
 /core/public/media
+/core/settings/local.py
 
 production.py
 scripts
@@ -69,3 +70,5 @@ core.db
 build/
 dist/
 *.egg-info/
+
+fabric_bolt/core/public/

@@ -27,7 +27,7 @@ class BackendTests(TestCase):
         configuration = mommy.make(models.Configuration, key='foo=bar -i /path/to/keyfile --set foo2', value='bar')
         deployment.stage.configuration_set.add(configuration)
 
-        command = backend.build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
         fabfile_path, active_loc = backend.get_fabfile_path(deployment.stage.project)
 
         self.assertEqual(
@@ -102,7 +102,7 @@ class BackendTests(TestCase):
                                    task_name='test_env')
         deployment.stage.configuration_set.add(configuration)
 
-        command = backend.build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
         fabfile_path, active_loc = backend.get_fabfile_path(deployment.stage.project)
 
         self.assertEqual(

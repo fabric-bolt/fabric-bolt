@@ -8,6 +8,7 @@ from django.conf import settings
 
 from fabric_bolt.core.mixins.models import TrackingFields
 from fabric_bolt.projects.model_managers import ActiveManager, ActiveDeploymentManager
+from fabric_bolt.hosts.models import SSHConfig
 
 
 class Project(TrackingFields):
@@ -164,8 +165,9 @@ class Configuration(TrackingFields):
     BOOLEAN_TYPE = 'boolean'
     NUMBER_TYPE = 'number'
     STRING_TYPE = 'string'
+    SSH_KEY_TYPE = 'ssk_key'
 
-    DATA_TYPES = ((BOOLEAN_TYPE, 'Boolean'), (NUMBER_TYPE, 'Number'), (STRING_TYPE, 'String'))
+    DATA_TYPES = ((BOOLEAN_TYPE, 'Boolean'), (NUMBER_TYPE, 'Number'), (STRING_TYPE, 'String'), (SSH_KEY_TYPE, 'SSH Key'))
 
     project = models.ForeignKey(Project)
     stage = models.ForeignKey(Stage, null=True, blank=True)
@@ -174,6 +176,7 @@ class Configuration(TrackingFields):
     value = models.CharField(max_length=500, null=True, blank=True)
     value_number = models.FloatField(verbose_name='Value', null=True, blank=True, default=0)
     value_boolean = models.BooleanField(verbose_name='Value', default=False)
+    value_ssh_key = models.ForeignKey(SSHConfig, verbose_name='Value', blank=True, null=True)
     data_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10, default=STRING_TYPE)
 
     task_name = models.CharField(
@@ -224,6 +227,8 @@ class Configuration(TrackingFields):
             return self.value_boolean
         elif self.data_type == self.NUMBER_TYPE:
             return self.value_number
+        elif self.data_type == self.SSH_KEY_TYPE:
+            return self.value_ssh_key.private_key_file._get_path()
         else:
             return self.value
 
