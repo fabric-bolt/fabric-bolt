@@ -214,13 +214,11 @@ def build_command(deployment, session, abort_on_prompts=True):
     # Get the dictionary of configurations for this stage
     configs = deployment.stage.get_configurations()
 
-    # arg_values = {u'comment_text': u'test'}
     configs, arg_values = update_config_values_from_session(configs, session)
 
     task_args = [key for key, config in configs.iteritems() if config.task_argument and config.task_name == deployment.task.name]
     task_configs = [key for key, config in configs.iteritems() if not config.task_argument]
 
-    # {'disable_known_hosts': 'disable-known-hosts', 'no_pty': 'no-pty', 'forward_agent': 'forward-agent', 'key_filename': 'key_filename', 'skip_bad_hosts': 'skip-bad-hosts', 'pool_size': 'pool-size', 'warn_only': 'warn-only', 'reject_unknown_hosts': 'reject-unknown-hosts', 'no_agent': 'no_agent', 'user': 'user', 'timeout': 'timeout', 'command_timeout': 'command-timeout', 'password': 'password', 'config': 'config', 'parallel': 'parallel', 'keepalive': 'keepalive'}
     command_to_config = {x.replace('-', '_'): x for x in fabric_special_options}
 
     # Take the special env variables out
