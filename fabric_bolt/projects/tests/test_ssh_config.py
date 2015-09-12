@@ -87,7 +87,7 @@ class SSHConfigTests(TestCase):
 
     def test_command_with_ssh_config(self):
 
-        command = backend.build_command(self.deployment.stage.project, self.deployment, {})
+        command = backend.build_command(self.project, self.deployment, {})
 
         fabfile_path, active_loc = backend.get_fabfile_path(self.deployment.stage.project)
 

@@ -5,6 +5,7 @@ import subprocess
 from django.utils.text import slugify
 from django.conf import settings
 from django.core.cache import cache
+from fabric_bolt.hosts.models import SSHConfig
 
 
 class BaseTaskRunnerBackend(object):
@@ -211,6 +212,7 @@ class BaseTaskRunnerBackend(object):
     def build_command(self, project, deployment, session, abort_on_prompts=True):
         # Get the dictionary of configurations for this stage
         configs = deployment.stage.get_configurations()
+
         configs, arg_values = self.update_config_values_from_session(configs, session)
 
         task_args = [key for key, config in configs.iteritems() if config.task_argument and config.task_name == deployment.task.name]
@@ -265,6 +267,16 @@ class BaseTaskRunnerBackend(object):
         hosts = deployment.stage.hosts.values_list('name', flat=True)
         if hosts:
             command += ' --hosts=' + ','.join(hosts)
+
+        if not configs.get('key_filename'):
+            # Get global SSH
+            ssh_config = SSHConfig.objects.first()
+
+            if ssh_config:
+                command += ' -i ' + ssh_config.private_key_file.file.name
+
+                if not configs.get('user'):
+                    command += ' -u ' + ssh_config.remote_user
 
         fabfile_path, active_loc = self.get_fabfile_path(project)
         command += ' --fabfile={}'.format(fabfile_path)
