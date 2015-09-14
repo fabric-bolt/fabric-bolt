@@ -70,8 +70,8 @@ class ConfigurationUpdateForm(forms.ModelForm):
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
-            'key',
             'data_type',
+            'key',
             'value',
             'value_number',
             'value_boolean',
