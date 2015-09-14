@@ -1,0 +1,14 @@
+{% extends 'projects/deployment_detail.html' %}
+{% load staticfiles %}
+
+{% block output %}
+    {% if object.status == object.PENDING %}
+        <iframe src="{% url 'projects_deployment_output' object.stage.project_id object.stage_id object.pk %}" id="deployment_output"></iframe>
+    {% else %}
+        <div id="deployment_output"><div class="output">{{ deploy_output|safe }}</div></div>
+    {% endif %}
+{% endblock %}
+
+{% block deployment_scripts %}
+    <script src="{% static 'task_runners/js/deployment_basic.js' %}"></script>
+{% endblock %}

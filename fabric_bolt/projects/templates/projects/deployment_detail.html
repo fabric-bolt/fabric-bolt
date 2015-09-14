@@ -66,16 +66,16 @@
             var deployment_id = {{ object.pk }};
          </script>
         {% block deployment_scripts %}
-            <script src="{% static 'projects/js/deployment.js' %}"></script>
+            <script src="{% static 'projects/js/../../../task_runners/static/task_runners/js/deployment.js' %}"></script>
         {% endblock %}
     {% endaddtoblock %}
 
 
-        {% addtoblock 'css' %}
-            {% if object.status != object.PENDING %}
-            <link rel="stylesheet" type="text/css" href="/static/css/console-style.css">
-            {% endif %}
-        {% endaddtoblock %}
+    {% addtoblock 'css' %}
+        {% if object.status != object.PENDING %}
+        <link rel="stylesheet" type="text/css" href="/static/css/console-style.css">
+        {% endif %}
+    {% endaddtoblock %}
 
 
 {% endblock content %}

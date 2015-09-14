@@ -1,4 +1,5 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
+from fabric_bolt import task_runners
 
 from fabric_bolt.projects import views
 
@@ -23,7 +24,7 @@ urlpatterns = [
     url(r'^(?P<project_id>\w+)/deployment/$', views.ProjectDeploymentList.as_view(), name='projects_deployment_list'),
     url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\d+)/deployment/create/$', views.DeploymentCreate.as_view(), name='projects_deployment_create'),
     url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\d+)/deployment/(?P<pk>\d+)/$', views.DeploymentDetail.as_view(), name='projects_deployment_detail'),
-    url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\d+)/deployment/(?P<pk>\d+)/output/$', views.DeploymentOutputStream.as_view(), name='projects_deployment_output'),
+    url(r'^(?P<project_id>\w+)/stage/(?P<stage_id>\d+)/deployment/(?P<pk>\d+)/', include(task_runners.backend.get_urls())),
 
     url(r'^(?P<project_id>\w+)/stage/$', views.ProjectStageList.as_view(), name='projects_stage_list'),
     url(r'^(?P<project_id>\w+)/stage/create/$', views.ProjectStageCreate.as_view(), name='projects_stage_create'),

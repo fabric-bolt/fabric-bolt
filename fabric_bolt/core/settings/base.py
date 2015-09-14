@@ -106,7 +106,6 @@ STATICFILES_FINDERS = (
 )
 ########## END STATIC FILE CONFIGURATION
 
-SOCKETIO_ENABLED = False
 
 ########## TEMPLATE CONFIGURATION
 GRAPPELLI_ADMIN_TITLE = 'Admin'
@@ -179,6 +178,7 @@ INSTALLED_APPS = (
     'fabric_bolt.launch_window',
     'fabric_bolt.projects',
     'fabric_bolt.web_hooks',
+    'fabric_bolt.task_runners',
 )
 ########## END APP CONFIGURATION
 
@@ -258,3 +258,12 @@ CACHES = {
 
 
 FABRIC_TASK_CACHE_TIMEOUT = 60 * 60 * 24  # one day
+
+TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.basic.BasicStreamBackend'
+
+CHANNEL_BACKENDS = {
+    "default": {
+        "BACKEND": "channels.backends.database.DatabaseChannelBackend",
+
+    },
+}

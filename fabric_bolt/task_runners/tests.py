@@ -1,3 +1,9 @@
+"""
+This file demonstrates writing tests using the unittest module. These will pass
+when you run "manage.py test".
+
+Replace this with more appropriate tests for your application.
+"""
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
@@ -5,12 +11,13 @@ from django.core.cache import cache
 from model_mommy import mommy
 
 from fabric_bolt.projects import models
-from fabric_bolt.projects.util import get_fabfile_path, build_command, parse_task_details
+
+from . import backend
 
 User = get_user_model()
 
 
-class UtilTests(TestCase):
+class BackendTests(TestCase):
     def test_build_command_injection(self):
         deployment = mommy.make(models.Deployment, task__name='test_env')
 
@@ -20,8 +27,8 @@ class UtilTests(TestCase):
         configuration = mommy.make(models.Configuration, key='foo=bar -i /path/to/keyfile --set foo2', value='bar')
         deployment.stage.configuration_set.add(configuration)
 
-        command = build_command(deployment, {})
-        fabfile_path, active_loc = get_fabfile_path(deployment.stage.project)
+        command = backend.build_command(deployment.stage.project, deployment, {})
+        fabfile_path, active_loc = backend.get_fabfile_path(deployment.stage.project)
 
         self.assertEqual(
             command,
@@ -32,7 +39,7 @@ class UtilTests(TestCase):
         configuration = mommy.make(models.Configuration, key='dummy_key', value='dummy_value')
         deployment.stage.configuration_set.add(configuration)
 
-        command = build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -44,7 +51,7 @@ class UtilTests(TestCase):
         configuration = mommy.make(models.Configuration, key='dummy_key=test" | ls #', value='dummy_value')
         deployment.stage.configuration_set.add(configuration)
 
-        command = build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -56,7 +63,7 @@ class UtilTests(TestCase):
         configuration = mommy.make(models.Configuration, key='dummy_key', value='dummy_value,x=y')
         deployment.stage.configuration_set.add(configuration)
 
-        command = build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -68,7 +75,7 @@ class UtilTests(TestCase):
         configuration = mommy.make(models.Configuration, key='dummy_key=blah,x', value='dummy_value')
         deployment.stage.configuration_set.add(configuration)
 
-        command = build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -80,7 +87,7 @@ class UtilTests(TestCase):
         configuration = mommy.make(models.Configuration, key='key_filename', value='my_ssh_key')
         deployment.stage.configuration_set.add(configuration)
 
-        command = build_command(deployment, {})
+        command = backend.build_command(deployment.stage.project, deployment, {})
 
         self.assertEqual(
             command,
@@ -95,8 +102,8 @@ class UtilTests(TestCase):
                                    task_name='test_env')
         deployment.stage.configuration_set.add(configuration)
 
-        command = build_command(deployment, {})
-        fabfile_path, active_loc = get_fabfile_path(deployment.stage.project)
+        command = backend.build_command(deployment.stage.project, deployment, {})
+        fabfile_path, active_loc = backend.get_fabfile_path(deployment.stage.project)
 
         self.assertEqual(
             command,
@@ -112,7 +119,7 @@ class UtilTests(TestCase):
 
 """
 
-        details = parse_task_details('test_env', output)
+        details = backend.parse_task_details('test_env', output)
 
         self.assertEqual(len(details), 3)
         self.assertEqual(details[0], 'test_env')
@@ -125,7 +132,7 @@ class UtilTests(TestCase):
     Arguments: test='default'
 
 """
-        details = parse_task_details('do_nothing', output)
+        details = backend.parse_task_details('do_nothing', output)
 
         self.assertEqual(len(details), 3)
         self.assertEqual(details[0], 'do_nothing')
@@ -140,7 +147,7 @@ class UtilTests(TestCase):
     Arguments: test='default', test2
 
 """
-        details = parse_task_details('do_nothing', output)
+        details = backend.parse_task_details('do_nothing', output)
 
         self.assertEqual(len(details), 3)
         self.assertEqual(details[0], 'do_nothing')
@@ -160,7 +167,7 @@ class UtilTests(TestCase):
     Arguments: site_alias
 
 """
-        details = parse_task_details('s', output)
+        details = backend.parse_task_details('s', output)
 
         self.assertEqual(len(details), 3)
         self.assertEqual(details[0], 's')
@@ -178,7 +185,7 @@ class UtilTests(TestCase):
     Arguments: hard=False
 
 """
-        details = parse_task_details('deploy', output)
+        details = backend.parse_task_details('deploy', output)
 
         self.assertEqual(len(details), 3)
         self.assertEqual(details[0], 'deploy')

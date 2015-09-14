@@ -165,7 +165,7 @@ class Configuration(TrackingFields):
     BOOLEAN_TYPE = 'boolean'
     NUMBER_TYPE = 'number'
     STRING_TYPE = 'string'
-    SSH_KEY_TYPE = 'ssk_key'
+    SSH_KEY_TYPE = 'ssh_key'
 
     DATA_TYPES = ((BOOLEAN_TYPE, 'Boolean'), (NUMBER_TYPE, 'Number'), (STRING_TYPE, 'String'), (SSH_KEY_TYPE, 'SSH Key'))
 

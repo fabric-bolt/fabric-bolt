@@ -1,12 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from model_mommy import mommy
-
 from fabric_bolt.hosts.utils import create_ssh_config
 from fabric_bolt.projects import models
-from fabric_bolt.hosts.models import SSHConfig
-from fabric_bolt.projects.util import get_fabfile_path, build_command
+from fabric_bolt.task_runners import backend
 
 User = get_user_model()
 
@@ -90,9 +87,9 @@ class SSHConfigTests(TestCase):
 
     def test_command_with_ssh_config(self):
 
-        command = build_command(self.deployment, {})
+        command = backend.build_command(self.project, self.deployment, {})
 
-        fabfile_path, active_loc = get_fabfile_path(self.deployment.stage.project)
+        fabfile_path, active_loc = backend.get_fabfile_path(self.deployment.stage.project)
 
         self.assertEqual(
             command,
