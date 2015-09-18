@@ -1,6 +1,7 @@
 import os
 import re
 import subprocess
+import shutil
 
 from django.utils.text import slugify
 from django.conf import settings
@@ -56,6 +57,13 @@ class BaseTaskRunnerBackend(object):
             self.check_output_with_ssh_key(
                 'cd {0};git stash;git pull'.format(repo_dir)
             )
+
+    def clean_obsolete_project_git(self, project):
+        cache.delete_many(['project_{}_fabfile_tasks'.format(project.id),
+                           'project_{}_fabfile_path'.format(project.id)])
+        repo_dir = os.path.join(settings.PUBLIC_DIR, '.repo_caches', slugify(project.name))
+        if os.path.exists(repo_dir):
+            shutil.rmtree(repo_dir)
 
     def setup_virtual_env_if_needed(self, repo_dir):
         env_dir = os.path.join(repo_dir, 'env')

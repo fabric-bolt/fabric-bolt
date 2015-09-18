@@ -7,6 +7,7 @@ from crispy_forms.layout import Layout, Submit
 from crispy_forms.bootstrap import FormActions
 
 from fabric_bolt.projects import models
+from fabric_bolt.task_runners import backend
 
 
 class ProjectCreateForm(forms.ModelForm):
@@ -42,6 +43,12 @@ class ProjectCreateForm(forms.ModelForm):
 class ProjectUpdateForm(ProjectCreateForm):
 
     button_prefix = "Update"
+
+    def clean_repo_url(self):
+        # should do some clean up if repo_url changed
+        if "repo_url" in self.changed_data:
+            backend.clean_obsolete_project_git(self.instance)
+        return self.cleaned_data["repo_url"]
 
 
 class ConfigurationUpdateForm(forms.ModelForm):
