@@ -226,13 +226,14 @@ class StageHostTable(PaginateTable):
 
     def __init__(self, *args, **kwargs):
         stage_id = kwargs.pop('stage_id')
+        project_id = kwargs.pop('project_id')
 
         self.base_columns['actions'] = ActionsColumn(
             [
                 {
                     'title': '<i class="glyphicon glyphicon-trash"></i>',
                     'url': 'projects_stage_unmaphost',
-                    'args': [stage_id, tables.A('pk')],
+                    'args': [project_id, stage_id, tables.A('pk')],
                     'attrs': {'data-toggle': 'tooltip', 'title': 'Remove Host from Stage', 'data-delay': '{ "show": 300, "hide": 0 }'}
                 },
             ],
