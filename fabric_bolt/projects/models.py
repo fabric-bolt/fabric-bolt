@@ -177,7 +177,7 @@ class Configuration(TrackingFields):
     value_number = models.FloatField(verbose_name='Value', null=True, blank=True, default=0)
     value_boolean = models.BooleanField(verbose_name='Value', default=False)
     value_ssh_key = models.ForeignKey(SSHConfig, verbose_name='Value', blank=True, null=True)
-    data_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10, default=STRING_TYPE)
+    data_type = models.CharField(choices=DATA_TYPES, null=True, blank=True, max_length=10, default=STRING_TYPE, verbose_name='Type')
 
     task_name = models.CharField(
         max_length=255,

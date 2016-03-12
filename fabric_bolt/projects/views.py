@@ -530,7 +530,7 @@ class ProjectStageView(ProjectSubPageMixin, DetailView):
         # Hosts Table (Stage->Host Through table)
         stage_hosts = self.object.hosts.all()
 
-        host_table = tables.StageHostTable(stage_hosts, stage_id=self.object.pk)  # Through table
+        host_table = tables.StageHostTable(stage_hosts, stage_id=self.object.pk, project_id=self.project.pk)  # Through table
         RequestConfig(self.request).configure(host_table)
         context['hosts'] = host_table
 
