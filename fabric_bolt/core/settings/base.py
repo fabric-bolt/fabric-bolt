@@ -264,6 +264,6 @@ TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.basic.BasicStreamBackend'
 CHANNEL_BACKENDS = {
     "default": {
         "BACKEND": "channels.backends.database.DatabaseChannelBackend",
-
+        "ROUTING": "fabric_bolt.task_runners.channels.channel_routing"
     },
 }
