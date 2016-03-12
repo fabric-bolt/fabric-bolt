@@ -9,6 +9,6 @@ channel_routing = {
 }
 
 
-class BasicStreamBackend(BaseTaskRunnerBackend):
+class ChannelsBackend(BaseTaskRunnerBackend):
     def get_detail_template(self):
         return 'task_runners/deployment_detail_channels.html'

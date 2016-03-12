@@ -5,32 +5,35 @@ from setuptools import setup, find_packages
 setup_requires = []
 
 install_requires = [
-    'django==1.8.4',
-    'pillow==2.9.0',
+    'django==1.8.11',
+    'pillow==3.1.1',
     'django-stronghold==0.2.7',
-    'django-crispy-forms==1.5.1',
-    'django-authtools==1.2.0',
-    'django-tables2==1.0.4',
+    'django-crispy-forms==1.6.0',
+    'git+https://github.com/fusionbox/django-authtools.git@7f1a3e63f901ebe5f6ab9951bb51e1a62e53990f',
+    'django-tables2==1.1.2',
     'django-braces==1.8.1',
-    'django-sekizai==0.8.2',
+    'django-sekizai==0.9.0',
     'fabric==1.10.2',
     'logan==0.7.1',
     'django-bootstrap-form==3.2',
-    'croniter==0.3.8',
-    'GitPython==1.0.1',
+    'croniter==0.3.12',
+    'GitPython==1.0.2',
     'gevent-socketio==0.3.6',
-    'django-graphos==0.0.2a0',
-    'django-activeurl==0.1.8',
-    'requests==2.7.0',
-    'virtualenv==13.1.0',
-    'ansiconv==1.0.0',
+    'django-graphos==0.1.1',
+    'django-activeurl==0.1.9',
+    'requests==2.9.1',
+    'virtualenv==15.0.0',
+    'channels==0.9.5',
+    'autobahn==0.12.1',
+    'twisted==15.5.0',
+    'six==1.10.0',
 ]
 
 dev_requires = [
-    'django-debug-toolbar==1.3.2',
+    'django-debug-toolbar==1.4',
     'django-debug-toolbar-template-timings==0.6.4',
     'mock==1.3.0',
-    'model_mommy==1.2.5'
+    'model_mommy==1.2.6'
 ]
 
 postgres_requires = [
