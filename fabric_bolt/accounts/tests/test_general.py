@@ -94,7 +94,7 @@ class ModelsTest(TestCase):
     def test_user_gravatar(self):
         user = mommy.make(get_user_model(), email='email@example.com')
 
-        self.assertEqual(user.gravatar(30), 'http://www.gravatar.com/avatar/5658ffccee7f0ebfda2b226238b1eb6e?s=30&d=mm')
+        self.assertEqual(user.gravatar(30), '//www.gravatar.com/avatar/5658ffccee7f0ebfda2b226238b1eb6e?s=30&d=mm')
 
     def test_createsuperuser(self):
         user = get_user_model().objects.create_superuser(email='test@test.com', password='password')
