@@ -11,3 +11,6 @@ recursive-include fabric_bolt/core/templates *
 
 recursive-include fabric_bolt/web_hooks/static *
 recursive-include fabric_bolt/web_hooks/templates *
+
+recursive-include fabric_bolt/task_runners/static *
+recursive-include fabric_bolt/task_runners/templates *
