@@ -255,11 +255,11 @@ CACHES = {
 
 FABRIC_TASK_CACHE_TIMEOUT = 60 * 60 * 24  # one day
 
-TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.basic.BasicStreamBackend'
+TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.channels.ChannelsBackend'
 
 CHANNEL_BACKENDS = {
     "default": {
         "BACKEND": "channels.backends.database.DatabaseChannelBackend",
-
+        "ROUTING": "fabric_bolt.task_runners.channels.channel_routing"
     },
 }
