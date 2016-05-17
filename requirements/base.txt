@@ -25,3 +25,4 @@ channels==0.9.5
 autobahn==0.12.1
 twisted==15.5.0
 six==1.10.0
+pycrypto==2.6.1
