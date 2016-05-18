@@ -9,7 +9,7 @@ install_requires = [
     'pillow==3.1.1',
     'django-stronghold==0.2.7',
     'django-crispy-forms==1.6.0',
-    'git+https://github.com/fusionbox/django-authtools.git@7f1a3e63f901ebe5f6ab9951bb51e1a62e53990f',
+    'django-authtools==1.5.0',
     'django-tables2==1.1.2',
     'django-braces==1.8.1',
     'django-sekizai==0.9.0',
