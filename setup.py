@@ -27,6 +27,7 @@ install_requires = [
     'autobahn==0.12.1',
     'twisted==15.5.0',
     'six==1.10.0',
+    'ansiconv==1.0.0',
 ]
 
 dev_requires = [
