@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     'graphos',
     'django_activeurl',
     'authtools',
+    'channels',
 
     # Project
     'fabric_bolt.accounts',
@@ -255,7 +256,7 @@ CACHES = {
 
 FABRIC_TASK_CACHE_TIMEOUT = 60 * 60 * 24  # one day
 
-TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.channels.ChannelsBackend'
+TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.basic.BasicStreamBackend'
 
 CHANNEL_BACKENDS = {
     "default": {
