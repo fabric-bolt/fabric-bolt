@@ -2,6 +2,7 @@
 {% load staticfiles %}
 
 {% block output %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/console-style.css' %}">
     {% if object.status == object.PENDING %}
         <div id="deployment_output"><div class="output"></div></div>
         <input type="text" class="form-control" id="deployment_input">
@@ -11,7 +12,5 @@
 {% endblock %}
 
 {% block deployment_scripts %}
-    <script src="{% static 'task_runners/js/socket.io.js' %}"></script>
-    <script>WEB_SOCKET_SWF_LOCATION="{% static 'task_runners/js/WebSocketMain.swf' %}";</script>
-    <script src="{% static 'task_runners/js/deployment_socketio.js' %}"></script>
+    <script src="{% static 'task_runners/js/deployment_channels.js' %}"></script>
 {% endblock %}

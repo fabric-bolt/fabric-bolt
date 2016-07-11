@@ -2,11 +2,7 @@ django==1.8.11
 pillow==3.1.1
 django-stronghold==0.2.7
 django-crispy-forms==1.6.0
-
 django-authtools==1.5.0
-# install authtools from github until they release the migration fix
-#git+https://github.com/fusionbox/django-authtools.git@7f1a3e63f901ebe5f6ab9951bb51e1a62e53990f
-
 django-tables2==1.1.2
 django-braces==1.8.1
 django-sekizai==0.9.0
@@ -21,7 +17,7 @@ django-activeurl==0.1.9
 requests==2.9.1
 virtualenv==15.0.0
 ansiconv==1.0.0
-channels==0.9.5
+channels==0.16
 autobahn==0.12.1
 twisted==15.5.0
 six==1.10.0

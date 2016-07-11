@@ -1,7 +1,8 @@
 import operator
 
+import ansiconv
 from django.core.urlresolvers import reverse
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, F
 from django.db import models
 from django.db.models import Q
 from django.conf import settings
@@ -9,6 +10,10 @@ from django.conf import settings
 from fabric_bolt.core.mixins.models import TrackingFields
 from fabric_bolt.projects.model_managers import ActiveManager, ActiveDeploymentManager
 from fabric_bolt.hosts.models import SSHConfig
+
+
+class CF(F):
+    ADD = '||'
 
 
 class Project(TrackingFields):
@@ -272,6 +277,7 @@ class Deployment(TrackingFields):
     comments = models.TextField()
     status = models.CharField(choices=STATUS, max_length=10, default=PENDING)
     output = models.TextField(null=True, blank=True)
+    input = models.TextField(null=True, blank=True)
     task = models.ForeignKey('projects.Task')
     configuration = models.TextField(null=True, blank=True)
 
@@ -291,6 +297,39 @@ class Deployment(TrackingFields):
         """Get web hooks from the stage"""
 
         return self.stage.web_hooks
+
+    def get_formatted_output(self):
+        return ansiconv.to_html(self.output) if self.output else ''
+
+    def add_output(self, line):
+        """
+        Appends {line} of output to the output instantly. (directly hits the database)
+        :param line: the line of text to append
+        :return: None
+        """
+        Deployment.objects.filter(pk=self.id).update(output=CF('output')+line)
+
+    def add_input(self, line):
+        """
+        Appends {line} of input to the input instantly. (directly hits the database)
+        :param line: the line of text to append
+        :return: None
+        """
+        Deployment.objects.filter(pk=self.id).update(input=CF('input')+line)
+
+    def get_next_input(self):
+        """
+        Returns the next line of input
+        :return: string of input
+        """
+
+        # TODO: could override input if we get input coming in at the same time
+        all_input = Deployment.objects.filter(pk=self.id).input
+        lines = all_input.splitlines()
+        first_line = lines[0] if len(lines) else None
+        lines = lines[1:] if len(lines) > 1 else []
+        Deployment.objects.filter(pk=self.id).update(input='\n'.join(lines))
+        return first_line
 
 
 class Task(models.Model):

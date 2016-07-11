@@ -20,6 +20,12 @@ class BaseTaskRunnerBackend(object):
     def get_detail_template(self):
         raise NotImplementedError('You must implement get_detail_template()')
 
+    def pre_start_task(self, deployment, project, request):
+        """
+        Can be used by child classes to do any pre-task work
+        """
+        pass
+
     def get_task_details(self, project, task_name):
         if task_name:
             for details in self.get_fabric_tasks(project):

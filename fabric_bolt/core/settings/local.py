@@ -6,11 +6,11 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 ########## Django Debug Toolbar Configuration
-INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
+INSTALLED_APPS += ['debug_toolbar', ]
 INTERNAL_IPS = ('127.0.0.1',)
 
 # Add in the template timing toolbar
-INSTALLED_APPS = INSTALLED_APPS + ('template_timings_panel',)
+INSTALLED_APPS += ['template_timings_panel', ]
 
 DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.versions.VersionsPanel',
@@ -33,12 +33,12 @@ DEBUG_TOOLBAR_PANELS = (
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'fabric_bolt_test', # Or path to database file if using sqlite3.
-        'USER': 'postgres', # Not used with sqlite3.
-        'PASSWORD': '', # Not used with sqlite3.
-        'HOST': 'localhost', # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '5432', # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'fabric_bolt_test',  # Or path to database file if using sqlite3.
+        'USER': 'postgres',  # Not used with sqlite3.
+        'PASSWORD': '',  # Not used with sqlite3.
+        'HOST': 'localhost',  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '5432',  # Set to empty string for default. Not used with sqlite3.
     }
 }
 
