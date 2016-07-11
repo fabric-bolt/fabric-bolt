@@ -167,6 +167,7 @@ INSTALLED_APPS = [
     'graphos',
     'django_activeurl',
     'authtools',
+    'channels',
 
     # Project
     'fabric_bolt.accounts',
