@@ -18,8 +18,8 @@ install_requires = [
     'django-bootstrap-form==3.2',
     'croniter==0.3.12',
     'GitPython==1.0.2',
-    'gevent-socketio==0.3.6',
     'django-graphos==0.1.1',
+    'django-appconf 1.0.2',
     'django-activeurl==0.1.9',
     'requests==2.9.1',
     'virtualenv==15.0.0',
@@ -48,7 +48,7 @@ mysql_requires = [
 
 setup(
     name='fabric-bolt',
-    version='0.1',
+    version='0.2b1',
     author='Dan Dietz, Nathaniel Pardington, Jared Proffitt',
     url='https://github.com/fabric-bolt/fabric-bolt',
     description='A web interface to fabric deployments.',

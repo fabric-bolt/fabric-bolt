@@ -3,7 +3,7 @@ LOCAL_SETTINGS = True
 from fabric_bolt.core.settings.base import *
 
 DEBUG = True
-TEMPLATE_DEBUG = True
+TEMPLATES[0]['OPTIONS']['debug'] = True
 
 ########## Django Debug Toolbar Configuration
 INSTALLED_APPS += ['debug_toolbar', ]
@@ -48,3 +48,7 @@ SECRET_KEY = '3(-(r&DUMMYKEYFIRJUNK@@#@#d=48-5p&(f'
 if DEBUG:
     # Show emails in the console during developement.
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+INSTALLED_APPS += ['channels']
+
+TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.channels.ChannelsBackend'

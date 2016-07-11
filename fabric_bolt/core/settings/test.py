@@ -2,7 +2,7 @@
 from fabric_bolt.core.settings.base import *
 
 DEBUG = True
-TEMPLATE_DEBUG = True
+TEMPLATES[0]['OPTIONS']['debug'] = True
 
 ########## End Django Debug Toolbar Configuration
 

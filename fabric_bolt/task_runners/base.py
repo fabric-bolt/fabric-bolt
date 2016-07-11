@@ -3,10 +3,10 @@ import re
 import subprocess
 import shutil
 
+from django.apps import apps
 from django.utils.text import slugify
 from django.conf import settings
 from django.core.cache import cache
-from fabric_bolt.hosts.models import SSHConfig
 
 
 class BaseTaskRunnerBackend(object):
@@ -284,6 +284,7 @@ class BaseTaskRunnerBackend(object):
 
         if not configs.get('key_filename'):
             # Get global SSH
+            SSHConfig = apps.get_model('hosts', 'SSHConfig')
             ssh_config = SSHConfig.objects.first()
 
             if ssh_config:

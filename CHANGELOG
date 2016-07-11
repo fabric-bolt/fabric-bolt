@@ -1,3 +1,9 @@
+v 0.2 (Unreleased)
+    - Added channels task runner. Enable it by setting TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.channels.ChannelsBackend'
+    - Removed socketio backend. Channels backend is essentially the same, but better.
+    - Upgraded to django 1.9
+
+
 v 0.1 (8/23/2015)
     - Added support for using the fabfile in each project's repo
     - Added "launch window" feature
