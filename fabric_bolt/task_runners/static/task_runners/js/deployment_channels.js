@@ -1,7 +1,7 @@
 $(function(){
     if(deployment_pending){
 
-        socket = new WebSocket("ws://127.0.0.1:8000/" + deployment_id);
+        socket = new WebSocket("ws://" + window.location.host + "/" + deployment_id);
 
         socket.onmessage = function(e)  {
             data = JSON.parse(e.data);
@@ -24,7 +24,7 @@ $(function(){
             if(e.which == 13){
                 var text = $(this).val();
                 $(this).val('');
-                socket.emit('input', text);
+                socket.send(text);
                 $('#deployment_output .output').append('\n');
             }
         });

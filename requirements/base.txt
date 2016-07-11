@@ -19,6 +19,6 @@ virtualenv==15.0.2
 ansiconv==1.0.0
 channels==0.16
 autobahn==0.14.1
-twisted==16.3.0
+twisted==16.2.0
 six==1.10.0
 pycrypto==2.6.1

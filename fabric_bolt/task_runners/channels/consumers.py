@@ -1,12 +1,14 @@
 import json
+import os
 import subprocess
 from importlib import import_module
 
 import ansiconv
 import sys
 
+import fcntl
 from channels import Group
-from channels.auth import channel_session_user_from_http
+from channels.auth import channel_session_user_from_http, channel_session_user
 from channels.sessions import channel_session
 from django.conf import settings
 
@@ -33,17 +35,31 @@ def start_task(message):
         return
 
     process = subprocess.Popen(
-        backend.build_command(project, deployment, session),
+        backend.build_command(project, deployment, session, abort_on_prompts=False),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        stdin=subprocess.PIPE,
         shell=True,
         executable=getattr(settings, 'SHELL', '/bin/sh'),
+        close_fds=True
     )
 
+    fd = process.stdout.fileno()
+    fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+    fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+
     while True:
-        nextline = process.stdout.readline()
+        try:
+            nextline = process.stdout.readline()
+        except IOError as e:
+            nextline = ''
+
         if nextline == '' and process.poll() is not None:
             break
+
+        next_input = deployment.get_next_input()
+        if next_input:
+            process.stdin.write(next_input + '\n')
 
         Group("deployment-{}".format(deployment.id)).send({
             "text": json.dumps({
@@ -70,7 +86,6 @@ def start_task(message):
     deployment_finished.send(deployment, deployment_id=deployment.pk)
 
 
-# Connected to websocket.connect
 @channel_session_user_from_http
 def ws_connect(message):
     # Work out room name from path (ignore slashes)
@@ -88,14 +103,12 @@ def ws_connect(message):
     })
 
 
-# Connected to websocket.disconnect
 @channel_session
-def ws_disconnect(message):
-    Group("deployment-{}".format(message.channel_session['deployment_id'])).discard(message.reply_channel)
-
-
-# Connected to websocket.connect
-@channel_session_user_from_http
 def ws_receive(message):
     deployment = Deployment.objects.filter(pk=message.channel_session['deployment_id'])[0]
-    deployment.add_input(message.content)
+    deployment.add_input(message.content['text'])
+
+
+@channel_session_user
+def ws_disconnect(message):
+    Group("deployment-{}".format(message.channel_session['deployment_id'])).discard(message.reply_channel)

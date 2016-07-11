@@ -324,7 +324,7 @@ class Deployment(TrackingFields):
         """
 
         # TODO: could override input if we get input coming in at the same time
-        all_input = Deployment.objects.filter(pk=self.id).input
+        all_input = Deployment.objects.get(pk=self.id).input or ''
         lines = all_input.splitlines()
         first_line = lines[0] if len(lines) else None
         lines = lines[1:] if len(lines) > 1 else []
