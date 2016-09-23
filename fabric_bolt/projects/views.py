@@ -5,6 +5,7 @@ Views for the Projects App
 import datetime
 from copy import deepcopy
 
+from channels import Channel
 from django.http import HttpResponseRedirect
 from django.db.models.aggregates import Count
 from django.contrib import messages
@@ -15,7 +16,6 @@ from django.forms import CharField, PasswordInput, Select, FloatField, BooleanFi
 from django.core.cache import cache
 
 from django_tables2 import RequestConfig, SingleTableView
-import ansiconv
 
 from fabric_bolt.core.mixins.views import MultipleGroupRequiredMixin
 from fabric_bolt.hosts.models import Host
@@ -440,6 +440,8 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
 
         self.request.session['configuration_values'] = configuration_values
 
+        backend.pre_start_task(self.object, self.project, self.request)
+
         return super(DeploymentCreate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -465,7 +467,7 @@ class DeploymentDetail(StageSubPageMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DeploymentDetail, self).get_context_data(**kwargs)
-        context['deploy_output'] = ansiconv.to_html(self.object.output) if self.object.output else ''
+        context['deploy_output'] = self.object.get_formatted_output()
         return context
 
     def get_template_names(self):

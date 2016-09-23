@@ -147,7 +147,7 @@ MIDDLEWARE_CLASSES = (
 
 
 ########## APP CONFIGURATION
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     # Django Core
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -176,7 +176,7 @@ INSTALLED_APPS = (
     'fabric_bolt.projects',
     'fabric_bolt.web_hooks',
     'fabric_bolt.task_runners',
-)
+]
 ########## END APP CONFIGURATION
 
 FABFILE_PATH = os.path.join(os.path.dirname(PROJECT_DIR), 'fabfile.py')
@@ -253,14 +253,13 @@ CACHES = {
     }
 }
 
-
 FABRIC_TASK_CACHE_TIMEOUT = 60 * 60 * 24  # one day
 
 TASK_RUNNER_BACKEND = 'fabric_bolt.task_runners.basic.BasicStreamBackend'
 
-CHANNEL_BACKENDS = {
+CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.backends.database.DatabaseChannelBackend",
-        "ROUTING": "fabric_bolt.task_runners.channels.channel_routing"
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "ROUTING": "fabric_bolt.task_runners.channels.routing.channel_routing"
     },
 }
