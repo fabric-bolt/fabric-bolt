@@ -19,6 +19,7 @@ install_requires = [
     'croniter==0.3.12',
     'GitPython==1.0.2',
     'gevent-socketio==0.3.6',
+    'gevent==1.2.1',
     'django-graphos==0.1.1',
     'django-activeurl==0.1.9',
     'requests==2.9.1',
@@ -26,8 +27,10 @@ install_requires = [
     'channels==0.16',
     'autobahn==0.14.1',
     'twisted==15.5.0',
+    'daphne==0.14.3',
     'six==1.10.0',
     'ansiconv==1.0.0',
+    'pycrypto==2.6.1',
 ]
 
 dev_requires = [
