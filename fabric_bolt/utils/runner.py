@@ -13,6 +13,9 @@ from fabric_bolt.core.settings.base import *
 
 CONF_ROOT = os.path.dirname(__file__)
 
+# See https://docs.djangoproject.com/en/1.8/ref/settings/#s-allowed-hosts
+ALLOWED_HOSTS=['*']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
