@@ -39,9 +39,10 @@ class BaseTaskRunnerBackend(object):
         return self.special_options
 
     def check_output(self, command, shell=False):
+        # Need to use bash since some of the commands are prefixed with "source"
         executable = None
         if shell:
-            executable = getattr(settings, 'SHELL', '/bin/sh')
+            executable = getattr(settings, 'SHELL', '/bin/bash')
         return subprocess.check_output(command, shell=shell, executable=executable)
 
     def check_output_with_ssh_key(self, command):
@@ -54,6 +55,7 @@ class BaseTaskRunnerBackend(object):
             return self.check_output([command], shell=True)
 
     def update_project_git(self, project, cache_dir, repo_dir):
+
         if not os.path.exists(repo_dir):
             if not os.path.exists(cache_dir):
                 os.makedirs(cache_dir)
@@ -131,6 +133,10 @@ class BaseTaskRunnerBackend(object):
                         arguments.append(m.group(1))
                 else:
                     arguments.append(m.group(1))
+
+        # Class based Tasks have a 'self' argument - strip it.
+        if arguments and arguments[0] == 'self':
+            arguments = arguments[1:]
 
         return name, docstring, arguments
 
