@@ -377,7 +377,7 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
             str_config_key = 'configuration_value_for_{}'.format(config.key)
 
             if config.data_type == config.BOOLEAN_TYPE:
-                field = BooleanField(widget=Select(choices=((False, 'False'), (True, 'True'))))
+                field = BooleanField(widget=Select(choices=((False, 'False'), (True, 'True'))), required=False)
                 field.coerce=lambda x: x == 'True',
             elif config.data_type == config.NUMBER_TYPE:
                 field = FloatField()
