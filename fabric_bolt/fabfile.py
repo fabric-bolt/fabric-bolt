@@ -72,35 +72,51 @@ def do_nothing():
 
 @task
 def color_test():
+    number = 1
     for x in range(0, 2):
-        print colors.blue('Blue text', bold=False) + '\n'
+        print colors.blue('{}: Blue text'.format(number), bold=False)
+        number += 1
         time.sleep(0.2)
-        print colors.cyan('cyan text', bold=False)
+        print colors.cyan('{}: cyan text'.format(number), bold=False)
+        number += 1
         time.sleep(0.2)
-        print colors.green('green text', bold=False)
+        print colors.green('{}: green text'.format(number), bold=False)
+        number += 1
         time.sleep(0.2)
-        print colors.magenta('magenta text', bold=False)
+        print colors.magenta('{}: magenta text'.format(number), bold=False)
+        number += 1
         time.sleep(0.2)
-        print colors.red('red text', bold=False)
+        print colors.red('{}: red text'.format(number), bold=False)
+        number += 1
         time.sleep(0.2)
-        print colors.white('white text', bold=False)
+        print colors.white('{}: white text'.format(number), bold=False)
+        number += 1
         time.sleep(0.2)
-        print colors.yellow('yellow text', bold=False)
+        print colors.yellow('{}: yellow text'.format(number), bold=False)
+        number += 1
         time.sleep(0.2)
-        print colors.blue('Blue text bold', bold=True)
+        print colors.blue('{}: Blue text bold'.format(number), bold=True)
+        number += 1
         time.sleep(0.2)
-        print colors.cyan('cyan text bold', bold=True)
+        print colors.cyan('{}: cyan text bold'.format(number), bold=True)
+        number += 1
         time.sleep(0.2)
-        print colors.green('green text bold', bold=True)
+        print colors.green('{}: green text bold'.format(number), bold=True)
+        number += 1
         time.sleep(0.2)
-        print colors.magenta('magenta text bold', bold=True)
+        print colors.magenta('{}: magenta text bold'.format(number), bold=True)
+        number += 1
         time.sleep(0.2)
-        print colors.red('red text bold', bold=True)
+        print colors.red('{}: red text bold'.format(number), bold=True)
+        number += 1
         time.sleep(0.2)
-        print colors.white('white text bold', bold=True)
+        print colors.white('{}: white text bold'.format(number), bold=True)
+        number += 1
         time.sleep(0.2)
-        print colors.yellow('yellow text bold', bold=True)
+        print colors.yellow('{}: yellow text bold'.format(number), bold=True)
+        number += 1
         time.sleep(0.2)
+        print
 
 @task
 def test_env(argument="nothing"):

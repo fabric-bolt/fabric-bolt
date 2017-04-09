@@ -35,7 +35,7 @@ def start_task(message):
         return
 
     process = subprocess.Popen(
-        backend.build_command(project, deployment, session, abort_on_prompts=False),
+        backend.build_command(project, deployment, session),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         stdin=subprocess.PIPE,
@@ -56,19 +56,20 @@ def start_task(message):
 
         if nextline == '' and process.poll() is not None:
             break
+        #
+        # next_input = deployment.get_next_input()
+        # if next_input:
+        #     process.stdin.write(next_input + '\n')
 
-        next_input = deployment.get_next_input()
-        if next_input:
-            process.stdin.write(next_input + '\n')
+        if nextline:
+            Group("deployment-{}".format(deployment.id)).send({
+                "text": json.dumps({
+                    'status': 'pending',
+                    'text': str('<span class="output-line">{}</span>'.format(ansiconv.to_html(nextline)))
+                }),
+            }, immediately=True)
 
-        Group("deployment-{}".format(deployment.id)).send({
-            "text": json.dumps({
-                'status': 'pending',
-                'text': str('<span class="output-line">{}</span>'.format(ansiconv.to_html(nextline)))
-            }),
-        })
-
-        deployment.add_output(nextline)
+            deployment.add_output(nextline)
 
         sys.stdout.flush()
 
@@ -81,13 +82,15 @@ def start_task(message):
             'status': deployment.SUCCESS if process.returncode == 0 else deployment.FAILED,
             'text': ''
         }),
-    })
+    }, immediately=True)
 
     deployment_finished.send(deployment, deployment_id=deployment.pk)
 
 
 @channel_session_user_from_http
 def ws_connect(message):
+    message.reply_channel.send({"accept": True})
+
     # Work out room name from path (ignore slashes)
     deployment_id = message.content['path'].strip("/")
     # Save room in session and add us to the group
@@ -100,13 +103,13 @@ def ws_connect(message):
             "text": deployment.get_formatted_output(),
             'status': deployment.status
         })
-    })
+    }, immediately=True)
 
 
-@channel_session
-def ws_receive(message):
-    deployment = Deployment.objects.filter(pk=message.channel_session['deployment_id'])[0]
-    deployment.add_input(message.content['text'])
+# @channel_session
+# def ws_receive(message):
+#     deployment = Deployment.objects.filter(pk=message.channel_session['deployment_id'])[0]
+#     deployment.add_input(message.content['text'])
 
 
 @channel_session_user

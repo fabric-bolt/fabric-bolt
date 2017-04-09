@@ -19,15 +19,15 @@ $(function(){
             }
 
         };
-
-        $('#deployment_input').keyup(function(e){
-            if(e.which == 13){
-                var text = $(this).val();
-                $(this).val('');
-                socket.send(text);
-                $('#deployment_output .output').append('\n');
-            }
-        });
+        //
+        // $('#deployment_input').keyup(function(e){
+        //     if(e.which == 13){
+        //         var text = $(this).val();
+        //         $(this).val('');
+        //         socket.send(text);
+        //         $('#deployment_output .output').append('\n');
+        //     }
+        // });
 
     }else{
         $('#deployment_output .output').scrollTop($('#deployment_output .output')[0].scrollHeight);

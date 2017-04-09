@@ -137,7 +137,7 @@ TEMPLATES = [
 
 
 ########## MIDDLEWARE CONFIGURATION
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -145,7 +145,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'stronghold.middleware.LoginRequiredMiddleware',
-)
+]
 ########## END MIDDLEWARE CONFIGURATION
 
 
