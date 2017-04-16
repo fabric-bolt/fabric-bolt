@@ -37,7 +37,7 @@ These steps are designed to get you rolling quickly, but more complete install/s
 
 4. Migrate db::
 
-    fabric-bolt migrate
+    fabric-bolt syncdb --migrate
 
 5. Create admin user, then follow the prompts to create an email and password::
 
