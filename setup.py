@@ -19,7 +19,7 @@ install_requires = [
     'croniter==0.3.16',
     'GitPython==2.1.3',
     'django-graphos==0.3.41',
-    'django-appconf 1.0.2',
+    'django-appconf==1.0.2',
     'django-activeurl==0.1.9',
     'requests==2.13.0',
     'virtualenv==15.1.0',
