@@ -1,7 +1,7 @@
 $(function(){
     if(deployment_pending){
 
-        socket = new WebSocket("ws://127.0.0.1:8000/" + deployment_id);
+        socket = new WebSocket("ws://" + window.location.host + "/" + deployment_id);
 
         socket.onmessage = function(e)  {
             data = JSON.parse(e.data);
@@ -19,15 +19,15 @@ $(function(){
             }
 
         };
-
-        $('#deployment_input').keyup(function(e){
-            if(e.which == 13){
-                var text = $(this).val();
-                $(this).val('');
-                socket.emit('input', text);
-                $('#deployment_output .output').append('\n');
-            }
-        });
+        //
+        // $('#deployment_input').keyup(function(e){
+        //     if(e.which == 13){
+        //         var text = $(this).val();
+        //         $(this).val('');
+        //         socket.send(text);
+        //         $('#deployment_output .output').append('\n');
+        //     }
+        // });
 
     }else{
         $('#deployment_output .output').scrollTop($('#deployment_output .output')[0].scrollHeight);

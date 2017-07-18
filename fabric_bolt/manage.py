@@ -10,9 +10,3 @@ if __name__ == '__main__':
 
     from django.core.management import execute_from_command_line
     execute_from_command_line(sys.argv)
-
-    from django.conf import settings
-
-    if settings.TASK_RUNNER_BACKEND == 'fabric_bolt.task_runners.socketio.SocketIOBackend':
-        from gevent import monkey
-        monkey.patch_all()

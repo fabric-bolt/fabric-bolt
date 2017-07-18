@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/console-style.css' %}">
     {% if object.status == object.PENDING %}
         <div id="deployment_output"><div class="output"></div></div>
-        <input type="text" class="form-control" id="deployment_input">
+{#        <input type="text" class="form-control" id="deployment_input">#}
     {% else %}
         <div id="deployment_output"><div class="output">{{ deploy_output|safe }}</div></div>
     {% endif %}

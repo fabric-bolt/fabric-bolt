@@ -356,12 +356,12 @@ class DeploymentCreate(MultipleGroupRequiredMixin, CreateView):
 
         return super(DeploymentCreate, self).dispatch(request, *args, **kwargs)
 
-    def get_form(self, form_class):
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
 
         stage_configurations = self.stage.get_queryset_configurations()
-
         form = form_class(**self.get_form_kwargs())
-
         used_arg_names = []
 
         # We want to inject fields into the form for the configurations they've marked as prompt
