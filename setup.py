@@ -21,7 +21,7 @@ install_requires = [
     'django-graphos==0.3.41',
     'django-appconf==1.0.2',
     'django-activeurl==0.1.9',
-    'requests==2.13.0',
+    'requests==2.20.0',
     'virtualenv==15.1.0',
     'channels==1.1.3',
     'autobahn==0.18.1',
