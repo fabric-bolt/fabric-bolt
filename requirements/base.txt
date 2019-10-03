@@ -1,4 +1,4 @@
-django==1.10.7
+django==1.11.23
 pillow==4.1.0
 django-stronghold==0.2.8
 django-crispy-forms==1.6.1
