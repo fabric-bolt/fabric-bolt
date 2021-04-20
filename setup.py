@@ -24,7 +24,7 @@ install_requires = [
     'requests==2.13.0',
     'virtualenv==15.1.0',
     'channels==1.1.3',
-    'autobahn==0.18.1',
+    'autobahn==20.12.3',
     'daphne==1.2.0',
     'six==1.10.0',
     'ansiconv==1.0.0',
