@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 setup_requires = []
 
 install_requires = [
-    'django==1.10.7',
+    'django==2.2.24',
     'pillow==4.1.0',
     'django-stronghold==0.2.8',
     'django-crispy-forms==1.6.1',
