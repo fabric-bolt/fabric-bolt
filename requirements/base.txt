@@ -22,4 +22,4 @@ autobahn==0.18.1
 daphne==1.2.0
 six==1.10.0
 pycrypto==2.6.1
-celery==3.1.25
+celery==5.2.2
