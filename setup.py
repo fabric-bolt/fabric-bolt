@@ -6,7 +6,7 @@ setup_requires = []
 
 install_requires = [
     'django==1.10.7',
-    'pillow==4.1.0',
+    'pillow==9.0.0',
     'django-stronghold==0.2.8',
     'django-crispy-forms==1.6.1',
     'django-authtools==1.5.0',
